@@ -1,5 +1,5 @@
-ODTbrain
-========
+qpimage
+=======
 
 |PyPI Version| |Build Status| |Coverage Status|
 
