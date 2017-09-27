@@ -6,8 +6,8 @@ notifications:
   email: false
 env:
   matrix:
-  - TEST_STYLE=1
-  - TEST_STYLE=0
+  - TEST="PYTEST"
+  - TEST="FLAKE8"
 install:
 # everything else
 - travis_retry pip install .
@@ -16,7 +16,7 @@ install:
 - travis_retry pip install codecov coverage
 - pip freeze
 script:
-- if [ "${TEST_STYLE}" == "0" ]; then
+- if [ "${TEST}" == "PYTEST" ]; then
        coverage run --source=dclab ./setup.py test;
        coverage report -m;
        codecov;
