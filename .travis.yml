@@ -10,7 +10,7 @@ env:
   - TEST_STYLE=0
 install:
 # everything else
-- "travis_retry pip install . --only-binary=:all:"
+- travis_retry pip install .
 # coverage packages
 - travis_retry pip install codecov coverage
 - pip freeze
