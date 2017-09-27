@@ -16,7 +16,7 @@ install:
 - travis_retry pip install codecov coverage
 - pip freeze
 script:
-- if [ "${TEST_STYLE}" == "1" ]; then
+- if [ "${TEST_STYLE}" == "0" ]; then
        coverage run --source=dclab ./setup.py test;
        coverage report -m;
        codecov;
@@ -24,5 +24,3 @@ script:
        flake8 qpimage;
        flake8 tests --ignore E402;
   fi;
-after_success:
-- codecov
