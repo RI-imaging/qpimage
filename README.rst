@@ -1,7 +1,7 @@
 qpimage
 =======
 
-|PyPI Version| |Build Status| |Coverage Status|
+|PyPI Version| |Build Status| |Coverage Status| |Docs Status|
 
 
 **qpimage** is a Python3 library for handling quantitative phase imaging data.
@@ -10,7 +10,7 @@ qpimage
 Documentation
 -------------
 
-TODO: readthedocs.org
+The documentation, including the reference and examples, is available on `readthedocs.io <https://qpimage.readthedocs.io/en/stable/>`__.
 
 
 Installation
@@ -36,5 +36,5 @@ Testing
    :target: https://travis-ci.org/RI-imaging/qpimage
 .. |Coverage Status| image:: https://img.shields.io/codecov/c/github/RI-imaging/qpimage/master.svg
    :target: https://codecov.io/gh/RI-imaging/qpimage
-
-    
+.. |Docs Status| image:: https://readthedocs.org/projects/qpimage/badge/?version=latest
+   :target: https://readthedocs.org/projects/qpimage/builds/
