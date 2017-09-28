@@ -139,7 +139,7 @@ class QPImage(object):
 
     @property
     def meta(self):
-        """Meta data"""
+        """meta data"""
         return MetaDict(self.h5.attrs)
 
     @property
