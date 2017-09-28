@@ -3,40 +3,30 @@ import numpy as np
 from skimage.restoration import unwrap_phase
 
 from .image_data import Amplitude, Phase
-
+from .meta import MetaDict
 
 class QPImage(object):
+    """Quantitative phase image management
+
+    Parameters
+    ----------
+    data: 2d ndarray (float or complex) or list
+        The experimental data (see `data_type`)
+    bg_data: 2d ndarray (float or complex), list, or `None`
+        The background data (must be same type as `data`)
+    data_type: str
+        String or comma-separated list of strings indicating
+        the order and type of input data. Valid values are
+        "field", "phase", "phase,amplitude", or "phase,intensity",
+        where the latter two require an indexable object with
+        the phase data as first element.
+    **meta_kwargs:
+        Valid meta data keyword arguments,
+        see :py:class:`qpimage.VALID_META_KEYS`
+    """
     def __init__(self, data=None, bg_data=None, data_type="phase",
-                 hdf5_file=None, hdf5_mode="a",
-                 pixel_size=None, wavelength=None, time=None,
+                 hdf5_file=None, hdf5_mode="a", **meta_kwargs
                  ):
-        """Quantitative phase image management
-
-        Parameters
-        ----------
-        data: 2d ndarray (float or complex) or list
-            The experimental data (see `data_type`)
-        bg_data: 2d ndarray (float or complex), list, or `None`
-            The background data (must be same type as `data`)
-        data_type: str
-            String or comma-separated list of strings indicating
-            the order and type of input data. Valid values are
-            "field", "phase", "phase,amplitude", or "phase,intensity",
-            where the latter two require an indexable object with
-            the phase data as first element.
-        pixel_size: float
-            Pixel size [m]
-        time: float
-            Time point of data recording [s]
-        wavelength: float
-            Wavelength of the radiation used [m]
-
-        Properties
-        ----------
-        meta: dict
-            Dictionary holding all meta information such as
-            wavelength and sampling
-        """
         if hdf5_file is None:
             h5kwargs = {"name": "none.h5",
                         "driver": "core",
@@ -65,12 +55,10 @@ class QPImage(object):
             self.set_bg_data(bg_data=bg_data,
                              data_type=data_type)
         # set meta data
-        if pixel_size:
-            self.h5.attrs["pixel_size"] = pixel_size
-        if time:
-            self.h5.attrs["time"] = time
-        if wavelength:
-            self.h5.attrs["wavelength"] = wavelength
+        meta = MetaDict(**meta_kwargs)
+        for key in meta:
+            if meta[key]:
+                self.h5.attrs[key] = meta[key]
 
     def __enter__(self):
         return self
@@ -129,27 +117,32 @@ class QPImage(object):
 
     @property
     def bg_amp(self):
-        """Return the background amplitude image"""
+        """background amplitude image"""
         return self._amp.bg
 
     @property
     def bg_pha(self):
-        """Return the background phase image"""
+        """background phase image"""
         return self._pha.bg
 
     @property
     def amp(self):
-        """Return the background-corrected amplitude image"""
+        """background-corrected amplitude image"""
         return self._amp.image
 
     @property
     def field(self):
-        """Return the background-corrected complex field"""
+        """background-corrected complex field"""
         return self.amp * np.exp(1j * self.pha)
 
     @property
+    def meta(self):
+        """Meta data"""
+        return MetaDict(self.h5.attrs)
+
+    @property
     def pha(self):
-        """Return the background-corrected phase image"""
+        """background-corrected phase image"""
         return self._pha.image
 
     def clear_bg(self, data_names=["amplitude", "phase"], keys=["ramp"]):
@@ -182,11 +175,11 @@ class QPImage(object):
                 imdat.set_bg(None, key)
 
     def correct_amp(self, method="border"):
-        """Perform amplitude background correction
+        """Compute amplitude background correction
         """
 
     def correct_pha(self, method="border,sphere-edge"):
-        """Perform phase background correction
+        """Compute phase background correction
         """
 
     def refocus(self, distance, method="helmholtz"):
@@ -201,7 +194,7 @@ class QPImage(object):
 
         See Also
         --------
-        :py:mod:`nrefocus`: library used for numerical focusing
+        :mod:`nrefocus` library used for numerical focusing
         """
         # TODO:
         # - Perform refocusing and create new image data instances

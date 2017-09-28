@@ -27,6 +27,7 @@ if __name__ == "__main__":
         description=description,
         long_description=open('README.rst').read() if exists('README.rst') else '',
         install_requires=["h5py",
+                          "lmfit",
                           "nrefocus >= 0.1.5",
                           "NumPy >= 1.9.0",
                           "scikit-image >= 0.11.0",

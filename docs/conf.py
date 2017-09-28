@@ -25,9 +25,10 @@
 import os.path as op
 import sys
 qpimage_root = op.abspath(op.join(op.abspath("."), ".."))
-sys.path.insert(0, op.join(qpimage_root, "qpimage"))
-from _version import version as qpimage_version
-
+sys.path.insert(0, qpimage_root)
+#sys.path.insert(0, op.join(qpimage_root, "qpimage"))
+#from _version import version as qpimage_version
+qpimage_version = "0.1.0"
 
 # -- General configuration ------------------------------------------------
 
@@ -39,9 +40,11 @@ from _version import version as qpimage_version
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['sphinx.ext.autodoc',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.viewcode']
+              'sphinx.ext.autosummary',
+              'sphinx.ext.intersphinx',
+              'sphinx.ext.mathjax',
+              'sphinx.ext.viewcode',
+              'sphinx.ext.napoleon',]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -105,21 +108,6 @@ html_theme = 'default'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-# Custom sidebar templates, must be a dictionary that maps document names
-# to template names.
-#
-# This is required for the alabaster theme
-# refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
-html_sidebars = {
-    '**': [
-        'about.html',
-        'navigation.html',
-        'relations.html',  # needs 'show_related': True theme option to display
-        'searchbox.html',
-        'donate.html',
-    ]
-}
-
 
 # -- Options for HTMLHelp output ------------------------------------------
 
@@ -182,5 +170,10 @@ texinfo_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None,
-                       'http://nrefocus.readthedocs.io': None,
+                       'http://docs.scipy.org/doc/numpy': None,
+                       'https://docs.scipy.org/doc/scipy/reference/': None,
+                       'http://scikit-image.org/docs/stable/': None,
+                       'http://docs.h5py.org/en/stable/': None,
+                       'http://lmfit.github.io/lmfit-py/': None,
+                       'http://nrefocus.readthedocs.io/en/stable': None,
                        }
