@@ -182,3 +182,7 @@ intersphinx_mapping = {'https://docs.python.org/': None,
                        'http://lmfit.github.io/lmfit-py/': None,
                        'http://nrefocus.readthedocs.io/en/stable': None,
                        }
+
+# http://www.sphinx-doc.org/en/stable/ext/autodoc.html#confval-autodoc_member_order
+# Order class attributes and functions in separate blocks
+autodoc_member_order = 'bysource'
