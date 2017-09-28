@@ -12,10 +12,10 @@ class QPImage(object):
     Parameters
     ----------
     data: 2d ndarray (float or complex) or list
-        The experimental data (see `data_type`)
+        The experimental data (see `which_data`)
     bg_data: 2d ndarray (float or complex), list, or `None`
         The background data (must be same type as `data`)
-    data_type: str
+    which_data: str
         String or comma-separated list of strings indicating
         the order and type of input data. Valid values are
         "field", "phase", "phase,amplitude", or "phase,intensity",
@@ -26,7 +26,7 @@ class QPImage(object):
         see :py:class:`qpimage.VALID_META_KEYS`
     """
 
-    def __init__(self, data=None, bg_data=None, data_type="phase",
+    def __init__(self, data=None, bg_data=None, which_data="phase",
                  hdf5_file=None, hdf5_mode="a", **meta_kwargs
                  ):
         if hdf5_file is None:
@@ -49,13 +49,13 @@ class QPImage(object):
         if data is not None:
             # compute phase and amplitude from input data
             amp, pha = self._get_amp_pha(data=data,
-                                         data_type=data_type)
+                                         which_data=which_data)
             self._amp["raw"] = amp
             self._pha["raw"] = pha
 
             # set background data
             self.set_bg_data(bg_data=bg_data,
-                             data_type=data_type)
+                             which_data=which_data)
         # set meta data
         meta = MetaDict(**meta_kwargs)
         for key in meta:
@@ -83,14 +83,14 @@ class QPImage(object):
 
         return rep
 
-    def _get_amp_pha(self, data, data_type):
+    def _get_amp_pha(self, data, which_data):
         """Convert input data to phase and amplitude
 
         Parameters
         ----------
         data: 2d ndarray (float or complex) or list
-            The experimental data (see `data_type`)
-        data_type: str
+            The experimental data (see `which_data`)
+        which_data: str
             String or comma-separated list of strings indicating
             the order and type of input data. Valid values are
             "field", "phase", "phase,amplitude", or "phase,intensity",
@@ -101,18 +101,18 @@ class QPImage(object):
         -------
         amp, pha: tuple of (:py:class:`Amplitdue`, :py:class:`Phase`)
         """
-        assert data_type in ["field", "phase", "phase,amplitude",
-                             "phase,intensity"]
-        if data_type == "field":
+        assert which_data in ["field", "phase", "phase,amplitude",
+                              "phase,intensity"]
+        if which_data == "field":
             amp = np.abs(data)
             pha = unwrap_phase(np.angle(data))
-        elif data_type == "phase":
+        elif which_data == "phase":
             amp = np.ones_like(data)
             pha = unwrap_phase(data)
-        elif data_type == "phase,amplitude":
+        elif which_data == "phase,amplitude":
             pha = unwrap_phase(data[0])
             amp = data[1]
-        elif data_type == "phase,intensity":
+        elif which_data == "phase,intensity":
             pha = unwrap_phase(data[0])
             amp = np.sqrt(data[1])
         return amp, pha
@@ -204,7 +204,7 @@ class QPImage(object):
         # - Maybe return a new instance of QPImage
         # - Allow autofocusing?
 
-    def set_bg_data(self, bg_data, data_type):
+    def set_bg_data(self, bg_data, which_data):
         """Set background amplitude and phase
 
         Parameters
@@ -212,7 +212,7 @@ class QPImage(object):
         bg_data: 2d ndarray (float or complex), list, or `None`
             The background data (must be same type as `data`).
             If set to `None`, the background data is reset.
-        data_type: str
+        which_data: str
             String or comma-separated list of strings indicating
             the order and type of input data. Valid values are
             "field", "phase", "phase,amplitude", or "phase,intensity",
@@ -223,8 +223,8 @@ class QPImage(object):
             # Reset phase and amplitude
             amp, pha = None, None
         else:
-            # Compute phase and amplitude from data and data_type
-            amp, pha = self._get_amp_pha(bg_data, data_type)
+            # Compute phase and amplitude from data and which_data
+            amp, pha = self._get_amp_pha(bg_data, which_data)
         # Set background data
         self._amp.set_bg(amp, key="data")
         self._pha.set_bg(pha, key="data")
