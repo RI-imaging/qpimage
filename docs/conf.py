@@ -22,13 +22,19 @@
 # sys.path.insert(0, os.path.abspath('.'))
 
 # Get version number from qpimage._version file
+import mock
 import os.path as op
 import sys
-qpimage_root = op.abspath(op.join(op.abspath("."), ".."))
-sys.path.insert(0, qpimage_root)
-#sys.path.insert(0, op.join(qpimage_root, "qpimage"))
-#from _version import version as qpimage_version
-qpimage_version = "0.1.0"
+sys.path.insert(0, op.dirname(op.dirname(op.abspath(__file__))))
+
+from qpimage import __version__ as qpimage_version
+
+# Mock all dependencies of ODTbrain
+install_requires = ["h5py", "lmfit", "numpy", "scipy", "skimage",
+                    "skimage.restoration"]
+for mod_name in install_requires:
+    sys.modules[mod_name] = mock.Mock()
+
 
 # -- General configuration ------------------------------------------------
 
