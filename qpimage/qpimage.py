@@ -5,6 +5,7 @@ from skimage.restoration import unwrap_phase
 from .image_data import Amplitude, Phase
 from .meta import MetaDict
 
+
 class QPImage(object):
     """Quantitative phase image management
 
@@ -24,6 +25,7 @@ class QPImage(object):
         Valid meta data keyword arguments,
         see :py:class:`qpimage.VALID_META_KEYS`
     """
+
     def __init__(self, data=None, bg_data=None, data_type="phase",
                  hdf5_file=None, hdf5_mode="a", **meta_kwargs
                  ):
