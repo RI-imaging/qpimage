@@ -27,14 +27,13 @@ import os.path as op
 import sys
 sys.path.insert(0, op.dirname(op.dirname(op.abspath(__file__))))
 
-from qpimage import __version__ as qpimage_version
-
 # Mock all dependencies of ODTbrain
 install_requires = ["h5py", "lmfit", "numpy", "scipy", "skimage",
                     "skimage.restoration"]
 for mod_name in install_requires:
     sys.modules[mod_name] = mock.Mock()
 
+from qpimage import __version__ as qpimage_version
 
 # -- General configuration ------------------------------------------------
 
