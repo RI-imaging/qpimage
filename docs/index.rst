@@ -8,10 +8,10 @@ qpimage documentation
 
 Qpimage is a Python3 library that provides a convenient interface
 to many common functionalities that are used in quantitative
-phase imaging.  
+phase imaging. This is the documentaion of qpimage version |release|.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: Contents:
 
    sec_introduction

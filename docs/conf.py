@@ -25,13 +25,20 @@
 import mock
 import os.path as op
 import sys
-sys.path.insert(0, op.dirname(op.dirname(op.abspath(__file__))))
+# include parent directory
+pdir = op.dirname(op.dirname(op.abspath(__file__)))
+sys.path.insert(0, pdir)
+# include examples
+sys.path.insert(0, op.join(pdir, "examples"))
 
-# Mock all dependencies of ODTbrain
+# include extenstions
+sys.path.append(op.abspath('extensions'))
+
+# Mock all dependencies of qpimage
 install_requires = ["h5py", "lmfit", "numpy", "scipy", "skimage",
-                    "skimage.restoration"]
-for mod_name in install_requires:
-    sys.modules[mod_name] = mock.Mock()
+                    "matplotlib"]
+autodoc_mock_imports = install_requires
+
 
 from qpimage import __version__ as qpimage_version
 
@@ -49,7 +56,9 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.intersphinx',
               'sphinx.ext.mathjax',
               'sphinx.ext.viewcode',
-              'sphinx.ext.napoleon',]
+              'sphinx.ext.napoleon',
+              'include_doc_code_img'
+              ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -174,13 +183,13 @@ texinfo_documents = [
 
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None,
-                       'http://docs.scipy.org/doc/numpy': None,
-                       'https://docs.scipy.org/doc/scipy/reference/': None,
-                       'http://scikit-image.org/docs/stable/': None,
-                       'http://docs.h5py.org/en/stable/': None,
-                       'http://lmfit.github.io/lmfit-py/': None,
-                       'http://nrefocus.readthedocs.io/en/stable': None,
+intersphinx_mapping = {"python": ('https://docs.python.org/', None),
+                       "numpy": ('http://docs.scipy.org/doc/numpy', None),
+                       "scipy": ('https://docs.scipy.org/doc/scipy/reference/', None),
+                       "skimage": ('http://scikit-image.org/docs/stable/', None),
+                       "h5py": ('http://docs.h5py.org/en/stable/', None),
+                       "lmfit": ('http://lmfit.github.io/lmfit-py/', None),
+                       "nrefocus": ('http://nrefocus.readthedocs.io/en/stable', None),
                        }
 
 # http://www.sphinx-doc.org/en/stable/ext/autodoc.html#confval-autodoc_member_order

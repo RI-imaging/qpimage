@@ -23,5 +23,6 @@ script:
        codecov;
   else
        flake8 qpimage;
+       flake8 examples;
        flake8 tests --ignore E402;
   fi;

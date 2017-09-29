@@ -41,10 +41,7 @@ class ImageData(object):
     @property
     def bg(self):
         """The combined background image data"""
-        bg = self._bg_combine(self.h5["bg_data"].values())
-        if bg is None:
-            bg = self._bg_correct(1, 1)
-        return bg
+        return self._bg_combine(self.h5["bg_data"].values())
 
     @property
     def image(self):
@@ -88,10 +85,11 @@ class ImageData(object):
 class Amplitude(ImageData):
     def _bg_combine(self, bgs):
         """Combine several background amplitude images"""
-        out = np.zeros(self.h5["raw"].shape, dtype=float)
+        out = np.ones(self.h5["raw"].shape, dtype=float)
         # Use indexing ([:]), because bg is an h5py.DataSet
         for bg in bgs:
             out *= bg.value
+        return out
 
     def _bg_correct(self, raw, bg):
         """Remove background from raw amplitude image"""
@@ -105,6 +103,7 @@ class Phase(ImageData):
         for bg in bgs:
             # Use .value attribute, because bg is an h5py.DataSet
             out += bg.value
+        return out
 
     def _bg_correct(self, raw, bg):
         """Remove background from raw phase image"""

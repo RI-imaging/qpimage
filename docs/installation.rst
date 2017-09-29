@@ -1,19 +1,23 @@
 Installing qpimage
 ==================
 
-Qpimage is written in pure Python and only supports Python version 3.5
+Qpimage is written in pure Python and supports Python version 3.5
 and higher. Qpimage depends on several other scientific Python packages,
 including:
 
- - :py:mod:`numpy`,
- - :py:mod:`scipy`,
- - :py:class:`h5py.File` (caching),
- - :py:mod:`lmfit` (background estimation),
- - :mod:`nrefocus` (numerical focusing), and
- - :py:func:`scikit-image.restoration.unwrap_phase` (phase unwrapping).
+ - `numpy <https://docs.scipy.org/doc/numpy/>`_,
+ - `scipy <https://docs.scipy.org/doc/scipy/reference/>`_,
+ - `h5py <https://docs.h5py.org/en/stable>`_ (caching),
+ - `lmfit <https://lmfit.github.io/lmfit-py/>`_ (background estimation),
+ - `nrefocus <https://nrefocus.readthedocs.io/>`_ (numerical focusing), and
+ - `scikit-image <http://scikit-image.org/>`_ (phase unwrapping using :py:func:`skimage.restoration.unwrap_phase`).
     
 
-To install imageio, use one of the following methods:
+To install imageio, use one of the following methods
+(package dependencies will be installed automatically):
     
-* from PyPI: ``pip install qpimage``
-* from sources ``pip install .`` or ``python setup.py install``
+* from `PyPI <https://pypi.python.org/pypi/qpimage>`_:
+    ``pip install qpimage``
+* from `sources <https://github.com/RI-imaging/qpimage>`_:
+    ``pip install .`` or 
+    ``python setup.py install``
