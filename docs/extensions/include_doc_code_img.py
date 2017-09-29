@@ -51,7 +51,7 @@ class IncludeDirective(Directive):
         doc = source[1].split("\n")
         doc.insert(1, "~"*len(doc[0])) # make title heading
         
-        code = source[2].strip()
+        code = source[2].split("\n")
         
         # documentation
         rst = ViewList()
@@ -66,21 +66,23 @@ class IncludeDirective(Directive):
         else:
             image_path = ""
         if image_path:
-            rst.append(".. figure:: {}".format(image_path), "fakefile.rst", ii+1)
-            #rst.append("   :height: 30%", "fakefile.rst", ii+2)
+            rst.append(".. figure:: {}".format(image_path), "fakefile.rst", 1)
+        
+        # code
+        rst.append("", "fakefile.rst", ii+2)
+        rst.append(".. code-block:: python", "fakefile.rst", ii+3)
+        rst.append("   :linenos:", "fakefile.rst", ii+4)
+        rst.append("", "fakefile.rst", ii+5)
+        nn = ii+6
+        for jj, line in enumerate(code):
+            rst.append("   {}".format(line), "fakefile.rst", jj+nn)
         
         # Create a node.
         node = nodes.section()
         node.document = self.state.document
         # Parse the rst.
         nested_parse_with_titles(self.state, rst, node)
-        #self.add_name(node)
-
-        lcode = nodes.literal_block(code, code)
-        lcode['linenos'] = True
-        self.add_name(lcode)
-
-        return node.children + [lcode]
+        return node.children
 
 def setup(app):
     app.add_config_value('include_doc_code_img_path', "../examples", 'html')

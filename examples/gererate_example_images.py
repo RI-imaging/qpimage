@@ -7,13 +7,13 @@ import matplotlib.pylab as plt
 thisdir = op.dirname(op.abspath(__file__))
 sys.path.insert(0, op.dirname(thisdir))
 
-DPI = 120
+DPI = 80
 
 
 def savefig(path):
     fname = path[:-3] + ".jpg"
     if not op.exists(fname):
-        plt.savefig(fname, dpi=120)
+        plt.savefig(fname, dpi=DPI)
         print("Image created: '{}'".format(fname))
     else:
         print("Image skipped (already exists): '{}'".format(fname))
