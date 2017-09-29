@@ -34,4 +34,5 @@ plt.subplot(133, title="corrected phase")
 plt.imshow(qpi.pha, **plot_kw)
 
 plt.tight_layout()
+
 plt.show()
