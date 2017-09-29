@@ -5,6 +5,7 @@ This example illustrates the simple usage of the
 quantitative phase data. The attribute ``QPImage.pha`` yields
 the background-corrected phase data and the attribute 
 ``QPImage.bg_pha`` yields the background phase image. 
+
 """
 import matplotlib.pylab as plt
 import numpy as np
