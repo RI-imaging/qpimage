@@ -10,16 +10,6 @@ sys.path.insert(0, op.dirname(thisdir))
 DPI = 80
 
 
-def savefig(path):
-    fname = path[:-3] + ".jpg"
-    if not op.exists(fname):
-        plt.savefig(fname, dpi=DPI)
-        print("Image created: '{}'".format(fname))
-    else:
-        print("Image skipped (already exists): '{}'".format(fname))
-    plt.close()
-
-
 if __name__ == "__main__":
     # Do not display example plots
     plt.show = lambda: None
@@ -29,6 +19,11 @@ if __name__ == "__main__":
     files = [op.join(thisdir, f) for f in files]
 
     for f in files:
-        exec(open(f).read())
-        savefig(f)
+        fname = f[:-3] + ".jpg"
+        if not op.exists(fname):
+            exec(open(f).read())
+            plt.savefig(fname, dpi=DPI)
+            print("Image created: '{}'".format(fname))
+        else:
+            print("Image skipped (already exists): '{}'".format(fname))
         plt.close()
