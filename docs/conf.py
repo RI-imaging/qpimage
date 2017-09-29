@@ -58,8 +58,8 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.mathjax',
               'sphinx.ext.viewcode',
               'sphinx.ext.napoleon',
-              'include_doc_code_img',
               'sphinxcontrib.bibtex',
+              'include_doc_code_img',
               ]
 
 # Add any paths that contain templates here, relative to this directory.
