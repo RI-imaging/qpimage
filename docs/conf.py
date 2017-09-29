@@ -34,7 +34,6 @@ sys.path.append(op.abspath('extensions'))
 # Mock all dependencies of qpimage
 install_requires = ["h5py", "lmfit", "numpy", "scipy", "skimage",
                     "matplotlib"]
-autodoc_mock_imports = install_requires
 
 
 from qpimage._version import version as qpimage_version
@@ -192,3 +191,4 @@ intersphinx_mapping = {"python": ('https://docs.python.org/', None),
 # http://www.sphinx-doc.org/en/stable/ext/autodoc.html#confval-autodoc_member_order
 # Order class attributes and functions in separate blocks
 autodoc_member_order = 'bysource'
+autodoc_mock_imports = install_requires

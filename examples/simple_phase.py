@@ -1,6 +1,6 @@
 """Simple phase
 
-This example illustrates 
+This example illustrates
 
 
 """
