@@ -28,9 +28,6 @@ import sys
 # include parent directory
 pdir = op.dirname(op.dirname(op.abspath(__file__)))
 sys.path.insert(0, pdir)
-# include examples
-sys.path.insert(0, op.join(pdir, "examples"))
-
 # include extenstions
 sys.path.append(op.abspath('extensions'))
 
@@ -40,7 +37,7 @@ install_requires = ["h5py", "lmfit", "numpy", "scipy", "skimage",
 autodoc_mock_imports = install_requires
 
 
-from qpimage import __version__ as qpimage_version
+from qpimage._version import version as qpimage_version
 
 # -- General configuration ------------------------------------------------
 
