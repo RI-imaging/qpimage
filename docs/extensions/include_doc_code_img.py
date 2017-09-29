@@ -54,9 +54,9 @@ class IncludeDirective(Directive):
         code = source[2].split("\n")
         
         # documentation
-        rst = ViewList()
+        rst = []
         for line in doc:
-            rst.append(line, "fakefile.rst")
+            rst.append(line)
         
         # image
         for ext in [".png", ".jpg"]:
@@ -66,25 +66,27 @@ class IncludeDirective(Directive):
         else:
             image_path = ""
         if image_path:
-            rst.append(".. figure:: {}".format(image_path), "fakefile.rst", 1)
+            rst.append(".. figure:: {}".format(image_path))
         
         # code
-        rst.append("", "fakefile.rst")
-        rst.append(".. code-block:: python", "fakefile.rst")
-        rst.append("   :linenos:", "fakefile.rst")
-        rst.append("", "fakefile.rst")
+        rst.append("")
+        rst.append(".. code-block:: python")
+        rst.append("   :linenos:")
+        rst.append("")
         for line in code:
-            rst.append("   {}".format(line), "fakefile.rst")
-        rst.append("", "fakefile.rst")
+            rst.append("   {}".format(line))
+        rst.append("")
 
         # download file
-        rst.append(":download:`Download {} <{}>`".format(op.basename(full_path), full_path), "fakefile.rst")
+        rst.append(":download:`Download {} <{}>`".format(op.basename(full_path), full_path))
         
+        
+        vl = ViewList(rst, "fakefile.rst")
         # Create a node.
         node = nodes.section()
         node.document = self.state.document
         # Parse the rst.
-        nested_parse_with_titles(self.state, rst, node)
+        nested_parse_with_titles(self.state, vl, node)
         return node.children
 
 def setup(app):
