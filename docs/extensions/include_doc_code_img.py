@@ -75,6 +75,10 @@ class IncludeDirective(Directive):
         rst.append("", "fakefile.rst")
         for line in code:
             rst.append("   {}".format(line), "fakefile.rst")
+        rst.append("", "fakefile.rst")
+
+        # download file
+        rst.append(":download:`Download {} <{}>`".format(op.basename(full_path), full_path), "fakefile.rst")
         
         # Create a node.
         node = nodes.section()

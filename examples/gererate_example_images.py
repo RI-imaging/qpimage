@@ -3,9 +3,6 @@ import os.path as op
 import sys
 
 import matplotlib.pylab as plt
-from matplotlib import rcParams
-
-rcParams["savefig.facecolor"] = "none"
 
 thisdir = op.dirname(op.abspath(__file__))
 sys.path.insert(0, op.dirname(thisdir))
