@@ -55,8 +55,8 @@ class IncludeDirective(Directive):
         
         # documentation
         rst = ViewList()
-        for ii, line in enumerate(doc):
-            rst.append(line, "fakefile.rst", ii)
+        for line in doc:
+            rst.append(line, "fakefile.rst")
         
         # image
         for ext in [".png", ".jpg"]:
@@ -69,13 +69,12 @@ class IncludeDirective(Directive):
             rst.append(".. figure:: {}".format(image_path), "fakefile.rst", 1)
         
         # code
-        rst.append("", "fakefile.rst", ii+2)
-        rst.append(".. code-block:: python", "fakefile.rst", ii+3)
-        rst.append("   :linenos:", "fakefile.rst", ii+4)
-        rst.append("", "fakefile.rst", ii+5)
-        nn = ii+6
-        for jj, line in enumerate(code):
-            rst.append("   {}".format(line), "fakefile.rst", jj+nn)
+        rst.append("", "fakefile.rst")
+        rst.append(".. code-block:: python", "fakefile.rst")
+        rst.append("   :linenos:", "fakefile.rst")
+        rst.append("", "fakefile.rst")
+        for line in code:
+            rst.append("   {}".format(line), "fakefile.rst")
         
         # Create a node.
         node = nodes.section()
