@@ -6,4 +6,4 @@ Examples
   :maxdepth: 2
 
 
-.. include_doc_code_img:: simple_phase.py
+.. fancy_include:: simple_phase.py

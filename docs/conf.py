@@ -43,6 +43,11 @@ for mod_name in install_requires:
 autodoc_member_order = 'bysource'
 autodoc_mock_imports = install_requires
 
+# Display link to GitHub repo instead of doc on rtfd
+rst_prolog = """
+:github_url: https://github.com/RI-imaging/qpimage
+"""
+
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -59,7 +64,7 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.viewcode',
               'sphinx.ext.napoleon',
               'sphinxcontrib.bibtex',
-              'include_doc_code_img',
+              'fancy_include',
               ]
 
 # Add any paths that contain templates here, relative to this directory.
