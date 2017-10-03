@@ -7,8 +7,8 @@ import sys
 
 author = u"Paul Müller"
 authors = [author]
-name = 'qpimage'
 description = 'Python3 library for handling quantitative phase imaging data'
+name = 'qpimage'
 year = "2017"
 
 sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
