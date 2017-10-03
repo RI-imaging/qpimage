@@ -6,12 +6,8 @@ Introduction
   :maxdepth: 2
 
 
-Quantitativ phase imaging (QPI)
-===============================
-
-
-Background image correction
-===========================
+The background problem
+======================
 
 
 Why qpimage?

@@ -1,6 +1,6 @@
-------------------
-Qpimage's user API
-------------------
+========
+User API
+========
 
 .. autoclass:: qpimage.QPImage
     :members:

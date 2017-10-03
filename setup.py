@@ -7,7 +7,7 @@ import sys
 
 author = u"Paul Müller"
 authors = [author]
-description = 'Python3 library for handling quantitative phase imaging data'
+description = 'python3 library for manipulating quantitative phase images'
 name = 'qpimage'
 year = "2017"
 

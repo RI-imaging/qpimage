@@ -13,7 +13,7 @@ including:
  - `scikit-image <http://scikit-image.org/>`_ (phase unwrapping using :py:func:`skimage.restoration.unwrap_phase`).
     
 
-To install imageio, use one of the following methods
+To install qpimage, use one of the following methods
 (package dependencies will be installed automatically):
     
 * from `PyPI <https://pypi.python.org/pypi/qpimage>`_:
