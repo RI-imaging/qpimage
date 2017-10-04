@@ -7,28 +7,45 @@ from .meta import MetaDict
 
 
 class QPImage(object):
-    """Quantitative phase image management
-
-    Parameters
-    ----------
-    data: 2d ndarray (float or complex) or list
-        The experimental data (see `which_data`)
-    bg_data: 2d ndarray (float or complex), list, or `None`
-        The background data (must be same type as `data`)
-    which_data: str
-        String or comma-separated list of strings indicating
-        the order and type of input data. Valid values are
-        "field", "phase", "phase,amplitude", or "phase,intensity",
-        where the latter two require an indexable object with
-        the phase data as first element.
-    **meta_kwargs:
-        Valid meta data keyword arguments,
-        see :py:class:`qpimage.VALID_META_KEYS`
-    """
-
     def __init__(self, data=None, bg_data=None, which_data="phase",
-                 hdf5_file=None, hdf5_mode="a", **meta_kwargs
+                 meta_data={}, hdf5_file=None, hdf5_mode="a"
                  ):
+        """Quantitative phase image manipulation
+
+        This class implements various tasks for quantitative phase
+        imaging, including phase unwrapping, background correction,
+        numerical focusing, and data export.
+
+        Parameters
+        ----------
+        data: 2d ndarray (float or complex) or list
+            The experimental data (see `which_data`)
+        bg_data: 2d ndarray (float or complex), list, or `None`
+            The background data (must be same type as `data`)
+        which_data: str
+            String or comma-separated list of strings indicating
+            the order and type of input data. Valid values are
+            "field", "phase", "phase,amplitude", or "phase,intensity",
+            where the latter two require an indexable object with
+            the phase data as first element.
+        meta_data: dict
+            Meta data associated with the input data.
+            see :py:class:`qpimage.VALID_META_KEYS`
+        hdf5_file: str or None
+            A path to an hdf5 data file where all data is cached. If
+            set to `None` (default), all data will be handled in
+            memory using the "core" driver of the :mod:`h5py`'s
+            :class:`h5py:File` class. If the file does not exist,
+            it is created. If the file already exists, it is opened
+            with the file mode defined by `hdf5_mode`.
+        hdf5_mode: str
+            Valid file modes are:
+              - "r": Readonly, file must exist
+              - "r+": Read/write, file must exist
+              - "w": Create file, truncate if exists
+              - "w-" or "x": Create file, fail if exists
+              - "a": Read/write if exists, create otherwise (default)
+        """
         if hdf5_file is None:
             h5kwargs = {"name": "none.h5",
                         "driver": "core",
@@ -57,7 +74,7 @@ class QPImage(object):
             self.set_bg_data(bg_data=bg_data,
                              which_data=which_data)
         # set meta data
-        meta = MetaDict(**meta_kwargs)
+        meta = MetaDict(meta_data)
         for key in meta:
             if meta[key]:
                 self.h5.attrs[key] = meta[key]
@@ -147,42 +164,87 @@ class QPImage(object):
         """background-corrected phase image"""
         return self._pha.image
 
-    def clear_bg(self, data_names=["amplitude", "phase"], keys=["ramp"]):
+    def clear_bg(self, which_data=["amplitude", "phase"], keys="fit"):
         """Clear background correction
 
         Parameters
         ----------
-        names: list of str
+        which_data: str or list of str
             From which type of data to remove the background
             information. The list contains either "amplitude",
             "phase", or both.
-        keys: list of str
-            Which type of background data to remove. One of
-            ["ramp", data"].
+        keys: str or list of str
+            Which type of background data to remove. One of:
+              - "fit": the background data computed with
+                :py:func:`qpimage.QPImage.compute_bg`
+              - "data": the experimentally obtained background image
+
         """
-        for dn in data_names:
-            assert dn in ["amplitude", "phase"]
-        for kk in keys:
-            assert kk in ["ramp", "data"]
+        # convert to list
+        if isinstance(which_data, str):
+            which_data = [which_data]
+        if isinstance(keys, str):
+            keys = [keys]
         # Get image data for clearing
         imdats = []
-        if "amplitude" in data_names:
+        if "amplitude" in which_data:
             imdats.append(self._amp)
-        if "phase" in data_names:
+        if "phase" in which_data:
             imdats.append(self._pha)
-        assert imdats, "`data_names` must contain 'phase' or 'amplitude'!"
+        if not imdats:
+            msg = "`which_data` must contain 'phase' or 'amplitude'!"
+            raise ValueError(msg)
         # Perform clearing of backgrounds
         for imdat in imdats:
             for key in keys:
                 imdat.set_bg(None, key)
 
-    def correct_amp(self, method="border"):
-        """Compute amplitude background correction
-        """
+    def compute_bg(self, which_data=["amplitude", "phase"], fit_profile="ramp",
+                   fit_offset="average", from_border=0, border_unit="px",
+                   from_binary=None):
+        """Clear background correction
 
-    def correct_pha(self, method="border,sphere-edge"):
-        """Compute phase background correction
+        Parameters
+        ----------
+        which_data: str or list of str
+            From which type of data to remove the background
+            information. The list contains either "amplitude",
+            "phase", or both.
+        fit_profile: str
+            The type of background profile to fit:
+              - "ramp": 2D linear ramp with offset (default)
+              - "offset": offset only
+        fit_offset: str
+            The method for computing the profile offset
+              - "fit": offset as fitting parameter
+              - "mean": simple average
+              - "mode": mode (see `qpimage.bg_estimate.mode`)
+        from_border: int or float
+            Declare a frame of width `from_border` as the background
+            area from which to compute the background. The unit is
+            defined by `border_unit`. Set to zero to disable (default).
+        border_unit: str
+            The unit of `from_border`:
+              - "nm", "µm", "m": nano-, micro-, meters
+              - "px": pixel size
+              - "%": percent of image size (rounded)
+        from_binary: boolean np.ndarray or None
+            Use a boolean array to define the background area.
+            The binary image must have the same shape as the
+            input data.
         """
+        # convert to list
+        if isinstance(which_data, str):
+            which_data = [which_data]
+        # Get image data for background computation
+        imdats = []
+        if "amplitude" in which_data:
+            imdats.append(self._amp)
+        if "phase" in which_data:
+            imdats.append(self._pha)
+        if not imdats:
+            msg = "`which_data` must contain 'phase' or 'amplitude'!"
+            raise ValueError(msg)
 
     def refocus(self, distance, method="helmholtz"):
         """Numerically refocus the current field

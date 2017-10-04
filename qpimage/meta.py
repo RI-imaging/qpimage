@@ -1,5 +1,5 @@
-VALID_META_KEYS = ["pixel_size",
-                   "ri_medium",
+VALID_META_KEYS = ["pixel size",
+                   "medium index",
                    "time",
                    "wavelength",
                    ]
