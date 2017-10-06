@@ -295,8 +295,14 @@ class QPImage(object):
                                                    border_px=border_px,
                                                    from_binary=from_binary,
                                                    ret_binary=True)
-            imdat.set_bg(bg=bgimage, key="fit")
             # set meta data attributes
+            attrs = {"fit_offset": fit_offset,
+                     "fit_profile": fit_profile,
+                     "border_px": border_px}
+            imdat.set_bg(bg=bgimage, key="fit", attrs=attrs)
+            # save `from_binary` separately (arrays vs. h5 attributes)
+            imdat.set_bg(bg=from_binary, key="fit_from_binary")
+        # return binary image if requested
         if ret_binary:
             return binary
 

@@ -52,7 +52,7 @@ class ImageData(object):
     def raw(self):
         return self.h5["raw"].value
 
-    def set_bg(self, bg, key="data"):
+    def set_bg(self, bg, key="data", attrs={}):
         """Set the background data
 
         Parameters
@@ -76,10 +76,13 @@ class ImageData(object):
             msg = "`bg` must be scalar or ndarray"
             assert isinstance(bg, (float, int, np.ndarray)), msg
             self.h5["bg_data"][key] = bg
+            for kw in attrs:
+                self.h5["bg_data"][key].attrs[kw] = attrs[kw]
             reset = True
         # reset computed data
         if reset:
             self._reset_bg()
+        # return the background object
 
 
 class Amplitude(ImageData):
