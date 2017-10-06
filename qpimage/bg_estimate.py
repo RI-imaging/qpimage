@@ -73,7 +73,7 @@ def estimate(data, fit_offset="average", fit_profile="ramp",
     elif fit_offset == "gauss":
         bgimg += offset_gaussian((data - bgimg)[binary])
     elif fit_offset == "mean":
-        bgimg += np.average((data - bgimg)[binary])
+        bgimg += np.mean((data - bgimg)[binary])
     elif fit_offset == "mode":
         bgimg += offset_mode((data - bgimg)[binary])
 
@@ -85,13 +85,31 @@ def estimate(data, fit_offset="average", fit_profile="ramp",
 
 
 def offset_gaussian(data):
-    pass
+    nbins = 2 * int(np.ceil(np.sqrt(data.size)))
+    mind, maxd = data.min(), data.max()
+    drange = (mind - (maxd - mind) / 2, maxd + (maxd - mind) / 2)
+    histo = np.histogram(data, nbins, density=True, range=drange)
+    dx = abs(histo[1][1] - histo[1][2]) / 2
+    hx = histo[1][1:] - dx
+    hy = histo[0]
+    # fit gaussian
+    gauss = lmfit.models.GaussianModel()
+    pars = gauss.guess(hy, x=hx)
+    out = gauss.fit(hy, pars, x=hx)
+    return out.params["center"]
 
 
 def offset_mode(data):
     """Compute mode of data using small number of bins
     """
-    pass
+    nbins = int(np.ceil(np.sqrt(data.size)))
+    mind, maxd = data.min(), data.max()
+    histo = np.histogram(data, nbins, density=True, range=(mind, maxd))
+    dx = abs(histo[1][1] - histo[1][2]) / 2
+    hx = histo[1][1:] - dx
+    hy = histo[0]
+    idmax = np.argmax(hy)
+    return hx[idmax]
 
 
 def profile_ramp(data, binary):
