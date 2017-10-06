@@ -2,8 +2,10 @@ import h5py
 import numpy as np
 from skimage.restoration import unwrap_phase
 
+from . import bg_estimate
 from .image_data import Amplitude, Phase
 from .meta import MetaDict
+from ._version import version as __version__
 
 
 class QPImage(object):
@@ -78,6 +80,8 @@ class QPImage(object):
         for key in meta:
             if meta[key]:
                 self.h5.attrs[key] = meta[key]
+        if "qpimage version" not in self.h5.attrs:
+            self.h5.attrs["qpimage version"] = __version__
 
     def __enter__(self):
         return self
@@ -164,6 +168,11 @@ class QPImage(object):
         """background-corrected phase image"""
         return self._pha.image
 
+    @property
+    def shape(self):
+        """the shape of the image"""
+        return self._pha.h5["raw"].shape
+
     def clear_bg(self, which_data=["amplitude", "phase"], keys="fit"):
         """Clear background correction
 
@@ -199,10 +208,11 @@ class QPImage(object):
             for key in keys:
                 imdat.set_bg(None, key)
 
-    def compute_bg(self, which_data=["amplitude", "phase"], fit_profile="ramp",
-                   fit_offset="average", from_border=0, border_unit="px",
-                   from_binary=None):
-        """Clear background correction
+    def compute_bg(self, which_data="phase",
+                   fit_offset="average", fit_profile="ramp",
+                   border_m=0, border_perc=0, border_px=0,
+                   from_binary=None, ret_binary=False):
+        """Compute background correction
 
         Parameters
         ----------
@@ -217,34 +227,78 @@ class QPImage(object):
         fit_offset: str
             The method for computing the profile offset
               - "fit": offset as fitting parameter
+              - "gauss": center of a gaussian fit
               - "mean": simple average
               - "mode": mode (see `qpimage.bg_estimate.mode`)
-        from_border: int or float
-            Declare a frame of width `from_border` as the background
-            area from which to compute the background. The unit is
-            defined by `border_unit`. Set to zero to disable (default).
-        border_unit: str
-            The unit of `from_border`:
-              - "nm", "µm", "m": nano-, micro-, meters
-              - "px": pixel size
-              - "%": percent of image size (rounded)
+        border_m: float
+            Assume that a frame of `border_m` meters around the
+            image is background. The value is converted to
+            pixels and rounded.
+        border_perc: float
+            Assume that a frame of `border_perc` percent around
+            the image is background. The value is converted to
+            pixels and rounded. If the aspect ratio of the image
+            is not one, then the average of the data's shape is
+            used to compute the percentage in pixels.
+        border_px: float
+            Assume that a frame of `border_px` pixels around
+            the image is background.
         from_binary: boolean np.ndarray or None
             Use a boolean array to define the background area.
             The binary image must have the same shape as the
             input data.
+        ret_binary: bool
+            Return the binary image used to compute the background.
+
+        Notes
+        -----
+        The `border_*` values are translated to pixel values and
+        the largest pixel border is used to generate a binary
+        image for background computation.
+
+        If any of the `border_*` arguments are non-zero and
+        `from_binary` is given, the intersection of the two
+        resulting binary images is used.
         """
         # convert to list
         if isinstance(which_data, str):
             which_data = [which_data]
-        # Get image data for background computation
-        imdats = []
-        if "amplitude" in which_data:
-            imdats.append(self._amp)
-        if "phase" in which_data:
-            imdats.append(self._pha)
-        if not imdats:
+        # check validity
+        if not ("amplitude" in which_data or
+                "phase" in which_data):
             msg = "`which_data` must contain 'phase' or 'amplitude'!"
             raise ValueError(msg)
+        # get border in px
+        border_list = []
+        if border_m > 0:
+            border_list.append(border_m / self.meta["pixel size"])
+        if border_perc > 0:
+            size = np.average(self.shape)
+            border_list.append(size * border_perc / 100)
+        if border_px:
+            border_list.append(border_px)
+        border_px = np.int(np.round(np.max(border_list)))
+        # Get affected image data
+        imdat_list = []
+        if "amplitude" in which_data:
+            imdat_list.append(self._amp)
+        if "phase" in which_data:
+            imdat_list.append(self._pha)
+        # Perform correction
+        for imdat in imdat_list:
+            # remove existing bg
+            imdat.set_bg(bg=None, key="fit")
+            # compute bg
+            bgimage, binary = bg_estimate.estimate(data=imdat.image,
+                                                   fit_offset=fit_offset,
+                                                   fit_profile=fit_profile,
+                                                   border_px=border_px,
+                                                   from_binary=from_binary,
+                                                   ret_binary=True)
+            imdat.set_bg(bg=bgimage, key="fit")
+            # set meta data attributes
+        if ret_binary:
+            return binary
 
     def refocus(self, distance, method="helmholtz"):
         """Numerically refocus the current field
@@ -267,7 +321,7 @@ class QPImage(object):
         # - Allow autofocusing?
 
     def set_bg_data(self, bg_data, which_data):
-        """Set background amplitude and phase
+        """Set background amplitude and phase data
 
         Parameters
         ----------

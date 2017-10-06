@@ -14,7 +14,7 @@ def test_phase_array():
     size = 200
     phase = np.repeat(np.linspace(0, np.pi, size), size)
     phase = phase.reshape(size, size)
-    with qpimage.QPImage(phase, data_type="phase", wavelength=600e-9) as qpi:
+    with qpimage.QPImage(phase, which_data="phase") as qpi:
         assert np.all(qpi.pha == phase)
 
 
@@ -25,7 +25,7 @@ def test_file():
     phase = phase.reshape(size, size)
     # Write data to disk
     with qpimage.QPImage(phase,
-                         data_type="phase",
+                         which_data="phase",
                          hdf5_file=h5file,
                          hdf5_mode="a",
                          ) as qpi:

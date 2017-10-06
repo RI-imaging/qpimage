@@ -1,5 +1,6 @@
-VALID_META_KEYS = ["pixel size",
-                   "medium index",
+VALID_META_KEYS = ["medium index",
+                   "pixel size",
+                   "qpimage version",
                    "time",
                    "wavelength",
                    ]
