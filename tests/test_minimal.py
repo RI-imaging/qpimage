@@ -26,13 +26,13 @@ def test_file():
     # Write data to disk
     with qpimage.QPImage(phase,
                          which_data="phase",
-                         hdf5_file=h5file,
-                         hdf5_mode="a",
+                         h5file=h5file,
+                         h5mode="a",
                          ) as qpi:
         p1 = qpi.pha
         a1 = qpi.amp
     # Open data read-only
-    qpi2 = qpimage.QPImage(hdf5_file=h5file, hdf5_mode="r")
+    qpi2 = qpimage.QPImage(h5file=h5file, h5mode="r")
     assert np.all(p1 == qpi2.pha)
     assert np.all(a1 == qpi2.amp)
     # cleanup

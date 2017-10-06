@@ -2,7 +2,6 @@ import h5py
 import numpy as np
 from skimage.restoration import unwrap_phase
 
-from . import bg_estimate
 from .image_data import Amplitude, Phase
 from .meta import MetaDict
 from ._version import version as __version__
@@ -10,7 +9,7 @@ from ._version import version as __version__
 
 class QPImage(object):
     def __init__(self, data=None, bg_data=None, which_data="phase",
-                 meta_data={}, hdf5_file=None, hdf5_mode="a"
+                 meta_data={}, h5file=None, h5mode="a"
                  ):
         """Quantitative phase image manipulation
 
@@ -33,14 +32,14 @@ class QPImage(object):
         meta_data: dict
             Meta data associated with the input data.
             see :py:class:`qpimage.VALID_META_KEYS`
-        hdf5_file: str or None
+        h5file: str or None
             A path to an hdf5 data file where all data is cached. If
             set to `None` (default), all data will be handled in
             memory using the "core" driver of the :mod:`h5py`'s
             :class:`h5py:File` class. If the file does not exist,
             it is created. If the file already exists, it is opened
             with the file mode defined by `hdf5_mode`.
-        hdf5_mode: str
+        h5mode: str
             Valid file modes are:
               - "r": Readonly, file must exist
               - "r+": Read/write, file must exist
@@ -48,14 +47,14 @@ class QPImage(object):
               - "w-" or "x": Create file, fail if exists
               - "a": Read/write if exists, create otherwise (default)
         """
-        if hdf5_file is None:
+        if h5file is None:
             h5kwargs = {"name": "none.h5",
                         "driver": "core",
                         "backing_store": False,
                         "mode": "a"}
         else:
-            h5kwargs = {"name": hdf5_file,
-                        "mode": hdf5_mode}
+            h5kwargs = {"name": h5file,
+                        "mode": h5mode}
         self.h5 = h5py.File(**h5kwargs)
 
         for group in ["amplitude", "phase"]:
@@ -259,6 +258,10 @@ class QPImage(object):
         If any of the `border_*` arguments are non-zero and
         `from_binary` is given, the intersection of the two
         resulting binary images is used.
+
+        See Also
+        --------
+        qpimage.bg_estimate.estimate
         """
         # convert to list
         if isinstance(which_data, str):
@@ -286,25 +289,12 @@ class QPImage(object):
             imdat_list.append(self._pha)
         # Perform correction
         for imdat in imdat_list:
-            # remove existing bg
-            imdat.set_bg(bg=None, key="fit")
-            # compute bg
-            bgimage, binary = bg_estimate.estimate(data=imdat.image,
-                                                   fit_offset=fit_offset,
-                                                   fit_profile=fit_profile,
-                                                   border_px=border_px,
-                                                   from_binary=from_binary,
-                                                   ret_binary=True)
-            # set meta data attributes
-            attrs = {"fit_offset": fit_offset,
-                     "fit_profile": fit_profile,
-                     "border_px": border_px}
-            imdat.set_bg(bg=bgimage, key="fit", attrs=attrs)
-            # save `from_binary` separately (arrays vs. h5 attributes)
-            imdat.set_bg(bg=from_binary, key="fit_from_binary")
-        # return binary image if requested
-        if ret_binary:
-            return binary
+            binary = imdat.estimate_bg(fit_offset=fit_offset,
+                                       fit_profile=fit_profile,
+                                       border_px=border_px,
+                                       from_binary=from_binary,
+                                       ret_binary=ret_binary)
+        return binary
 
     def refocus(self, distance, method="helmholtz"):
         """Numerically refocus the current field
