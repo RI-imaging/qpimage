@@ -189,15 +189,13 @@ texinfo_documents = [
      'Miscellaneous'),
 ]
 
-
-
-
-# Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {"python": ('https://docs.python.org/', None),
-                       "numpy": ('http://docs.scipy.org/doc/numpy', None),
-                       "scipy": ('https://docs.scipy.org/doc/scipy/reference/', None),
-                       "skimage": ('http://scikit-image.org/docs/stable/', None),
-                       "h5py": ('http://docs.h5py.org/en/stable/', None),
-                       "lmfit": ('http://lmfit.github.io/lmfit-py/', None),
-                       "nrefocus": ('http://nrefocus.readthedocs.io/en/stable', None),
-                       }
+if False:
+    # Example configuration for intersphinx: refer to the Python standard library.
+    intersphinx_mapping = {"python": ('https://docs.python.org/', None),
+                           "numpy": ('http://docs.scipy.org/doc/numpy', None),
+                           "scipy": ('https://docs.scipy.org/doc/scipy/reference/', None),
+                           "skimage": ('http://scikit-image.org/docs/stable/', None),
+                           "h5py": ('http://docs.h5py.org/en/stable/', None),
+                           "lmfit": ('http://lmfit.github.io/lmfit-py/', None),
+                           "nrefocus": ('http://nrefocus.readthedocs.io/en/stable', None),
+                           }

@@ -2,6 +2,8 @@
 Introduction
 ============
 
+.. automodule:: qpimage
+
 .. toctree::
   :maxdepth: 2
 

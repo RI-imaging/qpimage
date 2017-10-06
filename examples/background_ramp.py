@@ -21,6 +21,7 @@ phase = rsobj.rand(size, size) - .5 + bg
 
 # create QPImage instance
 qpi = qpimage.QPImage(data=phase, which_data="phase")
+# compute background with 2d ramp approach
 qpi.compute_bg(which_data="phase",  # correct phase image
                fit_offset="fit",  # use bg offset from ramp fit
                fit_profile="ramp",  # perform 2D ramp fit

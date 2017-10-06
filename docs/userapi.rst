@@ -1,6 +1,76 @@
 ========
 User API
 ========
+The QPImage API is built upon the hdf5 file format using
+`h5py <http://h5py.readthedocs.io/>`. That means that each instance of
+:py:class`qpimage.QPImage` generates an hdf5 file, either on disk or
+in memory, depending on the preferences of the user. This approach
+has the advantage that phase and amplitude data can be cached on disk,
+including all parameters that were used for background correction, which
+allows to transparently recapture any steps that were performed on a
+specific data set at a later time point.
+
+A typical use case of qpimage is
+
+.. code-block:: python
+
+   qpi = qpimage.QPImage(data=some_numpy_array, which_data="phase")
+   # perform phase-ramp background correction
+   qpi.compute_bg(which_data="phase",  # correct phase image
+                  fit_offset="fit",  # use bg offset from ramp fit
+                  fit_profile="ramp",  # perform 2D ramp fit
+                  border_px=5,  # use 5 px border around image
+   				  )
+   # save the background-corrected phase to a text file
+   numpy.savetxt("out.txt", qpi.pha)
+
+which creates an instance of `QPImage` containing otherwise experimentally
+obtained phase data, performs a phase-ramp background correction and then
+saves the corrected phase data to the text file "out.txt". In this case,
+all data are stored in memory. To cache the data on disk, use the ``which``
+statement in combination with the ``h5file`` keyword argument
+
+.. code-block:: python
+
+   with qpimage.QPImage(data=some_numpy_array, which_data="phase", h5file="/path/to/file.h5") as qpi:
+       qpi.compute_bg(which_data="phase",
+                      fit_offset="fit",
+                      fit_profile="ramp",
+                      border_px=5,
+                      )
+
+where all data is stored in ``/path/to/file.h5``. This will create an hdf5
+file on disk that, at a later time point, can be used to create an instance
+of ``QPImage``:
+
+.. code-block:: python
+
+   # open previously cached data for reading
+   qpi = qpimage.QPImage(h5file="/path/to/file.h5", h5mode="r")
+   
+   # or open cached data for writing (e.g. for changing the background)
+   with qpimage.QPImage(h5file="/path/to/file.h5", h5mode="a") as qpi:
+       # do something here
+
+Note that the default value of ``h5mode`` is "a", which means that data
+will be overridden. In the hdf5 file, the following data is stored:
+
+- all data for reproducing the background-corrected phase
+  (``qpi.pha``) and amplitude (``qpi.amp``) (and thus field ``qpi.field``)
+  data, including
+  
+  - the experimental phase data
+  - the experimental background data
+  - the parameters for reproducing the result of ``qpi.compute_bg``
+
+- all measurement specific meta data, given by the keyword argument
+  ``meta_data``
+
+Note that this results in file sizes that are considerably larger compared
+to when only the output of e.g. ``qpi.pha`` is stored.
+
+As a general remark, also note that units in qpimage follow the international
+system of units (SI).
 
 .. autoclass:: qpimage.QPImage
     :members:
