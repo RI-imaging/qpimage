@@ -42,7 +42,7 @@ bg_mean = np.mean(qpi.bg_pha[binary])
 qpi.compute_bg(fit_offset="gauss", **cpkw)
 bg_gauss = np.mean(qpi.bg_pha[binary])
 
-bg_data = data[binary]
+bg_data = (qpi.pha + qpi.bg_pha)[binary]
 # compute histogram
 nbins = int(np.ceil(np.sqrt(bg_data.size)))
 mind, maxd = bg_data.min(), bg_data.max()

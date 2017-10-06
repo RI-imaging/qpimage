@@ -10,4 +10,4 @@ Examples
 
 .. fancy_include:: background_ramp.py
 
--- fancy_include:: background_offset.py
+.. fancy_include:: background_offset.py
