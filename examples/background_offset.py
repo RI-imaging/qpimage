@@ -1,9 +1,9 @@
 """Background image offset correction
 
 This example illustrates the different background offset
-correction methods implemented in qpimage. The gaussian
-method yields the best results, because the input
-noise is gaussian.
+correction methods implemented in qpimage. The phase image
+data contains two gaussian noise distributions for which
+these methods yield different background phase offsets.
 """
 import matplotlib.pylab as plt
 import numpy as np
