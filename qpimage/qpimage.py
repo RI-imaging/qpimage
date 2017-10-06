@@ -1,3 +1,6 @@
+import copy
+import os.path as op
+
 import h5py
 import numpy as np
 from skimage.restoration import unwrap_phase
@@ -32,30 +35,35 @@ class QPImage(object):
         meta_data: dict
             Meta data associated with the input data.
             see :py:class:`qpimage.VALID_META_KEYS`
-        h5file: str or None
+        h5file: str, h5py.Group, h5py.File, or None
             A path to an hdf5 data file where all data is cached. If
             set to `None` (default), all data will be handled in
             memory using the "core" driver of the :mod:`h5py`'s
             :class:`h5py:File` class. If the file does not exist,
             it is created. If the file already exists, it is opened
-            with the file mode defined by `hdf5_mode`.
+            with the file mode defined by `hdf5_mode`. If this is
+            an instance of h5py.Group or h5py.File, then this will
+            be used to internally store all data.
         h5mode: str
-            Valid file modes are:
+            Valid file modes are (only applies if `h5file` is a path):
               - "r": Readonly, file must exist
               - "r+": Read/write, file must exist
               - "w": Create file, truncate if exists
               - "w-" or "x": Create file, fail if exists
               - "a": Read/write if exists, create otherwise (default)
         """
-        if h5file is None:
-            h5kwargs = {"name": "none.h5",
-                        "driver": "core",
-                        "backing_store": False,
-                        "mode": "a"}
+        if isinstance(h5file, h5py.Group):
+            self.h5 = h5file
         else:
-            h5kwargs = {"name": h5file,
-                        "mode": h5mode}
-        self.h5 = h5py.File(**h5kwargs)
+            if h5file is None:
+                h5kwargs = {"name": "none.h5",
+                            "driver": "core",
+                            "backing_store": False,
+                            "mode": "a"}
+            else:
+                h5kwargs = {"name": h5file,
+                            "mode": h5mode}
+            self.h5 = h5py.File(**h5kwargs)
 
         for group in ["amplitude", "phase"]:
             if group not in self.h5:
@@ -296,6 +304,19 @@ class QPImage(object):
                                        ret_binary=ret_binary)
         return binary
 
+    def copy(self, h5file=None):
+        """Create a copy of the current instance
+
+        This is done by recursively copying the underlying hdf5 data.
+
+        Parameters
+        ----------
+        h5file: str, h5py.File, h5py.Group, or None
+            see `QPImage.__init__`
+        """
+        h5 = copyh5(self.h5, h5file)
+        return QPImage(h5file=h5)
+
     def refocus(self, distance, method="helmholtz"):
         """Numerically refocus the current field
 
@@ -315,6 +336,7 @@ class QPImage(object):
         # - Remember old image data instances
         # - Maybe return a new instance of QPImage
         # - Allow autofocusing?
+        raise NotImplementedError("refocusing not implemented")
 
     def set_bg_data(self, bg_data, which_data):
         """Set background amplitude and phase data
@@ -340,3 +362,55 @@ class QPImage(object):
         # Set background data
         self._amp.set_bg(amp, key="data")
         self._pha.set_bg(pha, key="data")
+
+
+def copyh5(inh5, outh5):
+    """Recursively copy all hdf5 data from one group to another
+
+    Parameters
+    ----------
+    inh5: str, h5py.File, or h5py.Group
+        The input hdf5 data. This can be either a file name or
+        an hdf5 object.
+    outh5: str, h5py.File, h5py.Group, or None
+        The output hdf5 data. This can be either a file name or
+        an hdf5 object. If set to `None`, a new hdf5 object is
+        created in memory.
+
+    Notes
+    -----
+    All data in outh5 are overridden by the inh5 data.
+    """
+    if not isinstance(inh5, h5py.Group):
+        inh5 = h5py.File(inh5, mode="r")
+    if outh5 is None:
+        # create file in memory
+        h5kwargs = {"name": "none.h5",
+                    "driver": "core",
+                    "backing_store": False,
+                    "mode": "a"}
+        outh5 = h5py.File(**h5kwargs)
+    elif not isinstance(outh5, h5py.Group):
+        # create new file
+        outh5 = h5py.File(outh5, mode="w")
+    # begin iteration
+    for key in inh5:
+        if key in outh5:
+            del outh5[key]
+        if isinstance(inh5[key], h5py.Group):
+            outh5.create_group(key)
+            copyh5(inh5[key], outh5[key])
+        else:
+            outh5[key] = copy.copy(inh5[key].value)
+            outh5[key].attrs.update(inh5[key].attrs)
+    outh5.attrs.update(inh5.attrs)
+    if (isinstance(outh5, h5py.File) and
+            op.exists(outh5.filename)):
+        # properly close the file and return its name
+        fn = outh5.filename
+        outh5.flush()
+        outh5.close()
+        return fn
+    else:
+        # in-memory data set, return the group
+        return outh5
