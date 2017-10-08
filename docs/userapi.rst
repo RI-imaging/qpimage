@@ -56,8 +56,8 @@ Note that the default value of ``h5mode`` is "a", which means that data
 will be overridden. In the hdf5 file, the following data is stored:
 
 - all data for reproducing the background-corrected phase
-  (``qpi.pha``) and amplitude (``qpi.amp``) (and thus field ``qpi.field``)
-  data, including
+  (``qpi.pha``) and amplitude (``qpi.amp``) (and thus field ``qpi.field``),
+  including
   
   - the experimental phase data
   - the experimental background data

@@ -45,7 +45,7 @@ class QPImage(object):
             an instance of h5py.Group or h5py.File, then this will
             be used to internally store all data.
         h5mode: str
-            Valid file modes are (only applies if `h5file` is a path):
+            Valid file modes are (only applies if `h5file` is a path)
               - "r": Readonly, file must exist
               - "r+": Read/write, file must exist
               - "w": Create file, truncate if exists
