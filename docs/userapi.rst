@@ -2,8 +2,8 @@
 User API
 ========
 The QPImage API is built upon the hdf5 file format using
-`h5py <http://h5py.readthedocs.io/>`. That means that each instance of
-:py:class`qpimage.QPImage` generates an hdf5 file, either on disk or
+`h5py <http://h5py.readthedocs.io/>`_. That means that each instance of
+:py:class:`qpimage.QPImage` generates an hdf5 file, either on disk or
 in memory, depending on the preferences of the user. This approach
 has the advantage that phase and amplitude data can be cached on disk,
 including all parameters that were used for background correction, which
@@ -14,7 +14,7 @@ A typical use case of qpimage is
 
 .. code-block:: python
 
-   qpi = qpimage.QPImage(data=some_numpy_array, which_data="phase")
+   qpi = qpimage.QPImage(data=phase_ndarray, which_data="phase")
    # perform phase-ramp background correction
    qpi.compute_bg(which_data="phase",  # correct phase image
                   fit_offset="fit",  # use bg offset from ramp fit
@@ -27,12 +27,12 @@ A typical use case of qpimage is
 which creates an instance of `QPImage` containing otherwise experimentally
 obtained phase data, performs a phase-ramp background correction and then
 saves the corrected phase data to the text file "out.txt". In this case,
-all data are stored in memory. To cache the data on disk, use the ``which``
+all data are stored in memory. To cache the data on disk, use the ``with``
 statement in combination with the ``h5file`` keyword argument
 
 .. code-block:: python
 
-   with qpimage.QPImage(data=some_numpy_array, which_data="phase", h5file="/path/to/file.h5") as qpi:
+   with qpimage.QPImage(data=phase_ndarray, which_data="phase", h5file="/path/to/file.h5") as qpi:
        qpi.compute_bg(which_data="phase",
                       fit_offset="fit",
                       fit_profile="ramp",
