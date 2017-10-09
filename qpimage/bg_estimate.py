@@ -69,7 +69,7 @@ def estimate(data, fit_offset="average", fit_profile="ramp",
         if fit_profile == "offset":
             msg = "`fit_offset=='fit'` only valid when `fit_profile!='offset`"
             raise ValueError(msg)
-        pass
+        # nothing else to do here, using offset from fit
     elif fit_offset == "gauss":
         bgimg += offset_gaussian((data - bgimg)[binary])
     elif fit_offset == "mean":

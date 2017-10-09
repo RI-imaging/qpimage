@@ -7,6 +7,34 @@ import numpy as np
 sys.path.insert(0, dirname(dirname(abspath(__file__))))
 import qpimage  # noqa: E402
 from qpimage import meta  # noqa: E402
+from qpimage import bg_estimate  # noqa: E402
+
+
+def test_bg_estimate_errors():
+    data = np.zeros((5,5))
+    
+    try:
+        bg_estimate.estimate(data, fit_offset="unknown")
+    except ValueError:
+        pass
+    else:
+        assert False, "unknown is not a valid key"
+
+    try:
+        bg_estimate.estimate(data, fit_profile="unknown")
+    except ValueError:
+        pass
+    else:
+        assert False, "unknown is not a valid key"
+
+    try:
+        bg_estimate.estimate(data,
+                             fit_offset="fit",
+                             fit_profile="offset")
+    except ValueError:
+        pass
+    else:
+        assert False, "offset cannot be fitted"
 
 
 def test_binary():
@@ -27,34 +55,6 @@ def test_binary():
                    from_binary=~binary_mask,
                    )
     assert np.allclose(qpi.pha, data-1)
-
-
-def test_get_binary():
-    size = 200
-    data = np.zeros((size, size), dtype=float)
-    binary_mask = np.zeros_like(data, dtype=bool)
-    binary_mask[::2, ::2] = True
-    qpi = qpimage.QPImage(data=data, which_data="phase")
-    # only binary
-    bin1 = qpi.compute_bg(which_data="phase",
-                          fit_offset="mean",
-                          fit_profile="offset",
-                          from_binary=binary_mask,
-                          ret_binary=True)
-    assert np.all(binary_mask == bin1)
-    # binary with border
-    bin2 = qpi.compute_bg(which_data="phase",
-                          fit_offset="mean",
-                          fit_profile="offset",
-                          from_binary=binary_mask,
-                          border_px=5,
-                          ret_binary=True)
-    binary_mask2 = binary_mask.copy()
-    binary_mask2[:5, :] = True
-    binary_mask2[-5:, :] = True
-    binary_mask2[:, :5] = True
-    binary_mask2[:, -5:] = True
-    assert np.all(binary_mask2 == bin2)
 
 
 def test_border_m():
@@ -107,6 +107,45 @@ def test_border_m():
                     fit_profile="offset",
                     border_m=border_m*.95)
     assert np.all(data_px == qpi2.pha)
+
+
+def test_get_binary():
+    size = 200
+    data = np.zeros((size, size), dtype=float)
+    binary_mask = np.zeros_like(data, dtype=bool)
+    binary_mask[::2, ::2] = True
+    qpi = qpimage.QPImage(data=data, which_data="phase")
+    # only binary
+    bin1 = qpi.compute_bg(which_data="phase",
+                          fit_offset="mean",
+                          fit_profile="offset",
+                          from_binary=binary_mask,
+                          ret_binary=True)
+    assert np.all(binary_mask == bin1)
+    # binary with border
+    bin2 = qpi.compute_bg(which_data="phase",
+                          fit_offset="mean",
+                          fit_profile="offset",
+                          from_binary=binary_mask,
+                          border_px=5,
+                          ret_binary=True)
+    binary_mask2 = binary_mask.copy()
+    binary_mask2[:5, :] = True
+    binary_mask2[-5:, :] = True
+    binary_mask2[:, :5] = True
+    binary_mask2[:, -5:] = True
+    assert np.all(binary_mask2 == bin2)
+
+
+def test_ramp():
+    size = 100
+    data = np.zeros((size, size))
+    data += np.linspace(0, .1, size).reshape(-1, 1)
+    bg = bg_estimate.estimate(data=data,
+                              fit_offset="fit",
+                              fit_profile="ramp",
+                              border_px=1)
+    assert np.allclose(data, bg)
 
 
 if __name__ == "__main__":
