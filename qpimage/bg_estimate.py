@@ -49,7 +49,7 @@ def estimate(data, fit_offset="average", fit_profile="ramp",
         assert isinstance(from_binary, np.ndarray)
         binary = from_binary.copy()
     else:
-        binary = np.ones_like(data, dtype=bool)
+        binary = np.zeros_like(data, dtype=bool)
     # multiply with border binary image (intersection)
     if border_px > 0:
         border_px = int(np.round(border_px))
@@ -58,7 +58,7 @@ def estimate(data, fit_offset="average", fit_profile="ramp",
         binary_px[-border_px:, :] = True
         binary_px[:, :border_px] = True
         binary_px[:, -border_px:] = True
-        binary *= binary_px
+        np.logical_or(binary, binary_px, out=binary)
     # compute background image
     if fit_profile == "ramp":
         bgimg = profile_ramp(data, binary)

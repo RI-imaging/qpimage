@@ -1,0 +1,118 @@
+from os.path import abspath, dirname
+import sys
+
+import numpy as np
+
+# Add parent directory to beginning of path variable
+sys.path.insert(0, dirname(dirname(abspath(__file__))))
+import qpimage  # noqa: E402
+from qpimage import meta  # noqa: E402
+
+
+def test_binary():
+    size = 200
+    data = np.zeros((size, size), dtype=float)
+    data[size//2:] = 1
+    binary_mask = data == 0
+    qpi = qpimage.QPImage(data=data, which_data="phase")
+    qpi.compute_bg(which_data="phase",
+                   fit_offset="mean",
+                   fit_profile="offset",
+                   from_binary=binary_mask,
+                   )
+    assert np.allclose(qpi.pha, data)
+    qpi.compute_bg(which_data="phase",
+                   fit_offset="mean",
+                   fit_profile="offset",
+                   from_binary=~binary_mask,
+                   )
+    assert np.allclose(qpi.pha, data-1)
+
+
+def test_get_binary():
+    size = 200
+    data = np.zeros((size, size), dtype=float)
+    binary_mask = np.zeros_like(data, dtype=bool)
+    binary_mask[::2, ::2] = True
+    qpi = qpimage.QPImage(data=data, which_data="phase")
+    # only binary
+    bin1 = qpi.compute_bg(which_data="phase",
+                          fit_offset="mean",
+                          fit_profile="offset",
+                          from_binary=binary_mask,
+                          ret_binary=True)
+    assert np.all(binary_mask == bin1)
+    # binary with border
+    bin2 = qpi.compute_bg(which_data="phase",
+                          fit_offset="mean",
+                          fit_profile="offset",
+                          from_binary=binary_mask,
+                          border_px=5,
+                          ret_binary=True)
+    binary_mask2 = binary_mask.copy()
+    binary_mask2[:5, :] = True
+    binary_mask2[-5:, :] = True
+    binary_mask2[:, :5] = True
+    binary_mask2[:, -5:] = True
+    assert np.all(binary_mask2 == bin2)
+
+
+def test_border_m():
+    size = 200
+    rsobj = np.random.RandomState(47)
+    data = rsobj.normal(loc=.4, scale=.1, size=(size, size))
+    pixel_size = .1e-6  # 1px = .1µm
+    border_px = 5
+    border_m = border_px * pixel_size
+
+    qpi = qpimage.QPImage(data=data, which_data="phase")
+    qpi.compute_bg(which_data="phase",
+                   fit_offset="mean",
+                   fit_profile="offset",
+                   border_px=5)
+    data_px = qpi.pha
+    qpi.compute_bg(which_data="phase",
+                   fit_offset="mean",
+                   fit_profile="offset",
+                   border_px=6)
+    data_px_false = qpi.pha
+    # Make sure different borders yield different results
+    assert not np.all(data_px == data_px_false)
+    # Make sure QPImage needs the "pixel size" meta data
+    try:
+        qpi.compute_bg(which_data="phase",
+                       fit_offset="mean",
+                       fit_profile="offset",
+                       border_m=border_m)
+    except meta.MetaDataMissingError:
+        pass
+    else:
+        assert False, "meta data required"
+    # Create an instance with the correct pixel size
+    qpi2 = qpimage.QPImage(data=data, which_data="phase",
+                           meta_data={"pixel size": pixel_size})
+    qpi2.compute_bg(which_data="phase",
+                    fit_offset="mean",
+                    fit_profile="offset",
+                    border_m=border_m)
+    assert np.all(data_px == qpi2.pha)
+    # Also test with rounding
+    qpi2.compute_bg(which_data="phase",
+                    fit_offset="mean",
+                    fit_profile="offset",
+                    border_m=border_m*1.05)
+    assert np.all(data_px == qpi2.pha)
+    qpi2.compute_bg(which_data="phase",
+                    fit_offset="mean",
+                    fit_profile="offset",
+                    border_m=border_m*.95)
+    assert np.all(data_px == qpi2.pha)
+
+
+if __name__ == "__main__":
+    # Run all tests
+    loc = locals()
+    keys = sorted(loc.keys())
+    for key in keys:
+        if key.startswith("test_") and hasattr(loc[key], "__call__"):
+            loc[key]()

@@ -79,7 +79,6 @@ class QPImage(object):
                 self.h5.attrs[key] = meta[key]
         if "qpimage version" not in self.h5.attrs:
             self.h5.attrs["qpimage version"] = __version__
-
         # set data
         for group in ["amplitude", "phase"]:
             if group not in self.h5:
@@ -299,7 +298,8 @@ class QPImage(object):
             border_list.append(size * border_perc / 100)
         if border_px:
             border_list.append(border_px)
-        border_px = np.int(np.round(np.max(border_list)))
+        if border_list:
+            border_px = np.int(np.round(np.max(border_list)))
         # Get affected image data
         imdat_list = []
         if "amplitude" in which_data:
