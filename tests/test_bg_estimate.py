@@ -11,8 +11,8 @@ from qpimage import bg_estimate  # noqa: E402
 
 
 def test_bg_estimate_errors():
-    data = np.zeros((5,5))
-    
+    data = np.zeros((5, 5))
+
     try:
         bg_estimate.estimate(data, fit_offset="unknown")
     except ValueError:
@@ -40,7 +40,7 @@ def test_bg_estimate_errors():
 def test_binary():
     size = 200
     data = np.zeros((size, size), dtype=float)
-    data[size//2:] = 1
+    data[size // 2:] = 1
     binary_mask = data == 0
     qpi = qpimage.QPImage(data=data, which_data="phase")
     qpi.compute_bg(which_data="phase",
@@ -54,7 +54,7 @@ def test_binary():
                    fit_profile="offset",
                    from_binary=~binary_mask,
                    )
-    assert np.allclose(qpi.pha, data-1)
+    assert np.allclose(qpi.pha, data - 1)
 
 
 def test_border_m():
@@ -100,12 +100,12 @@ def test_border_m():
     qpi2.compute_bg(which_data="phase",
                     fit_offset="mean",
                     fit_profile="offset",
-                    border_m=border_m*1.05)
+                    border_m=border_m * 1.05)
     assert np.all(data_px == qpi2.pha)
     qpi2.compute_bg(which_data="phase",
                     fit_offset="mean",
                     fit_profile="offset",
-                    border_m=border_m*.95)
+                    border_m=border_m * .95)
     assert np.all(data_px == qpi2.pha)
 
 
