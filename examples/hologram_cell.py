@@ -7,8 +7,8 @@ cell (HL60) shown was recorded using digital holographic microscopy
 discrete Fourier transform, there always is a residual background
 phase ramp which must be removed for further image analysis.
 The setup used fore recording this image is described in [1]_,
-which also contains a description of the phase-retrieval and
-background correction algorithms on which qpimage is based.
+which also contains a description of the hologram-to-phase conversion
+and phase background correction algorithms on which qpimage is based.
 
 
 .. [1] M. Schürmann, J. Scholze, P. Müller, C.J. Chan, A.E. Ekpenyong,
