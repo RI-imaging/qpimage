@@ -5,12 +5,18 @@ import h5py
 import numpy as np
 from skimage.restoration import unwrap_phase
 
+from . import holo
 from .image_data import Amplitude, Phase
 from .meta import MetaDict
 from ._version import version as __version__
 
+VALID_INPUT_DATA = ["field", "phase", "hologram",
+                    "phase,amplitude", "phase,intensity"]
+
 
 class QPImage(object):
+    _instances = 0
+
     def __init__(self, data=None, bg_data=None, which_data="phase",
                  meta_data={}, h5file=None, h5mode="a"
                  ):
@@ -56,7 +62,7 @@ class QPImage(object):
             self.h5 = h5file
         else:
             if h5file is None:
-                h5kwargs = {"name": "none.h5",
+                h5kwargs = {"name": "none{}.h5".format(QPImage._instances),
                             "driver": "core",
                             "backing_store": False,
                             "mode": "a"}
@@ -64,24 +70,8 @@ class QPImage(object):
                 h5kwargs = {"name": h5file,
                             "mode": h5mode}
             self.h5 = h5py.File(**h5kwargs)
+        QPImage._instances += 1
 
-        for group in ["amplitude", "phase"]:
-            if group not in self.h5:
-                self.h5.create_group(group)
-
-        self._amp = Amplitude(self.h5["amplitude"])
-        self._pha = Phase(self.h5["phase"])
-
-        if data is not None:
-            # compute phase and amplitude from input data
-            amp, pha = self._get_amp_pha(data=data,
-                                         which_data=which_data)
-            self._amp["raw"] = amp
-            self._pha["raw"] = pha
-
-            # set background data
-            self.set_bg_data(bg_data=bg_data,
-                             which_data=which_data)
         # set meta data
         meta = MetaDict(meta_data)
         for key in meta:
@@ -89,6 +79,22 @@ class QPImage(object):
                 self.h5.attrs[key] = meta[key]
         if "qpimage version" not in self.h5.attrs:
             self.h5.attrs["qpimage version"] = __version__
+
+        # set data
+        for group in ["amplitude", "phase"]:
+            if group not in self.h5:
+                self.h5.create_group(group)
+        self._amp = Amplitude(self.h5["amplitude"])
+        self._pha = Phase(self.h5["phase"])
+        if data is not None:
+            # compute phase and amplitude from input data
+            amp, pha = self._get_amp_pha(data=data,
+                                         which_data=which_data)
+            self._amp["raw"] = amp
+            self._pha["raw"] = pha
+            # set background data
+            self.set_bg_data(bg_data=bg_data,
+                             which_data=which_data)
 
     def __enter__(self):
         return self
@@ -121,28 +127,33 @@ class QPImage(object):
         which_data: str
             String or comma-separated list of strings indicating
             the order and type of input data. Valid values are
-            "field", "phase", "phase,amplitude", or "phase,intensity",
-            where the latter two require an indexable object with
-            the phase data as first element.
+            "field", "phase", "hologram", "phase,amplitude", or
+            "phase,intensity", where the latter two require an
+            indexable object with the phase data as first element.
 
         Returns
         -------
         amp, pha: tuple of (:py:class:`Amplitdue`, :py:class:`Phase`)
         """
-        assert which_data in ["field", "phase", "phase,amplitude",
-                              "phase,intensity"]
+        if which_data not in VALID_INPUT_DATA:
+            msg = "`which_data` must be one of {}!".format(VALID_INPUT_DATA)
+            raise ValueError(msg)
+
         if which_data == "field":
             amp = np.abs(data)
             pha = unwrap_phase(np.angle(data))
         elif which_data == "phase":
-            amp = np.ones_like(data)
             pha = unwrap_phase(data)
+            amp = np.ones_like(data)
         elif which_data == "phase,amplitude":
-            pha = unwrap_phase(data[0])
             amp = data[1]
-        elif which_data == "phase,intensity":
             pha = unwrap_phase(data[0])
+        elif which_data == "phase,intensity":
             amp = np.sqrt(data[1])
+            pha = unwrap_phase(data[0])
+        elif which_data == "hologram":
+            amp, pha = self._get_amp_pha(holo.get_field(data),
+                                         which_data="field")
         return amp, pha
 
     @property

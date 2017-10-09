@@ -1,7 +1,7 @@
 import h5py
 import numpy as np
 
-from .qpimage import QPImage
+from .core import QPImage
 from .meta import VALID_META_KEYS
 
 
