@@ -34,7 +34,6 @@ qpi = qpimage.QPImage(data=edata["data"],
 amp0 = qpi.amp
 pha0 = qpi.pha
 
-
 # background correction
 qpi.compute_bg(which_data=["amplitude", "phase"],
                fit_offset="fit",
