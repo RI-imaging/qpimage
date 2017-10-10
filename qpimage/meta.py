@@ -21,6 +21,12 @@ class MetaDict(dict):
     __setitem__
     """
 
+    def __init__(self, *args, **kwargs):
+        super(MetaDict, self).__init__(*args, **kwargs)
+        for key in self:
+            if key not in VALID_META_KEYS:
+                raise KeyError("Unknown meta variable: '{}'".format(key))
+
     def __setitem__(self, key, value):
         """Set a meta data variable
 

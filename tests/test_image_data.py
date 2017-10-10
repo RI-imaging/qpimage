@@ -15,7 +15,7 @@ def test_set_bg():
     phase = np.repeat(np.linspace(0, np.pi, size), size)
     phase = phase.reshape(size, size)
     bgphase = np.sqrt(np.abs(phase))
-    
+
     qpi = qpimage.QPImage(phase, bg_data=bgphase, which_data="phase")
     pha = qpi.pha
     clspha = qpi._pha
@@ -29,7 +29,7 @@ def test_get_bg():
     phase = np.repeat(np.linspace(0, np.pi, size), size)
     phase = phase.reshape(size, size)
     bgphase = np.sqrt(np.abs(phase))
-    
+
     qpi = qpimage.QPImage(phase, bg_data=bgphase, which_data="phase")
     bgpha = qpi.bg_pha
     clspha = qpi._pha
@@ -42,7 +42,7 @@ def test_get_bg_error():
     phase = np.repeat(np.linspace(0, np.pi, size), size)
     phase = phase.reshape(size, size)
     bgphase = np.sqrt(np.abs(phase))
-    
+
     qpi = qpimage.QPImage(phase, bg_data=bgphase, which_data="phase")
     clspha = qpi._pha
     try:
