@@ -19,6 +19,9 @@ def test_repr():
     qpi2 = qpimage.QPImage(phase, which_data="phase",
                            meta_data={"wavelength": .1})
     print(qpi2)
+    
+    print(qpi._pha)
+    print(qpi._amp)
 
 
 if __name__ == "__main__":

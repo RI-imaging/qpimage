@@ -35,12 +35,6 @@ class ImageData(object):
     def _bg_correct(self, raw, bg):
         """Remove `bg` from `raw` image data"""
 
-    def _reset_bg(self):
-        """Reset bg correction (force computation of image data)"""
-        for key in ["image", "bg"]:
-            if key in self.h5:
-                del self.h5[key]
-
     @property
     def bg(self):
         """The combined background image data"""
@@ -159,11 +153,9 @@ class ImageData(object):
         attrs: dict
             List of background attributes
         """
-        reset = False
         # remove previous background key
         if key in self.h5["bg_data"]:
             del self.h5["bg_data"][key]
-            reset = True
         # set background
         if bg is not None:
             msg = "`bg` must be scalar or ndarray"
@@ -171,10 +163,6 @@ class ImageData(object):
             self.h5["bg_data"][key] = bg
             for kw in attrs:
                 self.h5["bg_data"][key].attrs[kw] = attrs[kw]
-            reset = True
-        # reset computed data
-        if reset:
-            self._reset_bg()
 
 
 class Amplitude(ImageData):
