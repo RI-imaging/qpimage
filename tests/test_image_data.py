@@ -10,7 +10,6 @@ import qpimage.image_data  # noqa: E402
 
 
 def test_set_bg():
-    # make sure no errors when printing repr
     size = 200
     phase = np.repeat(np.linspace(0, np.pi, size), size)
     phase = phase.reshape(size, size)

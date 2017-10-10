@@ -72,12 +72,10 @@ class QPImage(object):
             self.h5 = h5py.File(**h5kwargs)
             self._do_h5_cleanup = True
         QPImage._instances += 1
-
         # set meta data
         meta = MetaDict(meta_data)
         for key in meta:
-            if meta[key]:
-                self.h5.attrs[key] = meta[key]
+            self.h5.attrs[key] = meta[key]
         if "qpimage version" not in self.h5.attrs:
             self.h5.attrs["qpimage version"] = __version__
         # set data
@@ -309,6 +307,8 @@ class QPImage(object):
             border_px = np.int(np.round(np.max(border_list)))
         elif from_binary is None:
             raise ValueError("Neither `from_binary` nor `border_*` given!")
+        elif np.all(from_binary == 0):
+            raise ValueError("`from_binary` must not be all-zero!")
         # Get affected image data
         imdat_list = []
         if "amplitude" in which_data:
