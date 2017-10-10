@@ -1,5 +1,4 @@
 import copy
-import os.path as op
 
 import h5py
 import numpy as np
@@ -60,6 +59,7 @@ class QPImage(object):
         """
         if isinstance(h5file, h5py.Group):
             self.h5 = h5file
+            self._do_h5_cleanup = False
         else:
             if h5file is None:
                 h5kwargs = {"name": "none{}.h5".format(QPImage._instances),
@@ -70,6 +70,7 @@ class QPImage(object):
                 h5kwargs = {"name": h5file,
                             "mode": h5mode}
             self.h5 = h5py.File(**h5kwargs)
+            self._do_h5_cleanup = True
         QPImage._instances += 1
 
         # set meta data
@@ -99,8 +100,9 @@ class QPImage(object):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
-        self.h5.flush()
-        self.h5.close()
+        if self._do_h5_cleanup:
+            self.h5.flush()
+            self.h5.close()
 
     def __repr__(self):
         rep = "QPImage, {x}x{y}px".format(x=self._amp.raw.shape[0],
@@ -291,15 +293,22 @@ class QPImage(object):
             raise ValueError(msg)
         # get border in px
         border_list = []
-        if border_m > 0:
+        if border_m:
+            if border_m < 0:
+                raise ValueError("`border_m` must be greater than zero!")
             border_list.append(border_m / self.meta["pixel size"])
-        if border_perc > 0:
+        if border_perc:
+            if border_perc < 0 or border_perc > 50:
+                raise ValueError("`border_perc` must be in interval [0, 50]!")
             size = np.average(self.shape)
             border_list.append(size * border_perc / 100)
         if border_px:
             border_list.append(border_px)
+        # get maximum border size
         if border_list:
             border_px = np.int(np.round(np.max(border_list)))
+        elif from_binary is None:
+            raise ValueError("Neither `from_binary` nor `border_*` given!")
         # Get affected image data
         imdat_list = []
         if "amplitude" in which_data:
@@ -401,9 +410,13 @@ def copyh5(inh5, outh5):
                     "backing_store": False,
                     "mode": "a"}
         outh5 = h5py.File(**h5kwargs)
+        return_h5obj = True
     elif not isinstance(outh5, h5py.Group):
         # create new file
         outh5 = h5py.File(outh5, mode="w")
+        return_h5obj = False
+    else:
+        return_h5obj = True
     # begin iteration
     for key in inh5:
         if key in outh5:
@@ -415,13 +428,12 @@ def copyh5(inh5, outh5):
             outh5[key] = copy.copy(inh5[key].value)
             outh5[key].attrs.update(inh5[key].attrs)
     outh5.attrs.update(inh5.attrs)
-    if (isinstance(outh5, h5py.File) and
-            op.exists(outh5.filename)):
+    if return_h5obj:
+        # in-memory or previously created instance of h5py.File
+        return outh5
+    else:
         # properly close the file and return its name
         fn = outh5.filename
         outh5.flush()
         outh5.close()
         return fn
-    else:
-        # in-memory data set, return the group
-        return outh5

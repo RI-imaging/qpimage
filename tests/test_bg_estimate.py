@@ -109,6 +109,35 @@ def test_border_m():
     assert np.all(data_px == qpi2.pha)
 
 
+def test_border_perc():
+    size = 200
+    rsobj = np.random.RandomState(47)
+    data = rsobj.normal(loc=.4, scale=.1, size=(size, size))
+
+    qpi = qpimage.QPImage(data=data, which_data="phase")
+    qpi.compute_bg(which_data="phase",
+                   fit_offset="mean",
+                   fit_profile="offset",
+                   border_px=5)
+    data_px = qpi.pha
+    qpi.compute_bg(which_data="phase",
+                   fit_offset="mean",
+                   fit_profile="offset",
+                   border_perc=2.5)
+    assert np.all(qpi.pha == data_px)
+    # rounding
+    qpi.compute_bg(which_data="phase",
+                   fit_offset="mean",
+                   fit_profile="offset",
+                   border_perc=2.4)
+    assert np.all(qpi.pha == data_px)
+    qpi.compute_bg(which_data="phase",
+                   fit_offset="mean",
+                   fit_profile="offset",
+                   border_perc=2.1)  # 4px
+    assert not np.all(qpi.pha == data_px)
+
+
 def test_get_binary():
     size = 200
     data = np.zeros((size, size), dtype=float)
