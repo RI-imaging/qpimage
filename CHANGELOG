@@ -1,2 +1,4 @@
+0.1.1
+ - QPImage.set_bg_data now accepts QPImage objects 
 0.1.0
  - initial release

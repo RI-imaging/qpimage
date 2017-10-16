@@ -1,9 +1,13 @@
 VALID_META_KEYS = ["medium index",
                    "pixel size",
-                   "qpimage version",
                    "time",
                    "wavelength",
                    ]
+
+OTHER_META_KEYS = ["qpimage version",
+                   ]
+
+META_KEYS = VALID_META_KEYS + OTHER_META_KEYS
 
 
 class MetaDataMissingError(BaseException):
@@ -24,7 +28,7 @@ class MetaDict(dict):
     def __init__(self, *args, **kwargs):
         super(MetaDict, self).__init__(*args, **kwargs)
         for key in self:
-            if key not in VALID_META_KEYS:
+            if key not in META_KEYS:
                 raise KeyError("Unknown meta variable: '{}'".format(key))
 
     def __setitem__(self, key, value):
@@ -33,7 +37,7 @@ class MetaDict(dict):
         The key must be a valid key defined in the
         :py:const:`qpimage.meta.VALID_META_KEYS` variable.
         """
-        if key not in VALID_META_KEYS:
+        if key not in META_KEYS:
             raise KeyError("Unknown meta variable: '{}'".format(key))
         super(MetaDict, self).__setitem__(key, value)
 

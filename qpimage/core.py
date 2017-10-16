@@ -97,6 +97,16 @@ class QPImage(object):
     def __enter__(self):
         return self
 
+    
+    def __eq__(self, other):
+        if (np.allclose(self.amp, other.amp) and
+            np.allclose(self.pha, other.pha) and
+            self.meta == other.meta):
+            return True
+        else:
+            return False
+    
+
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self._do_h5_cleanup:
             self.h5.flush()
@@ -358,12 +368,12 @@ class QPImage(object):
         # - Allow autofocusing?
         raise NotImplementedError("refocusing not implemented")
 
-    def set_bg_data(self, bg_data, which_data):
+    def set_bg_data(self, bg_data, which_data=None):
         """Set background amplitude and phase data
 
         Parameters
         ----------
-        bg_data: 2d ndarray (float or complex), list, or `None`
+        bg_data: 2d ndarray (float or complex), list, QPImage, or `None`
             The background data (must be same type as `data`).
             If set to `None`, the background data is reset.
         which_data: str
@@ -373,7 +383,12 @@ class QPImage(object):
             where the latter two require an indexable object with
             the phase data as first element.
         """
-        if bg_data is None:
+        if isinstance(bg_data, QPImage):
+            if which_data is not None:
+                msg = "`which_data` must not be set if `bg_data` is QPImage!"
+                raise ValueError(msg)
+            pha, amp = bg_data.pha, bg_data.amp
+        elif bg_data is None:
             # Reset phase and amplitude
             amp, pha = None, None
         else:
@@ -405,12 +420,13 @@ def copyh5(inh5, outh5):
         inh5 = h5py.File(inh5, mode="r")
     if outh5 is None:
         # create file in memory
-        h5kwargs = {"name": "none.h5",
+        h5kwargs = {"name": "none{}.h5".format(QPImage._instances),
                     "driver": "core",
                     "backing_store": False,
                     "mode": "a"}
         outh5 = h5py.File(**h5kwargs)
         return_h5obj = True
+        QPImage._instances += 1
     elif not isinstance(outh5, h5py.Group):
         # create new file
         outh5 = h5py.File(outh5, mode="w")
