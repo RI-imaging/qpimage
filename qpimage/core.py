@@ -97,15 +97,13 @@ class QPImage(object):
     def __enter__(self):
         return self
 
-    
     def __eq__(self, other):
         if (np.allclose(self.amp, other.amp) and
             np.allclose(self.pha, other.pha) and
-            self.meta == other.meta):
+                self.meta == other.meta):
             return True
         else:
             return False
-    
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if self._do_h5_cleanup:
