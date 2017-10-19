@@ -10,6 +10,8 @@ including all parameters that were used for background correction, which
 allows to transparently recapture any steps that were performed on a
 specific data set at a later time point.
 
+Basic usage
+-----------
 A typical use case of qpimage is
 
 .. code-block:: python
@@ -27,7 +29,11 @@ A typical use case of qpimage is
 which creates an instance of `QPImage` containing otherwise experimentally
 obtained phase data, performs a phase-ramp background correction and then
 saves the corrected phase data to the text file "out.txt". In this case,
-all data are stored in memory. To cache the data on disk, use the ``with``
+all data are stored in memory.
+
+Storing QPImage data on disk
+----------------------------
+To cache the QPImage data on disk, use the ``with``
 statement in combination with the ``h5file`` keyword argument
 
 .. code-block:: python
@@ -69,12 +75,13 @@ will be overridden. In the hdf5 file, the following data is stored:
 Notes
 -----
 - Using QPImage hdf5 files results in file sizes that are considerably
-  larger compared to when only the output of e.g. ``qpi.pha`` is stored.
+  larger compared to when only the output of e.g. ``qpi.pha`` is stored
+  using e.g. :py:func:`numpy.save`.
 
 - Units in qpimage follow the international system of units (SI).
 
 - :py:class:`qpimage.QPSeries` provides a convenient way to manage multiple
-  :py:class:`QPImage`s, optionally storing them in a single hdf5 file.
+  :py:class:`qpimage.QPImage`s, optionally storing them in a single hdf5 file.
 
 .. autoclass:: qpimage.QPImage
     :members:
