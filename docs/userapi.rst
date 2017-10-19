@@ -83,10 +83,17 @@ Notes
 - :py:class:`qpimage.QPSeries` provides a convenient way to manage multiple
   :py:class:`qpimage.QPImage`s, optionally storing them in a single hdf5 file.
 
+
+QPImage
+-------
 .. autoclass:: qpimage.QPImage
     :members:
 
+QPSeries
+--------
 .. autoclass:: qpimage.QPSeries
     :members:
 
+Constants
+---------
 .. autodata:: qpimage.VALID_META_KEYS
