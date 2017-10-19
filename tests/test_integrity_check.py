@@ -1,3 +1,4 @@
+import os
 from os.path import abspath, dirname
 import sys
 import tempfile
@@ -73,6 +74,11 @@ def test_background_fit():
         pass
     else:
         assert False, "wrong bg saved should not work"
+    # cleanup
+    try:
+        os.remove(tf)
+    except:
+        pass
 
 
 def test_wrong_check():
