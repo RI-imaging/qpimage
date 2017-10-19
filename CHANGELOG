@@ -1,4 +1,5 @@
 0.1.1
- - QPImage.set_bg_data now accepts QPImage objects 
+ - QPImage.set_bg_data now accepts QPImage objects
+ - add QPSeries for managing multiple QPImages in one hdf5 file (#3) 
 0.1.0
  - initial release

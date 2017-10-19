@@ -62,7 +62,7 @@ class QPImage(object):
             self._do_h5_cleanup = False
         else:
             if h5file is None:
-                h5kwargs = {"name": "none{}.h5".format(QPImage._instances),
+                h5kwargs = {"name": "qpimage{}.h5".format(QPImage._instances),
                             "driver": "core",
                             "backing_store": False,
                             "mode": "a"}
@@ -418,7 +418,7 @@ def copyh5(inh5, outh5):
         inh5 = h5py.File(inh5, mode="r")
     if outh5 is None:
         # create file in memory
-        h5kwargs = {"name": "none{}.h5".format(QPImage._instances),
+        h5kwargs = {"name": "qpimage{}.h5".format(QPImage._instances),
                     "driver": "core",
                     "backing_store": False,
                     "mode": "a"}

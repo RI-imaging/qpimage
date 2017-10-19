@@ -52,7 +52,7 @@ of ``QPImage``:
    with qpimage.QPImage(h5file="/path/to/file.h5", h5mode="a") as qpi:
        # do something here
 
-Note that the default value of ``h5mode`` is "a", which means that data
+The default value of ``h5mode`` is "a", which means that data
 will be overridden. In the hdf5 file, the following data is stored:
 
 - all data for reproducing the background-corrected phase
@@ -66,13 +66,20 @@ will be overridden. In the hdf5 file, the following data is stored:
 - all measurement specific meta data, given by the keyword argument
   ``meta_data``
 
-Note that this results in file sizes that are considerably larger compared
-to when only the output of e.g. ``qpi.pha`` is stored.
+Notes
+-----
+- Using QPImage hdf5 files results in file sizes that are considerably
+  larger compared to when only the output of e.g. ``qpi.pha`` is stored.
 
-As a general remark, also note that units in qpimage follow the international
-system of units (SI).
+- Units in qpimage follow the international system of units (SI).
+
+- :py:class:`qpimage.QPSeries` provides a convenient way to manage multiple
+  :py:class:`QPImage`s, optionally storing them in a single hdf5 file.
 
 .. autoclass:: qpimage.QPImage
+    :members:
+
+.. autoclass:: qpimage.QPSeries
     :members:
 
 .. autodata:: qpimage.VALID_META_KEYS
