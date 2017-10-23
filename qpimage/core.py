@@ -56,15 +56,15 @@ class QPImage(object):
               - "w": Create file, truncate if exists
               - "w-" or "x": Create file, fail if exists
               - "a": Read/write if exists, create otherwise (default)
-        
+
         Notes
         -----
-        QPImage is slicable, e.g. this returns a new QPImage 
-        ```python
+        QPImage is slicable, e.g. this returns a new QPImage
+
+        .. code-block:: python
+
             qpi = QPImage(data=...)
             qpi[10:20, 40:30]
-        ```
-        
         """
         if isinstance(h5file, h5py.Group):
             self.h5 = h5file

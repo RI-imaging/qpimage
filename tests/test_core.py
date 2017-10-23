@@ -189,15 +189,15 @@ def test_slice():
     # simple sanity checks
     assert qpic.shape == (x_size, y_size)
     # check bg_correction
-    assert np.allclose(qpic.pha, (pha-bg_pha)[x:x + x_size, y:y + y_size])
-    assert np.allclose(qpic.amp, (amp/bg_amp)[x:x + x_size, y:y + y_size])
+    assert np.allclose(qpic.pha, (pha - bg_pha)[x:x + x_size, y:y + y_size])
+    assert np.allclose(qpic.amp, (amp / bg_amp)[x:x + x_size, y:y + y_size])
 
     # slice along x
     qpic2 = qpi[x:x + x_size]
     assert qpic2.shape == (25, size)
-    assert np.allclose(qpic2.pha, (pha-bg_pha)[x:x + x_size])
-    assert np.allclose(qpic2.amp, (amp/bg_amp)[x:x + x_size])
-    
+    assert np.allclose(qpic2.pha, (pha - bg_pha)[x:x + x_size])
+    assert np.allclose(qpic2.amp, (amp / bg_amp)[x:x + x_size])
+
     # index should not work
     try:
         qpi[0]
@@ -205,7 +205,7 @@ def test_slice():
         pass
     else:
         assert False, "simple indexing not supported"
-    
+
     # string returns meta
     assert qpi["wavelength"] == qpi.meta["wavelength"]
 
