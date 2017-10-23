@@ -19,7 +19,7 @@ def test_del_warning():
     clspha = qpi._pha
     with warnings.catch_warnings(record=True) as rw:
         clspha.del_bg("data")
-        assert len(rw) == 0
+        assert len(rw) == 1
         msg = str(rw[0].message)
         assert msg.count("data")
         assert msg.lower().count("no bg data")
