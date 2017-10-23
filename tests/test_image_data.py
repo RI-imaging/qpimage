@@ -1,5 +1,6 @@
 from os.path import abspath, dirname
 import sys
+import warnings
 
 import numpy as np
 
@@ -7,6 +8,21 @@ import numpy as np
 sys.path.insert(0, dirname(dirname(abspath(__file__))))
 import qpimage  # noqa: E402
 import qpimage.image_data  # noqa: E402
+
+
+def test_del_warning():
+    size = 50
+    data = np.zeros((size, size), dtype=float)
+    qpi = qpimage.QPImage(data=data,
+                          which_data="phase",
+                          )
+    clspha = qpi._pha
+    with warnings.catch_warnings(record=True) as rw:
+        clspha.del_bg("data")
+        assert len(rw) == 0
+        msg = str(rw[0].message)
+        assert msg.count("data")
+        assert msg.lower().count("no bg data")
 
 
 def test_set_bg():

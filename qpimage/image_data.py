@@ -84,8 +84,7 @@ class ImageData(object):
         if key in self.h5["bg_data"]:
             del self.h5["bg_data"][key]
         else:
-            msg = "No bg data to clear for '{}'in {}.".format(
-                key, self.__name__)
+            msg = "No bg data to clear for '{}' in {}.".format(key, self)
             warnings.warn(msg)
 
     def estimate_bg(self, fit_offset="average", fit_profile="ramp",

@@ -18,18 +18,25 @@ def test_info():
                           meta_data={"wavelength": 300e-9,
                                      "pixel size": .12e-6,
                                      })
-
     # binary with border
     qpi.compute_bg(which_data="phase",
                    fit_offset="mean",
                    fit_profile="offset",
                    from_binary=binary_mask,
                    border_px=5)
+
     info_dict = dict(qpi.info)
     assert 'phase background from binary' in info_dict
     assert 'amplitude background from binary' not in info_dict
     assert info_dict["phase background fit_offset"] == "mean"
     assert info_dict["phase background border_px"] == 5
+
+    qpi.compute_bg(which_data="amplitude",
+                   fit_offset="mean",
+                   fit_profile="offset",
+                   border_px=5)
+    info_dict2 = dict(qpi.info)
+    assert not info_dict2['amplitude background from binary']
 
 
 def test_repr():
