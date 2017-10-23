@@ -1,8 +1,13 @@
 import abc
+import warnings
 
 import numpy as np
 
 from . import bg_estimate
+
+VALID_BG_KEYS = ["data",
+                 "fit",
+                 ]
 
 
 class ImageData(object):
@@ -48,6 +53,17 @@ class ImageData(object):
     @property
     def raw(self):
         return self.h5["raw"].value
+
+    def del_bg(self, key):
+        """Remove the background image 'key'"""
+        if key not in VALID_BG_KEYS:
+            raise ValueError("Invalid bg key: {}".format(key))
+        if key in self.h5["bg_data"]:
+            del self.h5["bg_data"][key]
+        else:
+            msg = "No bg data to clear for '{}'in {}.".format(
+                key, self.__name__)
+            warnings.warn(msg)
 
     def estimate_bg(self, fit_offset="average", fit_profile="ramp",
                     border_px=0, from_binary=None, ret_binary=False):
@@ -126,6 +142,8 @@ class ImageData(object):
                 raise ValueError("No attributes for combined background!")
             return self.bg
         else:
+            if key not in VALID_BG_KEYS:
+                raise ValueError("Invalid bg key: {}".format(key))
             if key in self.h5["bg_data"]:
                 data = self.h5["bg_data"][key].value
                 attrs = self.h5["bg_data"][key].attrs
@@ -135,7 +153,7 @@ class ImageData(object):
                     ret = data
             else:
                 raise KeyError("No background data for {}!".format(key))
-        return ret
+            return ret
 
     def set_bg(self, bg, key="data", attrs={}):
         """Set the background data
@@ -152,7 +170,13 @@ class ImageData(object):
             restrictions regarding key names.
         attrs: dict
             List of background attributes
+
+        See Also
+        --------
+        del_bg: removing background data
         """
+        if key not in VALID_BG_KEYS:
+            raise ValueError("Invalid bg key: {}".format(key))
         # remove previous background key
         if key in self.h5["bg_data"]:
             del self.h5["bg_data"][key]

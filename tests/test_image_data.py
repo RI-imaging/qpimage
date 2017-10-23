@@ -36,6 +36,36 @@ def test_get_bg():
     assert np.all(bgpha == clspha.get_bg(key=None))
 
 
+def test_bad_keys_error():
+    size = 200
+    phase = np.repeat(np.linspace(0, np.pi, size), size)
+    phase = phase.reshape(size, size)
+    bgphase = np.sqrt(np.abs(phase))
+
+    qpi = qpimage.QPImage(phase, bg_data=bgphase, which_data="phase")
+    clspha = qpi._pha
+    try:
+        clspha.del_bg("peter")
+    except ValueError:
+        pass
+    else:
+        assert False
+
+    try:
+        clspha.get_bg("peter")
+    except ValueError:
+        pass
+    else:
+        assert False
+
+    try:
+        clspha.set_bg(bg=None, key="peter")
+    except ValueError:
+        pass
+    else:
+        assert False
+
+
 def test_get_bg_error():
     size = 200
     phase = np.repeat(np.linspace(0, np.pi, size), size)

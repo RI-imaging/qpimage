@@ -9,8 +9,12 @@ from .image_data import Amplitude, Phase
 from .meta import MetaDict
 from ._version import version as __version__
 
-VALID_INPUT_DATA = ["field", "phase", "hologram",
-                    ("phase", "amplitude"), ("phase", "intensity")]
+VALID_INPUT_DATA = ["field",
+                    "hologram",
+                    "phase",
+                    ("phase", "amplitude"),
+                    ("phase", "intensity"),
+                    ]
 
 
 class QPImage(object):
@@ -278,11 +282,12 @@ class QPImage(object):
               - "fit": the background data computed with
                 :py:func:`qpimage.QPImage.compute_bg`
               - "data": the experimentally obtained background image
-
         """
         which_data = QPImage._conv_which_data(which_data)
         if isinstance(keys, str):
+            # make sure keys is a list of strings
             keys = [keys]
+
         # Get image data for clearing
         imdats = []
         if "amplitude" in which_data:
@@ -295,7 +300,7 @@ class QPImage(object):
         # Perform clearing of backgrounds
         for imdat in imdats:
             for key in keys:
-                imdat.set_bg(None, key)
+                imdat.del_bg(key)
 
     def compute_bg(self, which_data="phase",
                    fit_offset="average", fit_profile="ramp",
