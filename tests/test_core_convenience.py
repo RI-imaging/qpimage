@@ -8,6 +8,30 @@ sys.path.insert(0, dirname(dirname(abspath(__file__))))
 import qpimage  # noqa: E402
 
 
+def test_info():
+    size = 50
+    data = np.zeros((size, size), dtype=float)
+    binary_mask = np.zeros_like(data, dtype=bool)
+    binary_mask[::2, ::2] = True
+    qpi = qpimage.QPImage(data=data,
+                          which_data="phase",
+                          meta_data={"wavelength": 300e-9,
+                                     "pixel size": .12e-6,
+                                     })
+
+    # binary with border
+    qpi.compute_bg(which_data="phase",
+                   fit_offset="mean",
+                   fit_profile="offset",
+                   from_binary=binary_mask,
+                   border_px=5)
+    info_dict = dict(qpi.info)
+    assert 'phase background from binary' in info_dict
+    assert 'amplitude background from binary' not in info_dict
+    assert info_dict["phase background fit_offset"] == "mean"
+    assert info_dict["phase background border_px"] == 5
+
+
 def test_repr():
     # make sure no errors when printing repr
     size = 200

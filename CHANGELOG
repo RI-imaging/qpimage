@@ -1,6 +1,7 @@
 0.1.2
  - allow strings and lists for `which_data` everywhere (#1)
  - check for valid background keys in image_data.py (#2)
+ - add QPImage.info property (#5)
  - add slicing (#6)
  - add references to documentation (#7)
 0.1.1

@@ -254,8 +254,21 @@ class QPImage(object):
         return self.amp * np.exp(1j * self.pha)
 
     @property
+    def info(self):
+        """list of tuples with QPImage meta data"""
+        info = []
+        # meta data
+        meta = self.meta
+        for key in meta:
+            info.append((key, self.meta[key]))
+        # background correction
+        for imdat in [self._amp, self._pha]:
+            info += imdat.info
+        return info
+
+    @property
     def meta(self):
-        """meta data"""
+        """dictionary with imaging meta data"""
         return MetaDict(self.h5.attrs)
 
     @property
