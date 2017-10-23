@@ -59,12 +59,12 @@ class QPImage(object):
 
         Notes
         -----
-        QPImage is slicable, e.g. this returns a new QPImage
+        QPImage is slicable; the following returns a new QPImage:
 
         .. code-block:: python
 
             qpi = QPImage(data=...)
-            qpi[10:20, 40:30]
+            qpi_scliced = qpi[10:20, 40:30]
         """
         if isinstance(h5file, h5py.Group):
             self.h5 = h5file
