@@ -46,7 +46,7 @@ def test_qpimage_copy_to_file():
 
     try:
         os.remove(tf)
-    except:
+    except OSError:
         pass
 
 
@@ -61,7 +61,7 @@ def test_qpimage_copy_method():
 
     try:
         os.remove(tf)
-    except:
+    except OSError:
         pass
 
 

@@ -77,7 +77,7 @@ def test_background_fit():
     # cleanup
     try:
         os.remove(tf)
-    except:
+    except OSError:
         pass
 
 

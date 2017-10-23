@@ -18,7 +18,7 @@ def test_series_h5file():
     # cleanup
     try:
         os.remove(tf)
-    except:
+    except OSError:
         pass
 
 
@@ -50,7 +50,7 @@ def test_series_from_h5file():
     # cleanup
     try:
         os.remove(tf)
-    except:
+    except OSError:
         pass
 
 
@@ -85,7 +85,7 @@ def test_series_error_meta():
     # cleanup
     try:
         os.remove(tf)
-    except:
+    except OSError:
         pass
 
 
@@ -119,7 +119,7 @@ def test_series_error_file_is_qpimage():
     # cleanup
     try:
         os.remove(tf)
-    except:
+    except OSError:
         pass
 
 

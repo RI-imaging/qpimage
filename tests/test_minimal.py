@@ -38,7 +38,7 @@ def test_file():
     # cleanup
     try:
         os.remove(h5file)
-    except:
+    except OSError:
         pass
 
 
