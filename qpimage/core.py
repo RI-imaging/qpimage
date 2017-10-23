@@ -56,6 +56,15 @@ class QPImage(object):
               - "w": Create file, truncate if exists
               - "w-" or "x": Create file, fail if exists
               - "a": Read/write if exists, create otherwise (default)
+        
+        Notes
+        -----
+        QPImage is slicable, e.g. this returns a new QPImage 
+        ```python
+            qpi = QPImage(data=...)
+            qpi[10:20, 40:30]
+        ```
+        
         """
         if isinstance(h5file, h5py.Group):
             self.h5 = h5file
@@ -109,6 +118,28 @@ class QPImage(object):
         if self._do_h5_cleanup:
             self.h5.flush()
             self.h5.close()
+
+    def __getitem__(self, given):
+        """Slice QPImage `pha` and `amp` and return a new QPImage
+
+        The QPImage returned by this method is background-
+        corrected, i.e. it is not possible to reproduce the
+        background correction of the original QPImage.
+        """
+        if isinstance(given, (slice, tuple)):
+            # return new QPImage
+            pha = self.pha.__getitem__(given)
+            amp = self.amp.__getitem__(given)
+            qpi = QPImage(data=(pha, amp),
+                          which_data="phase,amplitude",
+                          meta_data=self.meta)
+            return qpi
+        elif isinstance(given, str):
+            # return meta data
+            return self.meta[given]
+        else:
+            msg = "Only slicing and meta data keys allowed for `__getitem__`"
+            raise ValueError(msg)
 
     def __repr__(self):
         rep = "QPImage, {x}x{y}px".format(x=self._amp.raw.shape[0],

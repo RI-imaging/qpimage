@@ -46,10 +46,10 @@ class QPSeries(object):
         else:
             if h5file is None:
                 h5kwargs = {"name": "qpseries{}.h5".format(
-                                                        QPSeries._instances),
-                            "driver": "core",
-                            "backing_store": False,
-                            "mode": "a"}
+                    QPSeries._instances),
+                    "driver": "core",
+                    "backing_store": False,
+                    "mode": "a"}
             else:
                 h5kwargs = {"name": h5file,
                             "mode": h5mode}

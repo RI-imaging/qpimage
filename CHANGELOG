@@ -1,3 +1,5 @@
+0.1.2
+ - add slicing (#6)
 0.1.1
  - QPImage.set_bg_data now accepts QPImage objects
  - add QPSeries for managing multiple QPImages in one hdf5 file (#3) 

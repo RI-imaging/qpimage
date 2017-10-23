@@ -169,6 +169,47 @@ def test_properties():
     assert not np.all(qpi.bg_pha == bg_pha)
 
 
+def test_slice():
+    size = 50
+    pha = np.repeat(np.linspace(0, 10, size), size)
+    pha = pha.reshape(size, size)
+    amp = np.linspace(.95, 1.05, size**2).reshape(size, size)
+    bg_pha = np.zeros_like(pha) + np.linspace(-.1, .1, size).reshape(-1, 1)
+    bg_amp = np.zeros_like(pha) + np.linspace(1.1, .99, size).reshape(-1, 1)
+
+    qpi = qpimage.QPImage(data=[pha, amp],
+                          bg_data=[bg_pha, bg_amp],
+                          which_data="phase,amplitude",
+                          meta_data={"wavelength": 500e-9})
+    x = 25
+    y = 10
+    x_size = 25
+    y_size = 5
+    qpic = qpi[x:x + x_size, y:y + y_size]
+    # simple sanity checks
+    assert qpic.shape == (x_size, y_size)
+    # check bg_correction
+    assert np.allclose(qpic.pha, (pha-bg_pha)[x:x + x_size, y:y + y_size])
+    assert np.allclose(qpic.amp, (amp/bg_amp)[x:x + x_size, y:y + y_size])
+
+    # slice along x
+    qpic2 = qpi[x:x + x_size]
+    assert qpic2.shape == (25, size)
+    assert np.allclose(qpic2.pha, (pha-bg_pha)[x:x + x_size])
+    assert np.allclose(qpic2.amp, (amp/bg_amp)[x:x + x_size])
+    
+    # index should not work
+    try:
+        qpi[0]
+    except ValueError:
+        pass
+    else:
+        assert False, "simple indexing not supported"
+    
+    # string returns meta
+    assert qpi["wavelength"] == qpi.meta["wavelength"]
+
+
 if __name__ == "__main__":
     # Run all tests
     loc = locals()
