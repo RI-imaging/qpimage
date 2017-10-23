@@ -1,4 +1,5 @@
 0.1.2
+ - allow strings and lists for `which_data` everywhere (#1)
  - add slicing (#6)
  - add references to documentation (#7)
 0.1.1

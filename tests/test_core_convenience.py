@@ -24,6 +24,26 @@ def test_repr():
     print(qpi._amp)
 
 
+def test_which_data():
+    conv = qpimage.QPImage._conv_which_data
+    assert conv("phase") == "phase"
+    assert conv("phase,amplitude") == ("phase", "amplitude")
+    assert conv("phase, amplitude") == ("phase", "amplitude")
+    assert conv("phase,Intensity") == ("phase", "intensity")
+    assert conv("Phase") == "phase"
+    assert conv("phase,") == "phase"
+    assert conv("phase") == "phase"
+    assert conv("phase, ") == "phase"    
+    assert conv(None) is None
+    
+    try:
+        conv(10)
+    except ValueError:
+        pass
+    else:
+        assert False, "which_data can only be list, str, tuple"
+
+
 if __name__ == "__main__":
     # Run all tests
     loc = locals()

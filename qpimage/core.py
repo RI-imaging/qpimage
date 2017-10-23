@@ -10,7 +10,7 @@ from .meta import MetaDict
 from ._version import version as __version__
 
 VALID_INPUT_DATA = ["field", "phase", "hologram",
-                    "phase,amplitude", "phase,intensity"]
+                    ("phase","amplitude"), ("phase","intensity")]
 
 
 class QPImage(object):
@@ -133,7 +133,7 @@ class QPImage(object):
             pha = self.pha.__getitem__(given)
             amp = self.amp.__getitem__(given)
             qpi = QPImage(data=(pha, amp),
-                          which_data="phase,amplitude",
+                          which_data=("phase", "amplitude"),
                           meta_data=self.meta)
             return qpi
         elif isinstance(given, str):
@@ -156,6 +156,38 @@ class QPImage(object):
                 rep += ", λ={:.2e}m".format(wl)
 
         return rep
+    
+    @staticmethod
+    def _conv_which_data(which_data):
+        """Convert which data to string or tuple
+        
+        This function improves user convenience,
+        as `which_data` may be of several types
+        (str, ,str with spaces and commas, list, tuple) which
+        is internally handled by this method.
+        """
+        if isinstance(which_data, str):
+            which_data = which_data.lower().strip()
+            if which_data.count(","):
+                # convert comma string to list
+                which_data = [ w.strip() for w in which_data.split(",") ]
+                # remove empty strings
+                which_data = [ w for w in which_data if w ]
+                if len(which_data) == 1:
+                    return which_data[0]
+                else:
+                    # convert to tuple
+                    return tuple(which_data)
+            else:
+                return which_data
+        elif isinstance(which_data, (list, tuple)):
+            which_data = [ w.lower().strip() for w in which_data]
+            return tuple(which_data)
+        elif which_data is None:
+            return None
+        else:
+            msg = "unknown type for `which_data`: {}".format(which_data)
+            raise ValueError(msg)
 
     def _get_amp_pha(self, data, which_data):
         """Convert input data to phase and amplitude
@@ -175,6 +207,7 @@ class QPImage(object):
         -------
         amp, pha: tuple of (:py:class:`Amplitdue`, :py:class:`Phase`)
         """
+        which_data = QPImage._conv_which_data(which_data)
         if which_data not in VALID_INPUT_DATA:
             msg = "`which_data` must be one of {}!".format(VALID_INPUT_DATA)
             raise ValueError(msg)
@@ -185,10 +218,10 @@ class QPImage(object):
         elif which_data == "phase":
             pha = unwrap_phase(data)
             amp = np.ones_like(data)
-        elif which_data == "phase,amplitude":
+        elif which_data == ("phase", "amplitude"):
             amp = data[1]
             pha = unwrap_phase(data[0])
-        elif which_data == "phase,intensity":
+        elif which_data == ("phase", "intensity"):
             amp = np.sqrt(data[1])
             pha = unwrap_phase(data[0])
         elif which_data == "hologram":
@@ -231,7 +264,7 @@ class QPImage(object):
         """the shape of the image"""
         return self._pha.h5["raw"].shape
 
-    def clear_bg(self, which_data=["amplitude", "phase"], keys="fit"):
+    def clear_bg(self, which_data=("amplitude", "phase"), keys="fit"):
         """Clear background correction
 
         Parameters
@@ -247,9 +280,7 @@ class QPImage(object):
               - "data": the experimentally obtained background image
 
         """
-        # convert to list
-        if isinstance(which_data, str):
-            which_data = [which_data]
+        which_data = QPImage._conv_which_data(which_data)
         if isinstance(keys, str):
             keys = [keys]
         # Get image data for clearing
@@ -322,9 +353,7 @@ class QPImage(object):
         --------
         qpimage.bg_estimate.estimate
         """
-        # convert to list
-        if isinstance(which_data, str):
-            which_data = [which_data]
+        which_data = QPImage._conv_which_data(which_data)
         # check validity
         if not ("amplitude" in which_data or
                 "phase" in which_data):
@@ -411,8 +440,8 @@ class QPImage(object):
             String or comma-separated list of strings indicating
             the order and type of input data. Valid values are
             "field", "phase", "phase,amplitude", or "phase,intensity",
-            where the latter two require an indexable object with
-            the phase data as first element.
+            where the latter two require an indexable object for
+            `bg_data` with the phase data as first element.
         """
         if isinstance(bg_data, QPImage):
             if which_data is not None:
