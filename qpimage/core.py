@@ -10,7 +10,7 @@ from .meta import MetaDict
 from ._version import version as __version__
 
 VALID_INPUT_DATA = ["field", "phase", "hologram",
-                    ("phase","amplitude"), ("phase","intensity")]
+                    ("phase", "amplitude"), ("phase", "intensity")]
 
 
 class QPImage(object):
@@ -156,11 +156,11 @@ class QPImage(object):
                 rep += ", λ={:.2e}m".format(wl)
 
         return rep
-    
+
     @staticmethod
     def _conv_which_data(which_data):
         """Convert which data to string or tuple
-        
+
         This function improves user convenience,
         as `which_data` may be of several types
         (str, ,str with spaces and commas, list, tuple) which
@@ -170,9 +170,9 @@ class QPImage(object):
             which_data = which_data.lower().strip()
             if which_data.count(","):
                 # convert comma string to list
-                which_data = [ w.strip() for w in which_data.split(",") ]
+                which_data = [w.strip() for w in which_data.split(",")]
                 # remove empty strings
-                which_data = [ w for w in which_data if w ]
+                which_data = [w for w in which_data if w]
                 if len(which_data) == 1:
                     return which_data[0]
                 else:
@@ -181,7 +181,7 @@ class QPImage(object):
             else:
                 return which_data
         elif isinstance(which_data, (list, tuple)):
-            which_data = [ w.lower().strip() for w in which_data]
+            which_data = [w.lower().strip() for w in which_data]
             return tuple(which_data)
         elif which_data is None:
             return None

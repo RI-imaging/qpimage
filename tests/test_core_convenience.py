@@ -33,9 +33,9 @@ def test_which_data():
     assert conv("Phase") == "phase"
     assert conv("phase,") == "phase"
     assert conv("phase") == "phase"
-    assert conv("phase, ") == "phase"    
+    assert conv("phase, ") == "phase"
     assert conv(None) is None
-    
+
     try:
         conv(10)
     except ValueError:
