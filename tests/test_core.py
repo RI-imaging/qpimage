@@ -85,6 +85,13 @@ def test_comput_bg_error():
         pass
     else:
         assert False, "negative percent border not allowed"
+    try:
+        qpi.compute_bg(which_data="phase",
+                       from_binary=np.zeros((size, size), dtype=bool))
+    except ValueError:
+        pass
+    else:
+        assert False, "all-zero binary array does not work"
 
 
 def test_get_amp_pha():
@@ -167,6 +174,31 @@ def test_properties():
 
     assert not np.all(qpi.bg_amp == bg_amp)
     assert not np.all(qpi.bg_pha == bg_pha)
+
+
+def test_set_bg_data_qpimage():
+    size = 20
+    pha = np.repeat(np.linspace(0, 10, size), size)
+    pha = pha.reshape(size, size)
+    amp = np.linspace(.95, 1.05, size**2).reshape(size, size)
+
+    bg_amp = np.linspace(.93, 1.02, size**2).reshape(size, size)
+    bg_pha = pha * .5
+
+    qpi = qpimage.QPImage(data=(pha, amp),
+                          which_data="phase,amplitude")
+    bg_qpi = qpimage.QPImage(data=(bg_pha, bg_amp),
+                             which_data="phase,amplitude")
+    qpi.set_bg_data(bg_qpi)
+    assert np.allclose(qpi.pha, pha - bg_pha)
+
+    # test wrong kwarg
+    try:
+        qpi.set_bg_data(bg_qpi, which_data="phase,amplitude")
+    except ValueError:
+        pass
+    else:
+        assert False, "which_data is invalid argument when data is QPImage"
 
 
 def test_slice():
