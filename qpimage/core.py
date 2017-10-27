@@ -277,6 +277,16 @@ class QPImage(object):
         return self._pha.image
 
     @property
+    def raw_amp(self):
+        """raw amplitude image"""
+        return self._amp.raw
+
+    @property
+    def raw_pha(self):
+        """raw phase image"""
+        return self._pha.raw
+
+    @property
     def shape(self):
         """the shape of the image"""
         return self._pha.h5["raw"].shape

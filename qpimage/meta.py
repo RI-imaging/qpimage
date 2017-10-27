@@ -1,4 +1,5 @@
-VALID_META_KEYS = ["medium index",
+VALID_META_KEYS = ["identifier",
+                   "medium index",
                    "pixel size",
                    "time",
                    "wavelength",

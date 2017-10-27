@@ -1,7 +1,7 @@
 ========
 User API
 ========
-The QPImage API is built upon the hdf5 file format using
+The qpimage API is built upon the hdf5 file format using
 `h5py <http://h5py.readthedocs.io/>`_. That means that each instance of
 :py:class:`qpimage.QPImage` generates an hdf5 file, either on disk or
 in memory, depending on the preferences of the user. This approach
