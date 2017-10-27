@@ -113,7 +113,9 @@ class QPImage(object):
         return self
 
     def __eq__(self, other):
-        if (np.allclose(self.amp, other.amp) and
+        if (isinstance(other, QPImage) and
+            self.shape == other.shape and
+            np.allclose(self.amp, other.amp) and
             np.allclose(self.pha, other.pha) and
                 self.meta == other.meta):
             return True

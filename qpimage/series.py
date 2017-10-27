@@ -91,23 +91,26 @@ class QPSeries(object):
         keys = [kk for kk in keys if kk.startswith("qpi_")]
         return len(keys)
 
-    def add_qpimage(self, qpimage):
+    def add_qpimage(self, qpi, identifier=None):
         """Add a QPImage instance to the QPSeries
 
         Parameters
         ----------
         qpimage: QPImage
             The QPImage that is added to the series
+        identifier: str
+            Identifier key for `qpi`
         """
-        if not isinstance(qpimage, QPImage):
+        if not isinstance(qpi, QPImage):
             raise ValueError("`qpimage` must be instance of QPImage!")
-
         # determine number of qpimages
         num = len(self)
         # indices start at zero; do not add 1
         name = "qpi_{}".format(num)
         group = self.h5.create_group(name)
-        qpimage.copy(h5file=group)
+        qpi.copy(h5file=group)
+        # set identifier
+        qpi.h5.attrs["identifier"] = identifier
 
     def get_qpimage(self, index):
         """Return a single QPImage of the series

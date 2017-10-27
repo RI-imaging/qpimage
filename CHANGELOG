@@ -1,5 +1,8 @@
 0.1.3
- - added QPImage.raw_amp and QPImage.raw_pha
+ - add QPImage.raw_amp and QPImage.raw_pha
+ - improve QPImage.__eq__
+ - add "identifier" meta data key
+ - add `identifier` keyword for QPSeries.add_qpimage
 0.1.2
  - allow strings and lists for `which_data` everywhere (#1)
  - check for valid background keys in image_data.py (#2)
