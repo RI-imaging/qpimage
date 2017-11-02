@@ -1,11 +1,6 @@
-from os.path import abspath, dirname
-import sys
-
 import numpy as np
 
-# Add parent directory to beginning of path variable
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
-import qpimage  # noqa: E402
+import qpimage
 
 
 def test_offset_mean_simple():

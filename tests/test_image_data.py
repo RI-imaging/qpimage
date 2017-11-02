@@ -1,13 +1,9 @@
-from os.path import abspath, dirname
-import sys
 import warnings
 
 import numpy as np
 
-# Add parent directory to beginning of path variable
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
-import qpimage  # noqa: E402
-import qpimage.image_data  # noqa: E402
+import qpimage
+import qpimage.image_data
 
 
 def test_del_warning():

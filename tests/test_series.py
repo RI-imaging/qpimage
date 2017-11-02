@@ -1,13 +1,10 @@
 import os
-from os.path import abspath, dirname, join
-import sys
+import pathlib
 import tempfile
 
 import h5py
 
-# Add parent directory to beginning of path variable
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
-import qpimage  # noqa: E402
+import qpimage
 
 
 def test_series_h5file():
@@ -23,7 +20,7 @@ def test_series_h5file():
 
 
 def test_series_from_list():
-    h5file = join(dirname(abspath(__file__)), "data/bg_ramp.h5")
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
     qpi1 = qpimage.QPImage(h5file=h5file)
     qpi2 = qpi1.copy()
 
@@ -33,7 +30,7 @@ def test_series_from_list():
 
 
 def test_series_from_h5file():
-    h5file = join(dirname(abspath(__file__)), "data/bg_ramp.h5")
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
     qpi1 = qpimage.QPImage(h5file=h5file)
     qpi2 = qpi1.copy()
 
@@ -55,7 +52,7 @@ def test_series_from_h5file():
 
 
 def test_series_meta():
-    h5file = join(dirname(abspath(__file__)), "data/bg_ramp.h5")
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
     qpi1 = qpimage.QPImage(h5file=h5file, meta_data={"wavelength": 300e-9})
     assert qpi1.meta["wavelength"] == 300e-9
     qps = qpimage.QPSeries(qpimage_list=[qpi1], meta_data={
@@ -64,7 +61,7 @@ def test_series_meta():
 
 
 def test_series_error_meta():
-    h5file = join(dirname(abspath(__file__)), "data/bg_ramp.h5")
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
     qpi1 = qpimage.QPImage(h5file=h5file)
     qpi2 = qpi1.copy()
 
@@ -90,7 +87,7 @@ def test_series_error_meta():
 
 
 def test_series_error_key():
-    h5file = join(dirname(abspath(__file__)), "data/bg_ramp.h5")
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
     qpi1 = qpimage.QPImage(h5file=h5file)
     qpi2 = qpi1.copy()
 
@@ -104,7 +101,7 @@ def test_series_error_key():
 
 
 def test_series_error_file_is_qpimage():
-    h5file = join(dirname(abspath(__file__)), "data/bg_ramp.h5")
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
     qpi1 = qpimage.QPImage(h5file=h5file)
     tf = tempfile.mktemp(suffix=".h5", prefix="qpimage_test_")
     with qpi1.copy(h5file=tf):

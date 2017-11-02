@@ -1,13 +1,8 @@
-from os.path import abspath, dirname
-import sys
-
 import numpy as np
 
-# Add parent directory to beginning of path variable
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
-import qpimage  # noqa: E402
-from qpimage import meta  # noqa: E402
-from qpimage import bg_estimate  # noqa: E402
+import qpimage
+from qpimage import meta
+from qpimage import bg_estimate
 
 
 def test_bg_estimate_errors():

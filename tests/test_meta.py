@@ -1,10 +1,5 @@
-from os.path import abspath, dirname
-import sys
-
-# Add parent directory to beginning of path variable
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
-import qpimage  # noqa: E402
-import qpimage.meta  # noqa: E402
+import qpimage
+import qpimage.meta
 
 
 def test_meta():

@@ -1,9 +1,6 @@
-from os.path import abspath, dirname, join
-import sys
+import pathlib
 
-# Add parent directory to beginning of path variable
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
-import qpimage.integrity_check  # noqa: E402
+import qpimage.integrity_check
 
 
 def test_ramp_from_h5file():
@@ -34,7 +31,7 @@ def test_ramp_from_h5file():
                        )
     ```
     """
-    h5file = join(dirname(abspath(__file__)), "data/bg_ramp.h5")
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
     qpimage.integrity_check.check(h5file, checks=["background"])
 
 

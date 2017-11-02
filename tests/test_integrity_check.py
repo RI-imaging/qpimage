@@ -1,15 +1,11 @@
 import os
-from os.path import abspath, dirname
-import sys
 import tempfile
 
 import h5py
 import numpy as np
 
-# Add parent directory to beginning of path variable
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
-import qpimage  # noqa: E402
-import qpimage.integrity_check  # noqa: E402
+import qpimage
+import qpimage.integrity_check
 
 
 def test_attributes():

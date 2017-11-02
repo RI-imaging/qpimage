@@ -1,10 +1,5 @@
-from os.path import abspath, dirname
-import sys
-
 import numpy as np
 
-# Add parent directory to beginning of path variable
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
 import qpimage  # noqa: E402
 
 

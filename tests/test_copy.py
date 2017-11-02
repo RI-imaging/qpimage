@@ -1,19 +1,16 @@
 import os
-from os.path import abspath, dirname, join
-import sys
+import pathlib
 import tempfile
 
 import h5py
 import numpy as np
 
-# Add parent directory to beginning of path variable
-sys.path.insert(0, dirname(dirname(abspath(__file__))))
-import qpimage  # noqa: E402
-import qpimage.core  # noqa: E402
+import qpimage
+import qpimage.core
 
 
 def test_qpimage_copy_to_mem():
-    h5file = join(dirname(abspath(__file__)), "data/bg_ramp.h5")
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
     qpi = qpimage.QPImage(h5file=h5file)
     # create an in-memory copy
     qpi2 = qpi.copy()
@@ -22,7 +19,7 @@ def test_qpimage_copy_to_mem():
 
 
 def test_qpimage_copy_to_file():
-    h5file = join(dirname(abspath(__file__)), "data/bg_ramp.h5")
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
     qpi = qpimage.QPImage(h5file=h5file)
 
     tf = tempfile.mktemp(suffix=".h5", prefix="qpimage_test_")
@@ -51,7 +48,7 @@ def test_qpimage_copy_to_file():
 
 
 def test_qpimage_copy_method():
-    h5file = join(dirname(abspath(__file__)), "data/bg_ramp.h5")
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
     tf = tempfile.mktemp(suffix=".h5", prefix="qpimage_test_")
     qpimage.core.copyh5(inh5=h5file, outh5=tf)
     qpi1 = qpimage.QPImage(h5file=h5file, h5mode="r")
