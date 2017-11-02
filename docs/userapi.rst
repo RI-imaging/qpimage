@@ -96,4 +96,4 @@ QPSeries
 
 Constants
 ---------
-.. autodata:: qpimage.VALID_META_KEYS
+.. autodata:: qpimage.META_KEYS

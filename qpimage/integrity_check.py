@@ -2,7 +2,7 @@ import h5py
 import numpy as np
 
 from .core import QPImage
-from .meta import VALID_META_KEYS
+from .meta import DATA_KEYS
 
 
 class IntegrityCheckError(BaseException):
@@ -42,7 +42,7 @@ def check(qpi_or_h5file, checks=["attributes", "background"]):
 
 def check_attributes(qpi):
     missing_attrs = []
-    for key in VALID_META_KEYS:
+    for key in DATA_KEYS:
         if key not in qpi.meta:
             missing_attrs.append(key)
     if missing_attrs:

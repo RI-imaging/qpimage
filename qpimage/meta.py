@@ -1,14 +1,18 @@
-VALID_META_KEYS = ["identifier",
-                   "medium index",
-                   "pixel size",
-                   "time",
-                   "wavelength",
-                   ]
+DATA_KEYS = ["medium index",  # refractive index of the medium
+             "pixel size",  # detector pixel size [m]
+             "time",  # acquisition time of the image (float)
+             "wavelength",  # imaging wavelength [m]
+             ]
 
-OTHER_META_KEYS = ["qpimage version",
-                   ]
+OTHER_KEYS = ["dm exclude",  # DryMass: exclude image from  analysis
+              "dm object center",  # DryMass: center of object [px]
+              "dm object index",  # DryMass: refractive index of object
+              "dm object radius",  # DryMass: object radius [m]
+              "identifier",  # image identifier
+              "qpimage version",  # software version used
+              ]
 
-META_KEYS = VALID_META_KEYS + OTHER_META_KEYS
+META_KEYS = DATA_KEYS + OTHER_KEYS
 
 
 class MetaDataMissingError(BaseException):
@@ -18,8 +22,8 @@ class MetaDataMissingError(BaseException):
 class MetaDict(dict):
     """A dictionary containing meta data variables
 
-    Valid keynames are given in the
-    :py:const:`qpimage.meta.VALID_META_KEYS` variable.
+    Valid keynames are combined in the
+    :py:const:`qpimage.meta.META_KEYS` variable.
 
     Methods
     -------
@@ -36,7 +40,7 @@ class MetaDict(dict):
         """Set a meta data variable
 
         The key must be a valid key defined in the
-        :py:const:`qpimage.meta.VALID_META_KEYS` variable.
+        :py:const:`qpimage.meta.META_KEYS` variable.
         """
         if key not in META_KEYS:
             raise KeyError("Unknown meta variable: '{}'".format(key))

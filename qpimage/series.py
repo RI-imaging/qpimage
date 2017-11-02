@@ -17,7 +17,7 @@ class QPSeries(object):
             A list of instances of :py:class:`qpimage.QPImage`.
         meta_data: dict
             Meta data associated with the input data
-            (see :py:class:`qpimage.VALID_META_KEYS`). This overrides
+            (see :py:class:`qpimage.META_KEYS`). This overrides
             the meta data of the QPImages in `qpimage_list` and, if
             `h5file` is given and `h5mode` is not "r", overrides
             the meta data in `h5file`.
@@ -109,8 +109,9 @@ class QPSeries(object):
         name = "qpi_{}".format(num)
         group = self.h5.create_group(name)
         qpi.copy(h5file=group)
-        # set identifier
-        qpi.h5.attrs["identifier"] = identifier
+        if identifier:
+            # set identifier
+            qpi.h5.attrs["identifier"] = identifier
 
     def get_qpimage(self, index):
         """Return a single QPImage of the series
