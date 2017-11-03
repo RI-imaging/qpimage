@@ -48,7 +48,7 @@ class MetaDict(dict):
 
     def __getitem__(self, *args, **kwargs):
         if args[0] not in self:
-            msg = "No meta data was defined for {}! ".format(args[0]) \
+            msg = "No meta data was defined for '{}'! ".format(args[0]) \
                   + "Please make sure you passed the dictionary `meta_data` " \
                   + "when creating the QPImage instance."
             raise MetaDataMissingError(msg)

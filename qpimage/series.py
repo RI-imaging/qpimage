@@ -125,7 +125,7 @@ class QPSeries(object):
         qpi.copy(h5file=group)
         if identifier:
             # set identifier
-            qpi.h5.attrs["identifier"] = identifier
+            group.attrs["identifier"] = identifier
 
     def get_qpimage(self, index):
         """Return a single QPImage of the series
