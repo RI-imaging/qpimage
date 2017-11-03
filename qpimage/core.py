@@ -6,7 +6,7 @@ from skimage.restoration import unwrap_phase
 
 from . import holo
 from .image_data import Amplitude, Phase
-from .meta import MetaDict
+from .meta import MetaDict, META_KEYS
 from ._version import version as __version__
 
 VALID_INPUT_DATA = ["field",
@@ -127,6 +127,9 @@ class QPImage(object):
             self.h5.flush()
             self.h5.close()
 
+    def __contains__(self, key):
+        return key in self.h5.attrs
+
     def __getitem__(self, given):
         """Slice QPImage `pha` and `amp` and return a new QPImage
 
@@ -162,6 +165,12 @@ class QPImage(object):
                 rep += ", λ={:.2e}m".format(wl)
 
         return rep
+
+    def __setitem__(self, key, value):
+        if key not in META_KEYS:
+            raise KeyError("Unknown meta data key: {}".format(key))
+        else:
+            self.h5.attrs[key] = value
 
     @staticmethod
     def _conv_which_data(which_data):

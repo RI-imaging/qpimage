@@ -8,7 +8,7 @@ class QPSeries(object):
     _instances = 0
 
     def __init__(self, qpimage_list=[], meta_data={},
-                 h5file=None, h5mode="a"):
+                 h5file=None, h5mode="a", identifier=None):
         """Quantitative phase image series
 
         Parameters
@@ -51,7 +51,7 @@ class QPSeries(object):
                     "backing_store": False,
                     "mode": "a"}
             else:
-                h5kwargs = {"name": h5file,
+                h5kwargs = {"name": str(h5file),
                             "mode": h5mode}
             self.h5 = h5py.File(**h5kwargs)
             self._do_h5_cleanup = True
@@ -78,6 +78,10 @@ class QPSeries(object):
                 for mk in meta:
                     qpii.h5.attrs[mk] = meta[mk]
 
+        # Set identifier
+        if identifier:
+            self.h5.attrs["identifier"] = identifier
+
     def __enter__(self):
         return self
 
@@ -86,10 +90,20 @@ class QPSeries(object):
             self.h5.flush()
             self.h5.close()
 
+    def __getitem__(self, index):
+        return self.get_qpimage(index)
+
     def __len__(self):
         keys = list(self.h5.keys())
         keys = [kk for kk in keys if kk.startswith("qpi_")]
         return len(keys)
+
+    @property
+    def identifier(self):
+        if "identifier" in self.h5.attrs:
+            return self.h5.attrs["identifier"]
+        else:
+            return None
 
     def add_qpimage(self, qpi, identifier=None):
         """Add a QPImage instance to the QPSeries
