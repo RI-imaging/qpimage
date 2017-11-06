@@ -93,6 +93,10 @@ class QPSeries(object):
     def __getitem__(self, index):
         return self.get_qpimage(index)
 
+    def __iter__(self):
+        for ii in range(len(self)):
+            yield self[ii]
+
     def __len__(self):
         keys = list(self.h5.keys())
         keys = [kk for kk in keys if kk.startswith("qpi_")]
