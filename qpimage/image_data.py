@@ -87,7 +87,7 @@ class ImageData(object):
             msg = "No bg data to clear for '{}' in {}.".format(key, self)
             warnings.warn(msg)
 
-    def estimate_bg(self, fit_offset="average", fit_profile="ramp",
+    def estimate_bg(self, fit_offset="mean", fit_profile="ramp",
                     border_px=0, from_binary=None, ret_binary=False):
         """Estimate image background
 

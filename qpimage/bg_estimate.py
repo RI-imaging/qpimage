@@ -39,10 +39,14 @@ def estimate(data, fit_offset="average", fit_profile="ramp",
     intersection of the two resulting binary images is used.
     """
     if fit_profile not in VALID_FIT_PROFILES:
-        msg = "`fit_profile` must be one of {}".format(VALID_FIT_PROFILES)
+        msg = "`fit_profile` must be one of {}, got '{}'".format(
+                                                VALID_FIT_PROFILES,
+                                                fit_profile)
         raise ValueError(msg)
     if fit_offset not in VALID_FIT_OFFSETS:
-        msg = "`fit_offset` must be one of {}".format(VALID_FIT_OFFSETS)
+        msg = "`fit_offset` must be one of {}, got '{}'".format(
+                                                VALID_FIT_OFFSETS,
+                                                fit_offset)
         raise ValueError(msg)
     # initial binary image
     if from_binary is not None:
