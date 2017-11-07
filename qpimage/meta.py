@@ -5,9 +5,9 @@ DATA_KEYS = ["medium index",  # refractive index of the medium
              ]
 
 OTHER_KEYS = ["dm exclude",  # DryMass: exclude image from  analysis
-              "dm object center",  # DryMass: center of object [px]
-              "dm object index",  # DryMass: refractive index of object
-              "dm object radius",  # DryMass: object radius [m]
+              "sim center",  # Simulation: center of object [px]
+              "sim index",  # Simulation: refractive index of object
+              "sim radius",  # Simulation: object radius [m]
               "identifier",  # image identifier
               "qpimage version",  # software version used
               ]
