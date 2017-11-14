@@ -6,6 +6,8 @@
    - keyword for QPSeries.add_qpimage
    - property of and keyword for QPSeries
  - add convenience functions for item access in QPImage and QPSeries
+ - moved to pathlib
+ - minor API changes
 0.1.2
  - allow strings and lists for `which_data` everywhere (#1)
  - check for valid background keys in image_data.py (#2)
