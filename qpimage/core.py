@@ -72,7 +72,8 @@ class QPImage(object):
             qpi = QPImage(data=...)
             qpi_scliced = qpi[10:20, 40:30]
         """
-        if data and not isinstance(data, np.ndarray):
+        if (data is not None and
+                not isinstance(data, (np.ndarray, list, tuple))):
             msg = "`data` must be numpy.ndarray!"
             if isinstance(data, str):
                 msg += " Did you mean `h5file={}`?".format(data)
