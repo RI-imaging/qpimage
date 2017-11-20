@@ -109,7 +109,8 @@ class ImageData(object):
         from_binary: boolean np.ndarray or None
             Use a boolean array to define the background area.
             The binary image must have the same shape as the
-            input data.
+            input data.`True` elements are used for background
+            estimation.
         ret_binary: bool
             Return the binary image used to compute the background.
 
