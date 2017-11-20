@@ -40,6 +40,11 @@ class QPSeries(object):
               - "w-" or "x": Create file, fail if exists
               - "a": Read/write if exists, create otherwise (default)
         """
+        if qpimage_list and not isinstance(qpimage_list, list):
+            msg = "`qpimage_list` must be a list!"
+            if isinstance(qpimage_list, str):
+                msg += " Did you mean `h5file={}`?".format(qpimage_list)
+            raise ValueError(msg)
         if isinstance(h5file, h5py.Group):
             self.h5 = h5file
             self._do_h5_cleanup = False
