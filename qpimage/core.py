@@ -1,4 +1,5 @@
 import copy
+import pathlib
 
 import h5py
 import numpy as np
@@ -75,7 +76,7 @@ class QPImage(object):
         if (data is not None and
                 not isinstance(data, (np.ndarray, list, tuple))):
             msg = "`data` must be numpy.ndarray!"
-            if isinstance(data, str):
+            if isinstance(data, (str, pathlib.Path)):
                 msg += " Did you mean `h5file={}`?".format(data)
             raise ValueError(msg)
         if isinstance(h5file, h5py.Group):

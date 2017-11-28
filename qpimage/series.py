@@ -144,12 +144,17 @@ class QPSeries(object):
         index: int
             Index of the qpimage
         """
+        if index < -len(self):
+            msg = "Index {} is out of bounds for QPSeries of size {}!".format(
+                index, len(self))
+            raise ValueError(msg)
+        elif index < 0:
+            index += len(self)
         name = "qpi_{}".format(index)
         if name in self.h5:
             group = self.h5[name]
         else:
             msg = "Index {} not found for QPSeries of length {}".format(
-                index,
-                len(self))
+                index, len(self))
             raise KeyError(msg)
         return QPImage(h5file=group)

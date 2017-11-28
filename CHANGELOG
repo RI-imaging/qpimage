@@ -1,5 +1,6 @@
 0.1.4
  - more __init__ checks for QPImage and QPSeries (user convenience)
+ - allow negative indices in QPSeries.get_qpimage
 0.1.3
  - add QPImage.raw_amp and QPImage.raw_pha
  - improve QPImage.__eq__

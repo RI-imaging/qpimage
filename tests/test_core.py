@@ -141,6 +141,22 @@ def test_get_amp_pha_holo():
     assert np.abs(qpi.pha).max() < .1
 
 
+def test_get_amp_pha_raw():
+    # make sure no errors when printing repr
+    size = 50
+    pha = np.repeat(np.linspace(0, 10, size), size)
+    pha = pha.reshape(size, size)
+    amp = np.linspace(.95, 1.05, size**2).reshape(size, size)
+
+    qpi = qpimage.QPImage([pha, amp], which_data="phase,amplitude")
+    qpi.set_bg_data(bg_data=(pha * 5 + 1, amp + .1),
+                    which_data=["phase", "amplitude"])
+
+    # test phases
+    assert np.allclose(pha, qpi.raw_pha)
+    assert np.allclose(amp, qpi.raw_amp)
+
+
 def test_properties():
     size = 50
     pha = np.repeat(np.linspace(0, 10, size), size)

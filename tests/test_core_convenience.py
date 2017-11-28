@@ -1,6 +1,49 @@
+import pathlib
+
 import numpy as np
 
 import qpimage
+
+
+def test_contains():
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
+    qpi = qpimage.QPImage(h5file=h5file, h5mode="r")
+    assert "wavelength" in qpi
+    assert "hans-peter" not in qpi
+
+
+def test_equals():
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
+    qpi = qpimage.QPImage(h5file=h5file, h5mode="r")
+
+    qpi1 = qpi.copy()
+    assert qpi1 == qpi
+
+    qpi1["wavelength"] = 123
+    assert qpi1 != qpi
+
+    # change phase data
+    qpi2 = qpi.copy()
+    qpi2.compute_bg(which_data="phase",
+                    fit_offset="mean",
+                    fit_profile="offset",
+                    border_perc=10)
+
+    # change amplitude data
+    qpi3 = qpi.copy()
+    qpi3.set_bg_data(bg_data=.01 + qpi3.amp, which_data="field")
+    assert qpi3 != qpi
+
+
+def test_h5file_confusion():
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
+    try:
+        # h5file should be specified with its corresponding parameter
+        qpimage.QPImage(h5file)
+    except ValueError:
+        pass
+    else:
+        assert False, "h5file must be given as kwarg!"
 
 
 def test_info():
@@ -48,6 +91,21 @@ def test_repr():
 
     print(qpi._pha)
     print(qpi._amp)
+
+
+def test_setitem():
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
+    qpi = qpimage.QPImage(h5file=h5file, h5mode="r")
+
+    qpi1 = qpi.copy()
+    qpi1["pixel size"] = 0.14e-6
+
+    try:
+        qpi1["unknown.data"] = "42"
+    except KeyError:
+        pass
+    else:
+        assert False, "Unknown meta name sould raise KeyError."
 
 
 def test_which_data():
