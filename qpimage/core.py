@@ -306,7 +306,7 @@ class QPImage(object):
 
     @property
     def shape(self):
-        """the shape of the image"""
+        """size of image dimensions"""
         return self._pha.h5["raw"].shape
 
     def clear_bg(self, which_data=("amplitude", "phase"), keys="fit"):

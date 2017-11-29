@@ -81,7 +81,7 @@ Notes
 - Units in qpimage follow the international system of units (SI).
 
 - :py:class:`qpimage.QPSeries` provides a convenient way to manage multiple
-  :py:class:`qpimage.QPImage`s, optionally storing them in a single hdf5 file.
+  :py:class:`qpimage.QPImage`, optionally storing them in a single hdf5 file.
 
 
 QPImage
