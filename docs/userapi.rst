@@ -3,9 +3,9 @@ User API
 ========
 The qpimage API is built upon the hdf5 file format using
 `h5py <http://h5py.readthedocs.io/>`_. That means that each instance of
-:py:class:`qpimage.QPImage` generates an hdf5 file, either on disk or
-in memory, depending on the preferences of the user. This approach
-has the advantage that phase and amplitude data can be cached on disk,
+:py:class:`qpimage.QPImage <qpimage.core.QPImage>` generates an hdf5 file,
+either on disk or in memory, depending on the preferences of the user. This
+approach has the advantage that phase and amplitude data can be cached on disk,
 including all parameters that were used for background correction, which
 allows to transparently recapture any steps that were performed on a
 specific data set at a later time point.
@@ -47,7 +47,7 @@ statement in combination with the ``h5file`` keyword argument
 
 where all data is stored in ``/path/to/file.h5``. This will create an hdf5
 file on disk that, at a later time point, can be used to create an instance
-of ``QPImage``:
+of `QPImage`:
 
 .. code-block:: python
 
@@ -67,7 +67,8 @@ will be overridden. In the hdf5 file, the following data is stored:
   
   - the experimental phase data
   - the experimental background data
-  - the parameters for reproducing the result of ``qpi.compute_bg``
+  - the parameters for reproducing the result of
+    :py:func:`qpi.compute_bg <qpimage.core.QPImage.compute_bg>`
 
 - all measurement specific meta data, given by the keyword argument
   ``meta_data``
@@ -80,20 +81,5 @@ Notes
 
 - Units in qpimage follow the international system of units (SI).
 
-- :py:class:`qpimage.QPSeries` provides a convenient way to manage multiple
-  :py:class:`qpimage.QPImage`, optionally storing them in a single hdf5 file.
-
-
-QPImage
--------
-.. autoclass:: qpimage.QPImage
-    :members:
-
-QPSeries
---------
-.. autoclass:: qpimage.QPSeries
-    :members:
-
-Constants
----------
-.. autodata:: qpimage.META_KEYS
+- :py:class:`qpimage.QPSeries <qpimage.series.QPSeries>` provides a convenient way to manage multiple
+  :py:class:`qpimage.QPImage <qpimage.core.QPImage>`, optionally storing them in a single hdf5 file.

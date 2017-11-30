@@ -109,6 +109,7 @@ class QPSeries(object):
 
     @property
     def identifier(self):
+        """Unique identifier of the series"""
         if "identifier" in self.h5.attrs:
             return self.h5.attrs["identifier"]
         else:
