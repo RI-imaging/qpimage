@@ -101,6 +101,7 @@ Classes
 .. autoclass:: qpimage.meta.MetaDict
    :members:
    :undoc-members:
+   :show-inheritance:
 
 
 series (QPSeries)

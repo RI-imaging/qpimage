@@ -12,22 +12,20 @@ OTHER_KEYS = ["dm exclude",  # DryMass: exclude image from  analysis
               "qpimage version",  # software version used
               ]
 
+#: valid :class:`qpimage.core.QPImage` meta data keys
 META_KEYS = DATA_KEYS + OTHER_KEYS
 
 
 class MetaDataMissingError(BaseException):
+    """Raised when meta data is missing"""
     pass
 
 
 class MetaDict(dict):
-    """A dictionary containing meta data variables
+    """Management of meta data variables
 
-    Valid keynames are combined in the
+    Valid key names are combined in the
     :py:const:`qpimage.meta.META_KEYS` variable.
-
-    Methods
-    -------
-    __setitem__
     """
 
     def __init__(self, *args, **kwargs):

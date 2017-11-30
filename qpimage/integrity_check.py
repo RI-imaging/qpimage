@@ -6,19 +6,24 @@ from .meta import DATA_KEYS
 
 
 class IntegrityCheckError(BaseException):
+    """Raised when a QPImage data set is incomplete or corrupt"""
     pass
 
 
 def check(qpi_or_h5file, checks=["attributes", "background"]):
-    """Checks various properties of a `qpimage.QPImage` data set
+    """Checks various properties of a :class:`qpimage.core.QPImage` instance
 
     Parameters
     ----------
-    qpi_or_h5file: instance of qpimage.QPImage or str
+    qpi_or_h5file: qpimage.core.QPImage or str
         A QPImage object or a path to an hdf5 file
-    attributes_raise: str
-        How missing attributes are treated;
-        either "ignore", "warning", or "error".
+    checks: list of str
+        Which checks to perform ("attributes" and/or "background")
+
+    Raises
+    ------
+    IntegrityCheckError
+        if the checks fail
     """
     if isinstance(checks, str):
         checks = [checks]
@@ -41,6 +46,17 @@ def check(qpi_or_h5file, checks=["attributes", "background"]):
 
 
 def check_attributes(qpi):
+    """Check QPimage attributes
+
+    Parameters
+    ----------
+    qpi: qpimage.core.QPImage
+
+    Raises
+    ------
+    IntegrityCheckError
+        if the check fails
+    """
     missing_attrs = []
     for key in DATA_KEYS:
         if key not in qpi.meta:
@@ -52,6 +68,17 @@ def check_attributes(qpi):
 
 
 def check_background(qpi):
+    """Check QPimage background data
+
+    Parameters
+    ----------
+    qpi: qpimage.core.QPImage
+
+    Raises
+    ------
+    IntegrityCheckError
+        if the check fails
+    """
     for imdat in [qpi._amp, qpi._pha]:
         try:
             fit, attrs = imdat.get_bg(key="fit", ret_attrs=True)

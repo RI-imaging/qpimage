@@ -5,15 +5,29 @@ import numpy as np
 
 from . import bg_estimate
 
+#: valid background data identifiers
 VALID_BG_KEYS = ["data",
                  "fit",
                  ]
 
 
 class ImageData(object):
+    """Base class for image management
+
+    See Also
+    --------
+    Amplitude: ImageData with amplitude background correction
+    Phase: ImageData with phase background correction
+    """
     __metaclass__ = abc.ABCMeta
 
     def __init__(self, h5):
+        """
+        Parameters
+        ----------
+        h5: h5py.Group
+            HDF5 group where all data is kept
+        """
         self.h5 = h5
         if "bg_data" not in self.h5:
             self.h5.create_group("bg_data")
@@ -42,16 +56,17 @@ class ImageData(object):
 
     @property
     def bg(self):
-        """The combined background image data"""
+        """combined background image data"""
         return self._bg_combine(self.h5["bg_data"].values())
 
     @property
     def image(self):
-        """The background corrected image data"""
+        """background corrected image data"""
         return self._bg_correct(self.raw, self.bg)
 
     @property
     def info(self):
+        """list of background correction parameters"""
         info = []
         name = self.__class__.__name__.lower()
         # get bg information
@@ -75,10 +90,17 @@ class ImageData(object):
 
     @property
     def raw(self):
+        """raw (uncorrected) image data"""
         return self.h5["raw"].value
 
     def del_bg(self, key):
-        """Remove the background image 'key'"""
+        """Remove the background image data
+
+        Parameters
+        ----------
+        key: str
+            One of :py:const:`VALID_BG_KEYS`
+        """
         if key not in VALID_BG_KEYS:
             raise ValueError("Invalid bg key: {}".format(key))
         if key in self.h5["bg_data"]:
@@ -155,8 +177,9 @@ class ImageData(object):
         key: None or str
             A user-defined key that identifies the background data.
             Examples are "data" for experimental data, or "fit"
-            for an estimated background correction. If set to `None`,
-            returns the combined background image (`ImageData.bg`).
+            for an estimated background correction
+            (see :py:const:`VALID_BG_KEYS`). If set to `None`,
+            returns the combined background image (:const:`ImageData.bg`).
         ret_attrs: bool
             Also returns the attributes of the background data.
         """
@@ -187,10 +210,7 @@ class ImageData(object):
             The background data. If set to `None`, the data will be
             removed.
         key: str
-            A user-defined key that identifies the background data.
-            Examples are "data" for experimental data, or "ramp"
-            for a ramp background correction. There are no
-            restrictions regarding key names.
+            One of :py:const:`VALID_BG_KEYS`)
         attrs: dict
             List of background attributes
 
@@ -213,6 +233,12 @@ class ImageData(object):
 
 
 class Amplitude(ImageData):
+    """Dedicated class for amplitude image data
+
+    For amplitude image data, background correction is defined
+    by dividing the raw image by the background image.
+    """
+
     def _bg_combine(self, bgs):
         """Combine several background amplitude images"""
         out = np.ones(self.h5["raw"].shape, dtype=float)
@@ -227,6 +253,12 @@ class Amplitude(ImageData):
 
 
 class Phase(ImageData):
+    """Dedicated class for phase image data
+
+    For phase image data, background correction is defined
+    by subtracting the background image from the raw image.
+    """
+
     def _bg_combine(self, bgs):
         """Combine several background phase images"""
         out = np.zeros(self.h5["raw"].shape, dtype=float)

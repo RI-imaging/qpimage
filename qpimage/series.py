@@ -109,7 +109,7 @@ class QPSeries(object):
 
     @property
     def identifier(self):
-        """Unique identifier of the series"""
+        """unique identifier of the series"""
         if "identifier" in self.h5.attrs:
             return self.h5.attrs["identifier"]
         else:
@@ -144,6 +144,11 @@ class QPSeries(object):
         ----------
         index: int
             Index of the qpimage
+
+        Notes
+        -----
+        Instead of ``qps.get_qpimage(index)``, it is possible
+        to use the short-hand ``qps[index]``.
         """
         if index < -len(self):
             msg = "Index {} is out of bounds for QPSeries of size {}!".format(
