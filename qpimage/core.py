@@ -10,6 +10,7 @@ from .image_data import Amplitude, Phase
 from .meta import MetaDict, META_KEYS
 from ._version import version as __version__
 
+#: valid combinations for keyword argument `which_data`
 VALID_INPUT_DATA = ["field",
                     "hologram",
                     "phase",

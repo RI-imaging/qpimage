@@ -95,6 +95,7 @@ def estimate(data, fit_offset="average", fit_profile="ramp",
 
 
 def offset_gaussian(data):
+    """Fit a gaussian model to `data` and return its center"""
     nbins = 2 * int(np.ceil(np.sqrt(data.size)))
     mind, maxd = data.min(), data.max()
     drange = (mind - (maxd - mind) / 2, maxd + (maxd - mind) / 2)
@@ -110,8 +111,7 @@ def offset_gaussian(data):
 
 
 def offset_mode(data):
-    """Compute mode of data using small number of bins
-    """
+    """Compute Mode using a histogram with `sqrt(data.size)` bins"""
     nbins = int(np.ceil(np.sqrt(data.size)))
     mind, maxd = data.min(), data.max()
     histo = np.histogram(data, nbins, density=True, range=(mind, maxd))
@@ -123,6 +123,7 @@ def offset_mode(data):
 
 
 def profile_ramp(data, binary):
+    """Fit a 2D ramp to `data[binary]` and return the ramp image"""
     params = lmfit.Parameters()
     params.add(name="mx", value=0)
     params.add(name="my", value=0)
@@ -133,6 +134,7 @@ def profile_ramp(data, binary):
 
 
 def ramp_model(params, shape):
+    """lmfit ramp model"""
     mx = params["mx"].value
     my = params["my"].value
     off = params["off"].value
@@ -146,6 +148,7 @@ def ramp_model(params, shape):
 
 
 def ramp_residual(params, data, binary):
+    """lmfit ramp residuals"""
     bg = ramp_model(params, shape=data.shape)
     res = (data - bg)[binary]
     return res.flatten()
