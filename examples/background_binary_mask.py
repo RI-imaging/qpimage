@@ -38,7 +38,8 @@ pha_nomask = qpi.pha
 # educated guess for binary mask
 mask = input_phase < input_phase.max() / 10
 
-# correct with ramp
+# background correction with mask
+# (the intersection of `mask` and the 5px border is used for fitting)
 qpi.compute_bg(which_data="phase",
                fit_offset="fit",
                fit_profile="ramp",
