@@ -85,7 +85,7 @@ def get_field(data, sb_loc=None, filt_size=None, filt_type="gauss"):
 
     Notes
     -----
-    `sb_loc` are in FT of zero-padded image, see `fourier2dpad`.
+    `sb_loc` are in FT of zero-padded image, see :py:func:`fourier2dpad`.
     """
     if sb_loc is None:
         sb_loc = find_sideband(data)

@@ -33,7 +33,9 @@ Constants
 Classes
 -------
 .. autoclass:: qpimage.core.QPImage
+   :members:
    :undoc-members:
+
 
 Methods
 -------

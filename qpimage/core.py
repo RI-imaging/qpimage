@@ -45,7 +45,7 @@ class QPImage(object):
             the phase data as first element.
         meta_data: dict
             Meta data associated with the input data.
-            see :py:class:`qpimage.META_KEYS`
+            see :py:class:`qpimage.meta.META_KEYS`
         h5file: str, h5py.Group, h5py.File, or None
             A path to an hdf5 data file where all data is cached. If
             set to `None` (default), all data will be handled in
