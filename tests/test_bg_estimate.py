@@ -154,10 +154,7 @@ def test_get_binary():
                           border_px=5,
                           ret_binary=True)
     binary_mask2 = binary_mask.copy()
-    binary_mask2[:5, :] = True
-    binary_mask2[-5:, :] = True
-    binary_mask2[:, :5] = True
-    binary_mask2[:, -5:] = True
+    binary_mask2[5:-5, 5:-5] = False
     assert np.all(binary_mask2 == bin2)
 
 

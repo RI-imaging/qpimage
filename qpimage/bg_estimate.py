@@ -1,7 +1,9 @@
 import lmfit
 import numpy as np
 
+#: valid values for keyword argument `fit_offset` in :func:`estimate`
 VALID_FIT_OFFSETS = ["fit", "gauss", "mean", "mode"]
+#: valid values for keyword argument `fit_profile` in :func:`estimate`
 VALID_FIT_PROFILES = ["ramp", "offset"]
 
 
@@ -37,7 +39,9 @@ def estimate(data, fit_offset="average", fit_profile="ramp",
     Notes
     -----
     If both `border_px` and `from_binary` are given, the
-    intersection of the two resulting binary images is used.
+    intersection of the two is used, i.e. the positions
+    where both, the binary frame and `from_binary`, are
+    `True`.
     """
     if fit_profile not in VALID_FIT_PROFILES:
         msg = "`fit_profile` must be one of {}, got '{}'".format(
@@ -54,7 +58,7 @@ def estimate(data, fit_offset="average", fit_profile="ramp",
         assert isinstance(from_binary, np.ndarray)
         binary = from_binary.copy()
     else:
-        binary = np.zeros_like(data, dtype=bool)
+        binary = np.ones_like(data, dtype=bool)
     # multiply with border binary image (intersection)
     if border_px > 0:
         border_px = int(np.round(border_px))
@@ -63,7 +67,8 @@ def estimate(data, fit_offset="average", fit_profile="ramp",
         binary_px[-border_px:, :] = True
         binary_px[:, :border_px] = True
         binary_px[:, -border_px:] = True
-        np.logical_or(binary, binary_px, out=binary)
+        # intersection
+        np.logical_and(binary, binary_px, out=binary)
     # compute background image
     if fit_profile == "ramp":
         bgimg = profile_ramp(data, binary)

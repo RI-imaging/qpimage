@@ -394,7 +394,8 @@ class QPImage(object):
 
         If any of the `border_*` arguments are non-zero and
         `from_binary` is given, the intersection of the two
-        resulting binary images is used.
+        is used, i.e. the positions where both, the binary
+        frame and `from_binary`, are `True`.
 
         See Also
         --------
