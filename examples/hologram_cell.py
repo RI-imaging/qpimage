@@ -17,7 +17,7 @@ import numpy as np
 import qpimage
 
 # load the experimental data
-edata = np.load("./data/hologram_cell.npy.npz")
+edata = np.load("./data/hologram_cell.npz")
 
 # create QPImage instance
 qpi = qpimage.QPImage(data=edata["data"],

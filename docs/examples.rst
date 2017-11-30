@@ -12,4 +12,6 @@ Examples
 
 .. fancy_include:: background_offset.py
 
+.. fancy_include:: background_binary_mask.py
+
 .. fancy_include:: hologram_cell.py
