@@ -1,8 +1,8 @@
 """Simple phase
 
 This example illustrates the simple usage of the
-:py:class:`qpimage.QPImage` class for reading and managing
-quantitative phase data. The attribute ``QPImage.pha`` yields
+:class:`qpimage.QPImage <qpimage.core.QPImage>` class for reading and
+managing quantitative phase data. The attribute ``QPImage.pha`` yields
 the background-corrected phase data and the attribute
 ``QPImage.bg_pha`` yields the background phase image.
 """

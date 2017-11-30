@@ -99,7 +99,7 @@ class ImageData(object):
         Parameters
         ----------
         key: str
-            One of :py:const:`VALID_BG_KEYS`
+            One of :const:`VALID_BG_KEYS`
         """
         if key not in VALID_BG_KEYS:
             raise ValueError("Invalid bg key: {}".format(key))
@@ -178,7 +178,7 @@ class ImageData(object):
             A user-defined key that identifies the background data.
             Examples are "data" for experimental data, or "fit"
             for an estimated background correction
-            (see :py:const:`VALID_BG_KEYS`). If set to `None`,
+            (see :const:`VALID_BG_KEYS`). If set to `None`,
             returns the combined background image (:const:`ImageData.bg`).
         ret_attrs: bool
             Also returns the attributes of the background data.
@@ -210,7 +210,7 @@ class ImageData(object):
             The background data. If set to `None`, the data will be
             removed.
         key: str
-            One of :py:const:`VALID_BG_KEYS`)
+            One of :const:`VALID_BG_KEYS`)
         attrs: dict
             List of background attributes
 

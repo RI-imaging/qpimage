@@ -25,7 +25,7 @@ class MetaDict(dict):
     """Management of meta data variables
 
     Valid key names are combined in the
-    :py:const:`qpimage.meta.META_KEYS` variable.
+    :const:`qpimage.meta.META_KEYS` variable.
     """
 
     def __init__(self, *args, **kwargs):
@@ -38,7 +38,7 @@ class MetaDict(dict):
         """Set a meta data variable
 
         The key must be a valid key defined in the
-        :py:const:`qpimage.meta.META_KEYS` variable.
+        :const:`qpimage.meta.META_KEYS` variable.
         """
         if key not in META_KEYS:
             raise KeyError("Unknown meta variable: '{}'".format(key))

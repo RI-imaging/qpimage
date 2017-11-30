@@ -1,10 +1,10 @@
 """Background image ramp correction
 
 This example illustrates background ramp correction with qpimage.
-In contrast to the 'simple_phase.py' example, the known background
-data is not given to the :py:class:`qpimage.QPImage` class.
-In this particular example, the background ramp correction achieves
-an error of about 1% which is sufficient in most quantitative
+In contrast to the 'simple_phase.py' example, the known background data
+is not given to the :class:`qpimage.QPImage <qpimage.core.QPImage>`
+class. In this particular example, the background ramp correction
+achieves an error of about 1% which is sufficient in most quantitative
 phase imaging applications.
 """
 import matplotlib.pylab as plt

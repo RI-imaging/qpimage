@@ -14,10 +14,10 @@ class QPSeries(object):
         Parameters
         ----------
         qpimage_list: list of QPImage
-            A list of instances of :py:class:`qpimage.QPImage`.
+            A list of instances of :class:`qpimage.QPImage`.
         meta_data: dict
             Meta data associated with the input data
-            (see :py:class:`qpimage.META_KEYS`). This overrides
+            (see :class:`qpimage.META_KEYS`). This overrides
             the meta data of the QPImages in `qpimage_list` and, if
             `h5file` is given and `h5mode` is not "r", overrides
             the meta data in `h5file`.
