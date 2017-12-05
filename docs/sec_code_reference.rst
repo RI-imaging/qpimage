@@ -57,7 +57,9 @@ image_data (basic image management)
 
 Constants
 ---------
+.. autodata:: qpimage.image_data.COMPRESSION
 .. autodata:: qpimage.image_data.VALID_BG_KEYS
+
 
 Classes
 -------

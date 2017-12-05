@@ -5,6 +5,9 @@ import numpy as np
 
 from . import bg_estimate
 
+#: default hdf5 compression method
+COMPRESSION = "gzip"
+
 #: valid background data identifiers
 VALID_BG_KEYS = ["data",
                  "fit",
@@ -44,7 +47,10 @@ class ImageData(object):
         if key in self.h5:
             del self.h5[key]
         if value is not None:
-            self.h5[key] = value
+            self.h5.create_dataset(key,
+                                   data=value,
+                                   fletcher32=True,
+                                   compression=COMPRESSION)
 
     @abc.abstractmethod
     def _bg_combine(self, *bgs):
@@ -227,7 +233,10 @@ class ImageData(object):
         if bg is not None:
             msg = "`bg` must be scalar or ndarray"
             assert isinstance(bg, (float, int, np.ndarray)), msg
-            self.h5["bg_data"][key] = bg
+            self.h5["bg_data"].create_dataset(key,
+                                              data=bg,
+                                              fletcher32=True,
+                                              compression=COMPRESSION)
             for kw in attrs:
                 self.h5["bg_data"][key].attrs[kw] = attrs[kw]
 
