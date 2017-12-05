@@ -30,6 +30,7 @@ class MetaDict(dict):
 
     def __init__(self, *args, **kwargs):
         super(MetaDict, self).__init__(*args, **kwargs)
+        # check for invalid keys
         for key in self:
             if key not in META_KEYS:
                 raise KeyError("Unknown meta variable: '{}'".format(key))

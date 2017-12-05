@@ -75,7 +75,8 @@ will be overridden. In the hdf5 file, the following data is stored:
 
 Notes
 -----
-- Using QPImage hdf5 files results in file sizes that are considerably
+- Even though the hdf5 data is gzip-compressed, using qpimage hdf5 files
+  may result in file sizes that are considerably
   larger compared to when only the output of e.g. ``qpi.pha`` is stored
   using e.g. :py:func:`numpy.save`.
 

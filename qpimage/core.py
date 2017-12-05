@@ -549,11 +549,11 @@ def copyh5(inh5, outh5):
             outh5.create_group(key)
             copyh5(inh5[key], outh5[key])
         else:
-            outh5.create_dataset(key,
-                                 data=inh5[key].value,
-                                 fletcher32=True,
-                                 compression=COMPRESSION)
-            outh5[key].attrs.update(inh5[key].attrs)
+            dset = outh5.create_dataset(key,
+                                        data=inh5[key].value,
+                                        fletcher32=True,
+                                        compression=COMPRESSION)
+            dset.attrs.update(inh5[key].attrs)
     outh5.attrs.update(inh5.attrs)
     if return_h5obj:
         # in-memory or previously created instance of h5py.File

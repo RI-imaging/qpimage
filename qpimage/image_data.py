@@ -47,10 +47,15 @@ class ImageData(object):
         if key in self.h5:
             del self.h5[key]
         if value is not None:
-            self.h5.create_dataset(key,
-                                   data=value,
-                                   fletcher32=True,
-                                   compression=COMPRESSION)
+            dset = self.h5.create_dataset(key,
+                                          data=value,
+                                          fletcher32=True,
+                                          compression=COMPRESSION)
+            # Create and Set image attributes
+            # HDFView recognizes this as a series of images
+            dset.attrs.create('CLASS', b'IMAGE')
+            dset.attrs.create('IMAGE_VERSION', b'1.2')
+            dset.attrs.create('IMAGE_SUBCLASS', b'IMAGE_GRAYSCALE')
 
     @abc.abstractmethod
     def _bg_combine(self, *bgs):
@@ -198,8 +203,12 @@ class ImageData(object):
                 raise ValueError("Invalid bg key: {}".format(key))
             if key in self.h5["bg_data"]:
                 data = self.h5["bg_data"][key].value
-                attrs = self.h5["bg_data"][key].attrs
                 if ret_attrs:
+                    attrs = dict(self.h5["bg_data"][key].attrs)
+                    # remove keys for image visualization in hdf5 files
+                    for h5k in ["CLASS", "IMAGE_VERSION", "IMAGE_SUBCLASS"]:
+                        if h5k in attrs:
+                            attrs.pop(h5k)
                     ret = (data, attrs)
                 else:
                     ret = data
@@ -233,10 +242,15 @@ class ImageData(object):
         if bg is not None:
             msg = "`bg` must be scalar or ndarray"
             assert isinstance(bg, (float, int, np.ndarray)), msg
-            self.h5["bg_data"].create_dataset(key,
-                                              data=bg,
-                                              fletcher32=True,
-                                              compression=COMPRESSION)
+            dset = self.h5["bg_data"].create_dataset(key,
+                                                     data=bg,
+                                                     fletcher32=True,
+                                                     compression=COMPRESSION)
+            # Create and Set image attributes
+            # HDFView recognizes this as a series of images
+            dset.attrs.create('CLASS', b'IMAGE')
+            dset.attrs.create('IMAGE_VERSION', b'1.2')
+            dset.attrs.create('IMAGE_SUBCLASS', b'IMAGE_GRAYSCALE')
             for kw in attrs:
                 self.h5["bg_data"][key].attrs[kw] = attrs[kw]
 
