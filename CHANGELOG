@@ -1,5 +1,6 @@
 0.1.5
  - add fletcher32 checksums and gzip compression to hdf5 files (#10)
+ - allow to hard-link background-correction data in QPSeries
 0.1.4
  - more __init__ checks for QPImage and QPSeries (user convenience)
  - allow negative indices in QPSeries.get_qpimage

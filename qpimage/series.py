@@ -115,7 +115,7 @@ class QPSeries(object):
         else:
             return None
 
-    def add_qpimage(self, qpi, identifier=None):
+    def add_qpimage(self, qpi, identifier=None, bg_from_idx=None):
         """Add a QPImage instance to the QPSeries
 
         Parameters
@@ -124,6 +124,10 @@ class QPSeries(object):
             The QPImage that is added to the series
         identifier: str
             Identifier key for `qpi`
+        bg_from_idx: int or None
+            Use the background data from the data stored in this index,
+            creating hard links within the hdf5 file.
+            (Saves memory if e.g. all qpimages is corrected with the same data)
         """
         if not isinstance(qpi, QPImage):
             raise ValueError("`qpimage` must be instance of QPImage!")
@@ -132,7 +136,14 @@ class QPSeries(object):
         # indices start at zero; do not add 1
         name = "qpi_{}".format(num)
         group = self.h5.create_group(name)
-        qpi.copy(h5file=group)
+        thisqpi = qpi.copy(h5file=group)
+
+        if bg_from_idx is not None:
+            # Create hard links
+            refqpi = self[bg_from_idx]
+            thisqpi._amp.set_bg(bg=refqpi._amp.h5["bg_data"]["data"])
+            thisqpi._pha.set_bg(bg=refqpi._pha.h5["bg_data"]["data"])
+
         if identifier:
             # set identifier
             group.attrs["identifier"] = identifier

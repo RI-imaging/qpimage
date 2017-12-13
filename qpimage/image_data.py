@@ -1,6 +1,8 @@
 import abc
+import numbers
 import warnings
 
+import h5py
 import numpy as np
 
 from . import bg_estimate
@@ -239,9 +241,7 @@ class ImageData(object):
         if key in self.h5["bg_data"]:
             del self.h5["bg_data"][key]
         # set background
-        if bg is not None:
-            msg = "`bg` must be scalar or ndarray"
-            assert isinstance(bg, (float, int, np.ndarray)), msg
+        if isinstance(bg, (numbers.Real, np.ndarray)):
             dset = self.h5["bg_data"].create_dataset(key,
                                                      data=bg,
                                                      fletcher32=True,
@@ -253,6 +253,15 @@ class ImageData(object):
             dset.attrs.create('IMAGE_SUBCLASS', b'IMAGE_GRAYSCALE')
             for kw in attrs:
                 self.h5["bg_data"][key].attrs[kw] = attrs[kw]
+        elif isinstance(bg, h5py.Dataset):
+            # Create a hard link
+            # (This functionality was intended for saving memory when storing
+            # large QPSeries with universal background data, i.e. when using
+            # `QPSeries.add_qpimage` with the `bg_from_idx` keyword.)
+            self.h5["bg_data"][key] = bg
+        elif bg is not None:
+            msg = "Unknown background data type: {}".format(bg)
+            raise ValueError(msg)
 
 
 class Amplitude(ImageData):
