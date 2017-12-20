@@ -223,9 +223,10 @@ class ImageData(object):
 
         Parameters
         ----------
-        bg: int, float, 2d ndarray, or same subclass of ImageData
-            The background data. If set to `None`, the data will be
-            removed.
+        bg: numbers.Real, 2d ndarray, ImageData, or h5py.Dataset
+            The background data. If `bg` is an `h5py.Dataset` object,
+            it must exist in the same hdf5 file (a hard link is created).
+            If set to `None`, the data will be removed.
         key: str
             One of :const:`VALID_BG_KEYS`)
         attrs: dict
