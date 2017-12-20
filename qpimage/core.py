@@ -255,8 +255,9 @@ class QPImage(object):
             # create masked array
             # skimage.restoration.unwrap_phase cannot handle nan data
             # (even if masked)
-            pha[nanmask] = 0
-            pham = np.ma.masked_array(pha, mask=nanmask)
+            pham = pha.copy()
+            pham[nanmask] = 0
+            pham = np.ma.masked_array(pham, mask=nanmask)
             pha = unwrap_phase(pham)
             pha[nanmask] = np.nan
         else:
