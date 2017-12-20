@@ -236,19 +236,32 @@ class QPImage(object):
 
         if which_data == "field":
             amp = np.abs(data)
-            pha = unwrap_phase(np.angle(data))
+            pha = np.angle(data)
         elif which_data == "phase":
-            pha = unwrap_phase(data)
+            pha = data
             amp = np.ones_like(data)
         elif which_data == ("phase", "amplitude"):
             amp = data[1]
-            pha = unwrap_phase(data[0])
+            pha = data[0]
         elif which_data == ("phase", "intensity"):
             amp = np.sqrt(data[1])
-            pha = unwrap_phase(data[0])
+            pha = data[0]
         elif which_data == "hologram":
             amp, pha = self._get_amp_pha(holo.get_field(data),
                                          which_data="field")
+        # phase unwrapping (take into account nans)
+        nanmask = np.isnan(pha)
+        if np.sum(nanmask):
+            # create masked array
+            # skimage.restoration.unwrap_phase cannot handle nan data
+            # (even if masked)
+            pha[nanmask] = 0
+            pham = np.ma.masked_array(pha, mask=nanmask)
+            pha = unwrap_phase(pham)
+            pha[nanmask] = np.nan
+        else:
+            pha = unwrap_phase(pha)
+
         return amp, pha
 
     @property

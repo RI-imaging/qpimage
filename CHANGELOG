@@ -1,4 +1,5 @@
 0.1.5
+ - support nan values in phase data
  - add fletcher32 checksums and gzip compression to hdf5 files (#10)
  - allow to hard-link background-correction data in QPSeries
 0.1.4
