@@ -15,8 +15,9 @@ def find_sideband(ft_data, which=+1, copy=True):
         Fourier transform of the hologram image
     which: +1 or -1
         which sideband to search for:
-         - +1: upper half
-         - -1: lower half
+        
+        - +1: upper half
+        - -1: lower half
     copy: bool
         copy `ft_data` before modification
 
