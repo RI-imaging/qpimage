@@ -50,6 +50,8 @@ class QPImage(object):
             hologram data (`which_data="hologram"`).
             See :func:`qpimage.holo.get_field` for valid keyword
             arguments.
+            
+            .. versionadded:: 0.1.6
         h5file: str, h5py.Group, h5py.File, or None
             A path to an hdf5 data file where all data is cached. If
             set to `None` (default), all data will be handled in

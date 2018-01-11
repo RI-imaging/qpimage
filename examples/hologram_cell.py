@@ -23,8 +23,23 @@ edata = np.load("./data/hologram_cell.npz")
 qpi = qpimage.QPImage(data=edata["data"],
                       bg_data=edata["bg_data"],
                       which_data="hologram",
-                      holo_kw={"filter_name": "smooth disk",
-                               "filter_size": 1/4}
+                      # This parameter allows to pass arguments to the
+                      # hologram-analysis algorithm of qpimage.
+                      # (see qpimage.holo.get_field)
+                      holo_kw={
+                               # For this hologram, the "smooth disk"
+                               # filter yields the best trade-off
+                               # between interference from the central
+                               # band and image resolution.
+                               "filter_name": "smooth disk",
+                               # As can be seen in the hologram image,
+                               # the sidebands are not positioned at
+                               # an angle of 45° from the central band.
+                               # If the filter size is 1/3 (default),
+                               # the central band introduces line-
+                               # artifacts to the reconstructed image.
+                               "filter_size": 1/4
+                               }
                       )
 
 amp0 = qpi.amp

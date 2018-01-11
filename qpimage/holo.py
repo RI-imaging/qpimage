@@ -61,8 +61,8 @@ def find_sideband(ft_data, which=+1, copy=True):
 def fourier2dpad(data, zero_pad=True):
     """Compute the 2D Fourier transform with zero padding
 
-    Paramters
-    ---------
+    Parameters
+    ----------
     data: 2d fload ndarray
         real-valued image data
     zero_pad: bool
