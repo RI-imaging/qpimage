@@ -1,3 +1,11 @@
+0.1.6
+ - hologram analysis:
+   - add disk and square filters
+   - standard "gauss" filter is replaced by "disk" filter 
+   - standard filter size is set to one third of the distance
+     between the sideband and the central band
+   - allow to set hologram-retrieval parameters as a keyword
+     argument "holo_kw" in QPImage
 0.1.5
  - support nan values in phase data
  - add fletcher32 checksums and gzip compression to hdf5 files (#10)

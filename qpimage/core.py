@@ -22,7 +22,7 @@ class QPImage(object):
     _instances = 0
 
     def __init__(self, data=None, bg_data=None, which_data="phase",
-                 meta_data={}, h5file=None, h5mode="a"
+                 meta_data={}, holo_kw={}, h5file=None, h5mode="a"
                  ):
         """Quantitative phase image manipulation
 
@@ -39,12 +39,17 @@ class QPImage(object):
         which_data: str
             String or comma-separated list of strings indicating
             the order and type of input data. Valid values are
-            "field", "phase", "phase,amplitude", or "phase,intensity",
-            where the latter two require an indexable object with
-            the phase data as first element.
+            "hologram", "field", "phase", "phase,amplitude",
+            or "phase,intensity", where the latter two require an
+            indexable object with the phase data as first element.
         meta_data: dict
             Meta data associated with the input data.
             see :class:`qpimage.meta.META_KEYS`
+        holo_kw: dict
+            Special keyword arguments for phase retrieval from
+            hologram data (`which_data="hologram"`).
+            See :func:`qpimage.holo.get_field` for valid keyword
+            arguments.
         h5file: str, h5py.Group, h5py.File, or None
             A path to an hdf5 data file where all data is cached. If
             set to `None` (default), all data will be handled in
@@ -94,6 +99,8 @@ class QPImage(object):
             self.h5 = h5py.File(**h5kwargs)
             self._do_h5_cleanup = True
         QPImage._instances += 1
+        # set holo data
+        self.holo_kw = holo_kw
         # set meta data
         meta = MetaDict(meta_data)
         for key in meta:
@@ -247,7 +254,7 @@ class QPImage(object):
             amp = np.sqrt(data[1])
             pha = data[0]
         elif which_data == "hologram":
-            amp, pha = self._get_amp_pha(holo.get_field(data),
+            amp, pha = self._get_amp_pha(holo.get_field(data, **self.holo_kw),
                                          which_data="field")
         # phase unwrapping (take into account nans)
         nanmask = np.isnan(pha)
@@ -358,7 +365,7 @@ class QPImage(object):
                 imdat.del_bg(key)
 
     def compute_bg(self, which_data="phase",
-                   fit_offset="average", fit_profile="ramp",
+                   fit_offset="mean", fit_profile="ramp",
                    border_m=0, border_perc=0, border_px=0,
                    from_binary=None, ret_binary=False):
         """Compute background correction

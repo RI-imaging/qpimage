@@ -9,7 +9,7 @@ phase ramp which must be removed for further image analysis.
 The setup used for recording this data is described in reference
 :cite:`Schuermann2015`, which also contains a description of the
 hologram-to-phase conversion and phase background correction algorithms
-on which qpimage is based.
+which qpimage is based on.
 """
 import matplotlib
 import matplotlib.pylab as plt
@@ -22,7 +22,10 @@ edata = np.load("./data/hologram_cell.npz")
 # create QPImage instance
 qpi = qpimage.QPImage(data=edata["data"],
                       bg_data=edata["bg_data"],
-                      which_data="hologram")
+                      which_data="hologram",
+                      holo_kw={"filter_name": "smooth disk",
+                               "filter_size": 1/4}
+                      )
 
 amp0 = qpi.amp
 pha0 = qpi.pha

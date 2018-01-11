@@ -1,7 +1,8 @@
 import numpy as np
+from scipy import signal
 
 
-def find_sideband(data):
+def find_sideband(ft_data, which=+1, copy=True):
     """Find the side band position of a hologram
 
     The hologram is Fourier-transformed and the side band
@@ -10,73 +11,114 @@ def find_sideband(data):
 
     Parameters
     ----------
-    data : 2d ndarray
-        hologram image
-
+    ft_data: 2d ndarray
+        Fourier transform of the hologram image
+    which: +1 or -1
+        which sideband to search for:
+         - +1: upper half
+         - -1: lower half
+    copy: bool
+        copy `ft_data` before modification
 
     Returns
     -------
-    sb_loc : tuple of floats
-        (x,y) coordinates of the side band in Fourier space
-        measured from the center in the shifted Fourier transform.
+    fsx, fsy : tuple of floats
+        coordinates of the side band in Fourier space frequencies
     """
-    # fourier transform
-    fft = fourier2dpad(data)
+    if copy:
+        ft_data = ft_data.copy()
 
-    # Zero padded (larger)
-    order = len(fft)
+    if which not in [+1, -1]:
+        raise ValueError("`which` must be +1 or -1!")
 
-    # remove lower part
-    minlo = max(int(np.ceil(order / 42)), 5)
-    fft[order // 2 - minlo:] = 0
-    # remove axis part
-    center = int(order / 2)
-    fft[center - 3:center + 3, :] = 0
-    fft[:, center - 3:center + 3] = 0
+    ox, oy = ft_data.shape
+    cx = ox // 2
+    cy = oy // 2
 
-    am = np.argmax(np.abs(fft))
-    y = am % order
-    x = (am - y) / order
+    minlo = max(int(np.ceil(ox / 42)), 5)
+    if which == +1:
+        # remove lower part
+        ft_data[cx - minlo:] = 0
+    else:
+        ft_data[:cx + minlo] = 0
 
-    diskrad = int(order / 23)
+    # remove values around axes
+    ft_data[cx - 3:cx + 3, :] = 0
+    ft_data[:, cy - 3:cy + 3] = 0
 
-    xv = np.arange(order).reshape(-1, 1)
-    yv = xv.reshape(1, -1)
+    # find maximum
+    am = np.argmax(np.abs(ft_data))
+    iy = am % oy
+    ix = int((am - iy) / oy)
 
-    fft[np.where((xv - x)**2 + (yv - y)**2 > diskrad**2)] = 0
+    fx = np.fft.fftshift(np.fft.fftfreq(ft_data.shape[0]))[ix]
+    fy = np.fft.fftshift(np.fft.fftfreq(ft_data.shape[1]))[iy]
 
-    return (int(x - order / 2), int(y - order / 2))
+    return (fx, fy)
 
 
-def fourier2dpad(data):
-    """Compute the 2D Fourier transform with zero padding"""
-    # Zero padding to square image
-    (N, M) = data.shape
+def fourier2dpad(data, zero_pad=True):
+    """Compute the 2D Fourier transform with zero padding
 
-    # zero padding
-    order = np.int(max(64., 2**np.ceil(np.log(2 * max(N, M)) / np.log(2))))
-    datapad = np.pad(data, ((0, order - N), (0, order - M)), mode="constant")
+    Paramters
+    ---------
+    data: 2d fload ndarray
+        real-valued image data
+    zero_pad: bool
+        perform zero-padding to next order of 2
+    """
+    if zero_pad:
+        # zero padding size is next order of 2
+        (N, M) = data.shape
+        order = np.int(max(64., 2**np.ceil(np.log(2 * max(N, M)) / np.log(2))))
 
-    # fourier transform
+        # this is faster than np.pad
+        datapad = np.zeros((order, order), dtype=float)
+        datapad[:data.shape[0], :data.shape[1]] = data
+    else:
+        datapad = data
+
+    # Fourier transform
     fft = np.fft.fftshift(np.fft.fft2(datapad))
-
     return fft
 
 
-def get_field(data, sb_loc=None, filt_size=None, filt_type="gauss"):
-    """Computes phase and amplitude from a holographic image
+def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1 / 3,
+              subtract_mean=True, zero_pad=True, copy=True):
+    """Compute the complex field from a hologram using Fourier analysis
 
     Parameters
     ----------
-    data : 2d ndarray
+    hologram: real-valued 2d ndarray
         Hologram data
-    sb_loc : tuple of floats (x0,y0)
-        Coordinates of the side band in Fourier space.
-    filt_size : float
-        Radius of the filter in Fourier space in px.
-        If set to None, the radius will be estimated using `sb_loc`.
-    filt_type : float
-        One of {"disk", "gauss"}
+    sideband: +1, -1, or tuple of floats (fx, fy)
+        Specifies the location of the sideband:
+          - +1: sideband in the upper half in Fourier space,
+               exact location is found automatically
+          - -1: sideband in the lower half in Fourier space,
+               exact location is found automatically
+          - (fx, fy), |fx|,|fy| < .5: sideband coordinates in
+               frequencies in interval [1/"axes size", .5]
+    filter_name: str
+        One of
+          - "disk": binary disk with radius `filter_size`
+          - "smooth disk": disk with radius `filter_size` convolved
+               with a radial gaussian (`sigma=filter_size/5`)
+          - "gauss": radial gaussian (`sigma=0.6*filter_size`)
+          - "square": binary square with side length `filter_size`
+          - "smooth square": square with side length `filter_size`
+               convolved with square gaussian (`sigma=filter_size/5`)
+    filter_size: float
+        Size of the filter in Fourier space in fractions of the
+        distance between central band and sideband.
+        See `filter_shape` for interpretation of `filter_size`.
+    zero_pad: bool
+        Perform zero-padding before applying the FFT. Setting
+        `zero_pad` to `False` increases speed but might
+        introduce image distortions such as ramps in the phase
+        and amplitude data or dark borders in the amplitude data.
+    copy: bool
+        If set to True, input `data` is not edited.
 
     x0 and y0 are center of the filter
     R is factor for "radius" of filter (sqrt(x0² + y0²)/np.pi)
@@ -85,44 +127,73 @@ def get_field(data, sb_loc=None, filt_size=None, filt_type="gauss"):
 
     Notes
     -----
-    `sb_loc` are in FT of zero-padded image, see :func:`fourier2dpad`.
+    Even though the size of the "gauss" filter approximately matches
+    the frequencies of the "disk" filter, it takes into account
+    higher frequencies as well and thus suppresses ringing artifacts
+    for data that contain jumps in the phase image.
     """
-    if sb_loc is None:
-        sb_loc = find_sideband(data)
+    if copy:
+        hologram = hologram.astype(dtype=np.float, copy=True)
 
-    x0, y0 = sb_loc
-    n, m = data.shape
+    if subtract_mean:
+        # remove contributions of the central band
+        # (this affects more than one pixel in the FFT
+        # because of zero-padding)
+        if issubclass(hologram.dtype.type, np.integer):
+            hologram = hologram.astype(np.float)
+        hologram -= hologram.mean()
 
-    # fourier transform
-    fft = fourier2dpad(data)
+    # Fourier transform
+    fft = fourier2dpad(hologram, zero_pad=zero_pad)
 
-    # Zero padded (larger)
-    order = len(fft)
-
-    center = order / 2 - .5
-    x = np.linspace(-center, center, order, endpoint=False)
-    xv = x.reshape(-1, 1)
-    yv = x.reshape(1, -1)
-
-    if filt_size is None:
-        # Estimate filter size based on the distance to the origin
-        filt_size = int(np.ceil(min(np.abs(sb_loc) / 2)))
-
-    if filt_type == "gauss":
-        # gaussian filter_type
-        afilter = np.exp(-((xv - x0)**2 + (yv - y0)**2) / (filt_size**2))
-        afilter /= np.max(afilter)
-    elif filt_type == "disk":
-        # disk fitlering
-        afilter = ((xv - x0)**2 + (yv - y0)**2) < filt_size**2
+    if sideband in [+1, -1]:
+        fsx, fsy = find_sideband(fft, which=sideband)
     else:
-        print("Unknown filter: {}".format(filt_type))
-    # filter here
-    fft_filt = afilter * fft
+        fsx, fsy = sideband
 
-    # Shift image to zero
-    shifted = np.roll(np.roll(fft_filt, -x0, axis=0), -y0, axis=1)
+    # shift fft to sideband location
+    shifted = np.roll(np.roll(fft, -int(fsx * fft.shape[0]), axis=0),
+                      -int(fsy * fft.shape[1]), axis=1)
 
-    # inverse fourier transform
-    field = np.fft.ifft2(np.fft.ifftshift(shifted))[:n, :m]
-    return field
+    # coordinates in Fourier space
+    fx = np.fft.fftshift(np.fft.fftfreq(fft.shape[0])).reshape(-1, 1)
+    fy = np.fft.fftshift(np.fft.fftfreq(fft.shape[1])).reshape(1, -1)
+
+    # filter size based on central band - sideband - distance
+    if filter_size >= 1:
+        raise ValueError("`filter_size` must be < 1!")
+    fsize = np.sqrt(fsx**2 + fsy**2) * filter_size
+
+    if filter_name == "disk":
+        afilter = (fx**2 + fy**2) < fsize**2
+    elif filter_name == "smooth disk":
+        sigma = fsize / 5
+        tau = 2 * sigma**2
+        radsq = fx**2 + fy**2
+        disk = radsq < fsize**2
+        gauss = np.exp(-radsq / tau)
+        afilter = signal.convolve(gauss, disk, mode="same")
+        afilter /= afilter.max()
+    elif filter_name == "gauss":
+        sigma = fsize * .6
+        tau = 2 * sigma**2
+        afilter = np.exp(-(fx**2 + fy**2) / tau)
+        afilter /= afilter.max()
+    elif filter_name == "square":
+        afilter = (np.abs(fx) < fsize) * (np.abs(fy) < fsize)
+    elif filter_name == "smooth square":
+        blur = fsize / 5
+        tau = 2 * blur**2
+        square = (np.abs(fx) < fsize) * (np.abs(fy) < fsize)
+        gauss = np.exp(-(fy**2) / tau) * np.exp(-(fy**2) / tau)
+        afilter = signal.convolve(square, gauss, mode="same")
+        afilter /= afilter.max()
+    else:
+        raise ValueError("Unknown filter: {}".format(filter_name))
+
+    # apply filter
+    fft_filt = afilter * shifted
+
+    # inverse Fourier transform
+    field = np.fft.ifft2(np.fft.ifftshift(fft_filt))
+    return field[:hologram.shape[0], :hologram.shape[1]]
