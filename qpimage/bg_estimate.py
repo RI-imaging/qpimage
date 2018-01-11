@@ -17,14 +17,16 @@ def estimate(data, fit_offset="average", fit_profile="ramp",
         Data from which to compute the background value
     fit_profile: str
         The type of background profile to fit:
-          - "ramp": 2D linear ramp with offset (default)
-          - "offset": offset only
+
+        - "ramp": 2D linear ramp with offset (default)
+        - "offset": offset only
     fit_offset: str
         The method for computing the profile offset
-          - "fit": offset as fitting parameter
-          - "gauss": center of a gaussian fit
-          - "mean": simple average
-          - "mode": mode (see `qpimage.bg_estimate.mode`)
+
+        - "fit": offset as fitting parameter
+        - "gauss": center of a gaussian fit
+        - "mean": simple average
+        - "mode": mode (see `qpimage.bg_estimate.mode`)
     border_px: float
         Assume that a frame of `border_px` pixels around
         the image is background.

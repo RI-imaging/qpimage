@@ -61,11 +61,12 @@ class QPImage(object):
             be used to internally store all data.
         h5mode: str
             Valid file modes are (only applies if `h5file` is a path)
-              - "r": Readonly, file must exist
-              - "r+": Read/write, file must exist
-              - "w": Create file, truncate if exists
-              - "w-" or "x": Create file, fail if exists
-              - "a": Read/write if exists, create otherwise (default)
+
+            - "r": Readonly, file must exist
+            - "r+": Read/write, file must exist
+            - "w": Create file, truncate if exists
+            - "w-" or "x": Create file, fail if exists
+            - "a": Read/write if exists, create otherwise (default)
 
         Notes
         -----
@@ -341,9 +342,10 @@ class QPImage(object):
             "phase", or both.
         keys: str or list of str
             Which type of background data to remove. One of:
-              - "fit": the background data computed with
-                :py:func:`qpimage.QPImage.compute_bg`
-              - "data": the experimentally obtained background image
+
+            - "fit": the background data computed with
+              :py:func:`qpimage.QPImage.compute_bg`
+            - "data": the experimentally obtained background image
         """
         which_data = QPImage._conv_which_data(which_data)
         if isinstance(keys, str):
@@ -378,14 +380,16 @@ class QPImage(object):
             "phase", or both.
         fit_profile: str
             The type of background profile to fit:
-              - "ramp": 2D linear ramp with offset (default)
-              - "offset": offset only
+
+            - "ramp": 2D linear ramp with offset (default)
+            - "offset": offset only
         fit_offset: str
             The method for computing the profile offset
-              - "fit": offset as fitting parameter
-              - "gauss": center of a gaussian fit
-              - "mean": simple average
-              - "mode": mode (see `qpimage.bg_estimate.mode`)
+
+            - "fit": offset as fitting parameter
+            - "gauss": center of a gaussian fit
+            - "mean": simple average
+            - "mode": mode (see `qpimage.bg_estimate.mode`)
         border_m: float
             Assume that a frame of `border_m` meters around the
             image is background. The value is converted to

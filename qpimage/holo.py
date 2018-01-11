@@ -90,24 +90,26 @@ def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1 / 3,
     Parameters
     ----------
     hologram: real-valued 2d ndarray
-        Hologram data
-    sideband: +1, -1, or tuple of floats (fx, fy)
-        Specifies the location of the sideband:
-          - +1: sideband in the upper half in Fourier space,
-               exact location is found automatically
-          - -1: sideband in the lower half in Fourier space,
-               exact location is found automatically
-          - (fx, fy), |fx|,|fy| < .5: sideband coordinates in
-               frequencies in interval [1/"axes size", .5]
+        hologram data
+    sideband: +1, -1, or tuple of (float, float)
+        specifies the location of the sideband:
+
+        - +1: sideband in the upper half in Fourier space,
+          exact location is found automatically
+        - -1: sideband in the lower half in Fourier space,
+          exact location is found automatically
+        - (float, float): sideband coordinates in
+          frequencies in interval [1/"axes size", .5]
     filter_name: str
-        One of
-          - "disk": binary disk with radius `filter_size`
-          - "smooth disk": disk with radius `filter_size` convolved
-               with a radial gaussian (`sigma=filter_size/5`)
-          - "gauss": radial gaussian (`sigma=0.6*filter_size`)
-          - "square": binary square with side length `filter_size`
-          - "smooth square": square with side length `filter_size`
-               convolved with square gaussian (`sigma=filter_size/5`)
+        specifies the filter to use, one of
+
+        - "disk": binary disk with radius `filter_size`
+        - "smooth disk": disk with radius `filter_size` convolved
+          with a radial gaussian (`sigma=filter_size/5`)
+        - "gauss": radial gaussian (`sigma=0.6*filter_size`)
+        - "square": binary square with side length `filter_size`
+        - "smooth square": square with side length `filter_size`
+          convolved with square gaussian (`sigma=filter_size/5`)
     filter_size: float
         Size of the filter in Fourier space in fractions of the
         distance between central band and sideband.

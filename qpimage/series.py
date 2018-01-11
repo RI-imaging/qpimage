@@ -33,12 +33,13 @@ class QPSeries(object):
             and `qpimage_list` is not empty, all QPImages in
             `qpimage_list` are appended to `h5file` in the given order.
         h5mode: str
-            Valid file modes are (only applies if `h5file` is a path)
-              - "r": Readonly, file must exist
-              - "r+": Read/write, file must exist
-              - "w": Create file, truncate if exists
-              - "w-" or "x": Create file, fail if exists
-              - "a": Read/write if exists, create otherwise (default)
+            Valid file modes are (only applies if `h5file` is a path):
+
+            - "r": Readonly, file must exist
+            - "r+": Read/write, file must exist
+            - "w": Create file, truncate if exists
+            - "w-" or "x": Create file, fail if exists
+            - "a": Read/write if exists, create otherwise (default)
         """
         if qpimage_list and not isinstance(qpimage_list, list):
             msg = "`qpimage_list` must be a list!"
