@@ -170,11 +170,16 @@ class QPImage(object):
             raise ValueError(msg)
 
     def __repr__(self):
-        rep = "QPImage, {x}x{y}px".format(x=self._amp.raw.shape[0],
-                                          y=self._amp.raw.shape[1],
-                                          )
-        if "wavelength" in self.h5.attrs:
-            wl = self.h5.attrs["wavelength"]
+        if "identifier" in self:
+            ident = " '{}'".format(self["identifier"])
+        else:
+            ident = ""
+        rep = "QPImage{}, {x}x{y}px".format(ident,
+                                            x=self._amp.raw.shape[0],
+                                            y=self._amp.raw.shape[1],
+                                            )
+        if "wavelength" in self:
+            wl = self["wavelength"]
             if wl < 2000e-9 and wl > 10e-9:
                 # convenience for light microscopy
                 rep += ", λ={:.1f}nm".format(wl * 1e9)

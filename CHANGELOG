@@ -1,4 +1,5 @@
 0.1.6
+ - Add identifier to represenation string in QPImage
  - hologram analysis:
    - add disk and square filters
    - standard "gauss" filter is replaced by "disk" filter 
