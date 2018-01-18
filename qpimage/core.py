@@ -273,10 +273,10 @@ class QPImage(object):
             pham = pha.copy()
             pham[nanmask] = 0
             pham = np.ma.masked_array(pham, mask=nanmask)
-            pha = unwrap_phase(pham)
+            pha = unwrap_phase(pham, seed=47)
             pha[nanmask] = np.nan
         else:
-            pha = unwrap_phase(pha)
+            pha = unwrap_phase(pha, seed=47)
 
         return amp, pha
 
