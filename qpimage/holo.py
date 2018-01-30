@@ -117,6 +117,11 @@ def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1 / 3,
         Size of the filter in Fourier space in fractions of the
         distance between central band and sideband.
         See `filter_shape` for interpretation of `filter_size`.
+    subtract_mean: bool
+        If True, remove the mean of the hologram before performing
+        the Fourier transform. This setting is recommended as it
+        can reduce artifacts from frequencies around the central
+        band.
     zero_pad: bool
         Perform zero-padding before applying the FFT. Setting
         `zero_pad` to `False` increases speed but might
