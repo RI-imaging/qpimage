@@ -158,13 +158,13 @@ def test_get_binary():
     assert np.all(binary_mask2 == bin2)
 
 
-def test_ramp():
+def test_tilt():
     size = 100
     data = np.zeros((size, size))
     data += np.linspace(0, .1, size).reshape(-1, 1)
     bg = bg_estimate.estimate(data=data,
                               fit_offset="fit",
-                              fit_profile="ramp",
+                              fit_profile="tilt",
                               border_px=1)
     assert np.allclose(data, bg)
 

@@ -5,14 +5,14 @@ a binary mask to exclude regions that do not contain background
 information.
 
 The phase image of a microgel bead (top left) has two artifacts; there
-is a ramp-like phase profile added along the vertical axis and there is
+is a tilt-like phase profile added along the vertical axis and there is
 a second microgel bead in close proximity to the center bead. A regular
-phase ramp background correction using the image values around a frame
-of five pixels (see "background_ramp.py" example) does not yield a flat
+phase tilt background correction using the image values around a frame
+of five pixels (see "background_tilt.py" example) does not yield a flat
 background, because the second bead is fitted into the background which
 leads to a horizontal background phase profile (top right). By defining
 a binary mask (bottom left image), the phase values of the second bead
-can be excluded from the background ramp fit and a flat background
+can be excluded from the background tilt fit and a flat background
 phase is achieved (bottom right).
 """
 import matplotlib.pylab as plt
@@ -30,7 +30,7 @@ qpi = qpimage.QPImage(data=input_phase,
 # background correction without mask
 qpi.compute_bg(which_data="phase",
                fit_offset="fit",
-               fit_profile="ramp",
+               fit_profile="tilt",
                border_px=5,
                )
 pha_nomask = qpi.pha
@@ -42,7 +42,7 @@ mask = input_phase < input_phase.max() / 10
 # (the intersection of `mask` and the 5px border is used for fitting)
 qpi.compute_bg(which_data="phase",
                fit_offset="fit",
-               fit_profile="ramp",
+               fit_profile="tilt",
                border_px=5,
                from_binary=mask
                )
@@ -57,7 +57,7 @@ ax1 = plt.subplot(221, title="input phase")
 map1 = ax1.imshow(input_phase, **plot_kw)
 plt.colorbar(map1, ax=ax1, fraction=.044, pad=0.04)
 
-ax2 = plt.subplot(222, title="ramp-corrected (no mask)")
+ax2 = plt.subplot(222, title="tilt-corrected (no mask)")
 map2 = ax2.imshow(pha_nomask, **plot_kw)
 plt.colorbar(map2, ax=ax2, fraction=.044, pad=0.04)
 
@@ -65,7 +65,7 @@ ax3 = plt.subplot(223, title="binary mask")
 map3 = ax3.imshow(mask, cmap="gray_r")
 plt.colorbar(map3, ax=ax3, fraction=.044, pad=0.04)
 
-ax4 = plt.subplot(224, title="ramp-corrected (with mask)")
+ax4 = plt.subplot(224, title="tilt-corrected (with mask)")
 map4 = ax4.imshow(pha_mask, **plot_kw)
 plt.colorbar(map4, ax=ax4, fraction=.044, pad=0.04)
 

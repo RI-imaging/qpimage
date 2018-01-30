@@ -21,7 +21,7 @@ def test_clear_bg():
     assert np.allclose(qpi.bg_amp, 1)
     qpi.compute_bg(which_data="amplitude",
                    fit_offset="fit",
-                   fit_profile="ramp",
+                   fit_profile="tilt",
                    border_px=5)
     assert not np.allclose(qpi.bg_amp, 1)
     qpi.clear_bg(which_data="amplitude", keys="fit")
@@ -136,7 +136,7 @@ def test_get_amp_pha_holo():
     qpi = qpimage.QPImage(image, which_data="hologram")
     qpi.compute_bg(which_data="phase",
                    fit_offset="fit",
-                   fit_profile="ramp",
+                   fit_profile="tilt",
                    border_px=5)
     assert np.abs(qpi.pha).max() < .1
 
@@ -203,7 +203,7 @@ def test_properties():
 
     qpi.compute_bg(which_data=["phase", "amplitude"],
                    fit_offset="fit",
-                   fit_profile="ramp",
+                   fit_profile="tilt",
                    border_px=5)
 
     assert not np.all(qpi.bg_amp == bg_amp)

@@ -122,7 +122,7 @@ class ImageData(object):
             msg = "No bg data to clear for '{}' in {}.".format(key, self)
             warnings.warn(msg)
 
-    def estimate_bg(self, fit_offset="mean", fit_profile="ramp",
+    def estimate_bg(self, fit_offset="mean", fit_profile="tilt",
                     border_px=0, from_binary=None, ret_binary=False):
         """Estimate image background
 
@@ -131,8 +131,9 @@ class ImageData(object):
         fit_profile: str
             The type of background profile to fit:
 
-            - "ramp": 2D linear ramp with offset (default)
             - "offset": offset only
+            - "poly2o": 2D 2nd order polynomial with mixed terms
+            - "tilt": 2D linear tilt with offset (default)
         fit_offset: str
             The method for computing the profile offset
 

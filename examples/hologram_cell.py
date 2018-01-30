@@ -5,7 +5,7 @@ digital holograms. The hologram of a single myeloid leukemia
 cell (HL60) shown was recorded using digital holographic microscopy
 (DHM). Because the phase-retrieval method used in DHM is based on the
 discrete Fourier transform, there always is a residual background
-phase ramp which must be removed for further image analysis.
+phase tilt which must be removed for further image analysis.
 The setup used for recording this data is described in reference
 :cite:`Schuermann2015`, which also contains a description of the
 hologram-to-phase conversion and phase background correction algorithms
@@ -48,7 +48,7 @@ pha0 = qpi.pha
 # background correction
 qpi.compute_bg(which_data=["amplitude", "phase"],
                fit_offset="fit",
-               fit_profile="ramp",
+               fit_profile="tilt",
                border_px=5,
                )
 

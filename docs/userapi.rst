@@ -17,17 +17,17 @@ A typical use case of qpimage is
 .. code-block:: python
 
    qpi = qpimage.QPImage(data=phase_ndarray, which_data="phase")
-   # perform phase-ramp background correction
+   # perform phase-tilt background correction
    qpi.compute_bg(which_data="phase",  # correct phase image
-                  fit_offset="fit",  # use bg offset from ramp fit
-                  fit_profile="ramp",  # perform 2D ramp fit
+                  fit_offset="fit",  # use bg offset from tilt fit
+                  fit_profile="tilt",  # perform 2D tilt fit
                   border_px=5,  # use 5 px border around image
    				  )
    # save the background-corrected phase to a text file
    numpy.savetxt("out.txt", qpi.pha)
 
 which creates an instance of `QPImage` containing otherwise experimentally
-obtained phase data, performs a phase-ramp background correction and then
+obtained phase data, performs a phase-tilt background correction and then
 saves the corrected phase data to the text file "out.txt". In this case,
 all data are stored in memory.
 
@@ -41,7 +41,7 @@ statement in combination with the ``h5file`` keyword argument
    with qpimage.QPImage(data=phase_ndarray, which_data="phase", h5file="/path/to/file.h5") as qpi:
        qpi.compute_bg(which_data="phase",
                       fit_offset="fit",
-                      fit_profile="ramp",
+                      fit_profile="tilt",
                       border_px=5,
                       )
 

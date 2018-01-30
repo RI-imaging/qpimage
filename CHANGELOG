@@ -1,7 +1,9 @@
 0.1.6
+ - implement qpimage refocusing function `QPImage.refocus`
+ - API change: renamed "ramp" correction to "tilt" correction
  - add identifier to represenation string in QPImage
  - hologram analysis:
-   - add disk and square filters
+   - add disk, square, and tukey filters
    - standard "gauss" filter is replaced by "disk" filter 
    - standard filter size is set to one third of the distance
      between the sideband and the central band

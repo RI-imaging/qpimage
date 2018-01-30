@@ -50,7 +50,7 @@ def test_getitem():
 
 
 def test_identifier():
-    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"
     qpi = qpimage.QPImage(h5file=h5file, h5mode="r")
     series1 = qpimage.QPSeries(qpimage_list=[qpi, qpi, qpi],
                                identifier="test_identifier")
@@ -78,7 +78,7 @@ def test_identifier_qpimage():
 
 
 def test_iter():
-    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"
     qpi = qpimage.QPImage(h5file=h5file, h5mode="r")
     series = qpimage.QPSeries(qpimage_list=[qpi, qpi, qpi])
 

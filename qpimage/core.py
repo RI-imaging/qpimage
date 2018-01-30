@@ -1,6 +1,7 @@
 import pathlib
 
 import h5py
+import nrefocus
 import numpy as np
 from skimage.restoration import unwrap_phase
 
@@ -374,7 +375,7 @@ class QPImage(object):
                 imdat.del_bg(key)
 
     def compute_bg(self, which_data="phase",
-                   fit_offset="mean", fit_profile="ramp",
+                   fit_offset="mean", fit_profile="tilt",
                    border_m=0, border_perc=0, border_px=0,
                    from_binary=None, ret_binary=False):
         """Compute background correction
@@ -388,8 +389,9 @@ class QPImage(object):
         fit_profile: str
             The type of background profile to fit:
 
-            - "ramp": 2D linear ramp with offset (default)
             - "offset": offset only
+            - "poly2o": 2D 2nd order polynomial with mixed terms
+            - "tilt": 2D linear tilt with offset (default)
         fit_offset: str
             The method for computing the profile offset
 
@@ -487,8 +489,8 @@ class QPImage(object):
         h5 = copyh5(self.h5, h5file)
         return QPImage(h5file=h5)
 
-    def refocus(self, distance, method="helmholtz"):
-        """Numerically refocus the current field
+    def refocus(self, distance, method="helmholtz", h5file=None, h5mode="a"):
+        """Compute a numerically refocused QPImage
 
         Parameters
         ----------
@@ -496,17 +498,53 @@ class QPImage(object):
             Focusing distance [m]
         method: str
             Refocusing method, one of ["helmholtz","fresnel"]
+        h5file: str, h5py.Group, h5py.File, or None
+            A path to an hdf5 data file where the QPImage is cached.
+            If set to `None` (default), all data will be handled in
+            memory using the "core" driver of the :mod:`h5py`'s
+            :class:`h5py:File` class. If the file does not exist,
+            it is created. If the file already exists, it is opened
+            with the file mode defined by `hdf5_mode`. If this is
+            an instance of h5py.Group or h5py.File, then this will
+            be used to internally store all data.
+        h5mode: str
+            Valid file modes are (only applies if `h5file` is a path)
+
+            - "r": Readonly, file must exist
+            - "r+": Read/write, file must exist
+            - "w": Create file, truncate if exists
+            - "w-" or "x": Create file, fail if exists
+            - "a": Read/write if exists, create otherwise (default)
+
+        Returns
+        -------
+        qpi: QPImage
+            Refocused phase and amplitude data
 
         See Also
         --------
-        :mod:`nrefocus` library used for numerical focusing
+        :mod:`nrefocus`: library used for numerical focusing
         """
-        # TODO:
-        # - Perform refocusing and create new image data instances
-        # - Remember old image data instances
-        # - Maybe return a new instance of QPImage
-        # - Allow autofocusing?
-        raise NotImplementedError("refocusing not implemented")
+        field2 = nrefocus.refocus(field=self.field,
+                                  d=distance/self["pixel size"],
+                                  nm=self["medium index"],
+                                  res=self["wavelength"]/self["pixel size"],
+                                  method=method
+                                  )
+        if "identifier" in self:
+            ident = self["identifier"]
+        else:
+            ident = ""
+        meta_data = self.meta
+        meta_data["identifier"] = "{}@{}{:.5e}m".format(ident,
+                                                        method[0],
+                                                        distance)
+        qpi2 = QPImage(data=field2,
+                       which_data="field",
+                       meta_data=meta_data,
+                       h5file=h5file,
+                       h5mode=h5mode)
+        return qpi2
 
     def set_bg_data(self, bg_data, which_data=None):
         """Set background amplitude and phase data

@@ -44,7 +44,7 @@ def test_background_binary():
     qpi = qpimage.QPImage(phase, bg_data=bgphase, which_data="phase")
     qpi.compute_bg(which_data="phase",
                    fit_offset="fit",
-                   fit_profile="ramp",
+                   fit_profile="tilt",
                    from_binary=binary)
     qpimage.integrity_check.check(qpi, checks="background")
 
@@ -58,7 +58,7 @@ def test_background_fit():
     with qpimage.QPImage(phase, which_data="phase", h5file=tf) as qpi:
         qpi.compute_bg(which_data="phase",
                        fit_offset="fit",
-                       fit_profile="ramp",
+                       fit_profile="tilt",
                        border_px=5)
 
     with h5py.File(tf) as h5:

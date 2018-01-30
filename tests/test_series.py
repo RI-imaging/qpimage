@@ -9,7 +9,7 @@ import qpimage
 
 
 def test_series_error_file_is_qpimage():
-    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"
     qpi1 = qpimage.QPImage(h5file=h5file)
     tf = tempfile.mktemp(suffix=".h5", prefix="qpimage_test_")
     with qpi1.copy(h5file=tf):
@@ -29,7 +29,7 @@ def test_series_error_file_is_qpimage():
 
 
 def test_series_error_key():
-    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"
     qpi1 = qpimage.QPImage(h5file=h5file)
     qpi2 = qpi1.copy()
 
@@ -43,7 +43,7 @@ def test_series_error_key():
 
 
 def test_series_error_meta():
-    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"
     qpi1 = qpimage.QPImage(h5file=h5file)
     qpi2 = qpi1.copy()
 
@@ -78,7 +78,7 @@ def test_series_error_noqpimage():
 
 
 def test_series_from_h5file():
-    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"
     qpi1 = qpimage.QPImage(h5file=h5file)
     qpi2 = qpi1.copy()
 
@@ -100,7 +100,7 @@ def test_series_from_h5file():
 
 
 def test_series_from_list():
-    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"
     qpi1 = qpimage.QPImage(h5file=h5file)
     qpi2 = qpi1.copy()
 
@@ -170,7 +170,7 @@ def test_series_hdf5_hardlink_bg():
 
 
 def test_series_meta():
-    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"
     qpi1 = qpimage.QPImage(h5file=h5file, meta_data={"wavelength": 300e-9})
     assert qpi1.meta["wavelength"] == 300e-9
     qps = qpimage.QPSeries(qpimage_list=[qpi1], meta_data={

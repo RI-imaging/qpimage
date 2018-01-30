@@ -11,7 +11,7 @@ import numpy as np
 import qpimage
 
 size = 200
-# background phase image with a ramp
+# background phase image with a tilt
 bg = np.repeat(np.linspace(0, 1, size), size).reshape(size, size)
 # phase image with random noise
 phase = np.random.rand(size, size) + bg

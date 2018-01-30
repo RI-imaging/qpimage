@@ -111,6 +111,8 @@ def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1 / 3,
         - "square": binary square with side length `filter_size`
         - "smooth square": square with side length `filter_size`
           convolved with square gaussian (`sigma=filter_size/5`)
+        - "tukey": a square tukey window of width `2*filter_size` and
+          `alpha=0.1`
     filter_size: float
         Size of the filter in Fourier space in fractions of the
         distance between central band and sideband.
@@ -118,7 +120,7 @@ def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1 / 3,
     zero_pad: bool
         Perform zero-padding before applying the FFT. Setting
         `zero_pad` to `False` increases speed but might
-        introduce image distortions such as ramps in the phase
+        introduce image distortions such as tilts in the phase
         and amplitude data or dark borders in the amplitude data.
     copy: bool
         If set to True, input `data` is not edited.
@@ -191,6 +193,16 @@ def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1 / 3,
         gauss = np.exp(-(fy**2) / tau) * np.exp(-(fy**2) / tau)
         afilter = signal.convolve(square, gauss, mode="same")
         afilter /= afilter.max()
+    elif filter_name == "tukey":
+        alpha = 0.1
+        rsize = np.int(min(fx.size, fy.size)*fsize) * 2
+        tukey_window_x = signal.tukey(rsize, alpha=alpha).reshape(-1, 1)
+        tukey_window_y = signal.tukey(rsize, alpha=alpha).reshape(1, -1)
+        tukey = tukey_window_x * tukey_window_y
+        afilter = np.zeros(shifted.shape)
+        s1 = (np.array(shifted.shape) - rsize)//2
+        s2 = (np.array(shifted.shape) + rsize)//2
+        afilter[s1[0]:s2[0], s1[1]:s2[1]] = tukey
     else:
         raise ValueError("Unknown filter: {}".format(filter_name))
 

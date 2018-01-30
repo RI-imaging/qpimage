@@ -8,7 +8,7 @@ Examples
 
 .. fancy_include:: simple_phase.py
 
-.. fancy_include:: background_ramp.py
+.. fancy_include:: background_tilt.py
 
 .. fancy_include:: background_offset.py
 

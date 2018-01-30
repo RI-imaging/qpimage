@@ -34,7 +34,8 @@ amplitude or intensity, hologram),
 memory-efficient and fast storage of large data sets 
 (using `HDF5 <https://en.wikipedia.org/wiki/Hierarchical_Data_Format>`_,
 phase and amplitude data are stored separately),
-or robust and extendable background correction techniques (ramp fit, binary mask).
+or robust and extendable background correction techniques (tilt and
+second order polynomial fits, binary mask).
 The main reason for the development of qpimage is our QPI analysis software
 `DryMass <https://drymass.readthedocs.io/en/stable/>`_.
 
@@ -65,9 +66,14 @@ and published in scientific journals:
 - Phase retrieval from holographic images with a gaussian
   filter is implemented according to :cite:`Schuermann2015`.
 
-- Phase background image correction with a ramp filter fitted to a
+- Phase background image correction with a tilt fitted to a
   border of the image data was used in :cite:`Schuermann2015` and
   :cite:`Schuermann2016`.
+
+- Phase background image correction with a polynomial fitted to
+  known background regions was introduced for DHM in :cite:`Colomb2006`
+  (in this reference the phase correction is applied to the hologram
+  data before field reconstruction).
 
 - Intensity background correction by dividing by a reference
   intensity image for tomographic imaging was used in 

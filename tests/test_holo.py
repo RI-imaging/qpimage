@@ -97,9 +97,13 @@ def test_get_field_filter_names():
     assert np.allclose(
         r_square[32, 32], 102.3285348843612 - 74.139058665601155j)
 
-    r_smooth_square = qpimage.holo.get_field(
-        filter_name="smooth square", **kwargs)
-    assert np.allclose(r_smooth_square[32, 32], r_smooth_square[32, 32])
+    r_smsquare = qpimage.holo.get_field(filter_name="smooth square", **kwargs)
+    assert np.allclose(
+        r_smsquare[32, 32], 105.23157221309754 - 70.593282942004862j)
+
+    r_tukey = qpimage.holo.get_field(filter_name="tukey", **kwargs)
+    assert np.allclose(
+        r_tukey[32, 32], 113.4826495540899 - 59.546232775481869j)
 
     try:
         qpimage.holo.get_field(filter_name="unknown", **kwargs)
@@ -163,7 +167,7 @@ def test_qpimage_holo():
                           holo_kw={"filter_name": "gauss"})
     qpi.compute_bg(which_data="phase",
                    fit_offset="fit",
-                   fit_profile="ramp",
+                   fit_profile="tilt",
                    border_px=5)
     assert np.allclose(disk_max, qpi.pha.max(), rtol=.01, atol=0)
 

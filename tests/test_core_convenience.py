@@ -6,14 +6,14 @@ import qpimage
 
 
 def test_contains():
-    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"
     qpi = qpimage.QPImage(h5file=h5file, h5mode="r")
     assert "wavelength" in qpi
     assert "hans-peter" not in qpi
 
 
 def test_equals():
-    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"
     qpi = qpimage.QPImage(h5file=h5file, h5mode="r")
 
     qpi1 = qpi.copy()
@@ -36,7 +36,7 @@ def test_equals():
 
 
 def test_h5file_confusion():
-    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"
     try:
         # h5file should be specified with its corresponding parameter
         qpimage.QPImage(h5file)
@@ -94,7 +94,7 @@ def test_repr():
 
 
 def test_setitem():
-    h5file = pathlib.Path(__file__).parent / "data" / "bg_ramp.h5"
+    h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"
     qpi = qpimage.QPImage(h5file=h5file, h5mode="r")
 
     qpi1 = qpi.copy()
