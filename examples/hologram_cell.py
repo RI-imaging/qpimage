@@ -6,7 +6,7 @@ cell (HL60) shown was recorded using digital holographic microscopy
 (DHM). Because the phase-retrieval method used in DHM is based on the
 discrete Fourier transform, there always is a residual background
 phase tilt which must be removed for further image analysis.
-The setup used for recording this data is described in reference
+The setup used for recording these data is described in reference
 :cite:`Schuermann2015`, which also contains a description of the
 hologram-to-phase conversion and phase background correction algorithms
 which qpimage is based on.

@@ -15,3 +15,5 @@ Examples
 .. fancy_include:: background_binary_mask.py
 
 .. fancy_include:: hologram_cell.py
+
+.. fancy_include:: background_poly2o.py
