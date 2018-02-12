@@ -32,7 +32,8 @@ sys.path.insert(0, pdir)
 sys.path.append(op.abspath('extensions'))
 
 # Mock all dependencies
-install_requires = ["h5py", "lmfit", "numpy", "scipy", "scipy.ndimage",
+install_requires = ["h5py", "lmfit", "nrefocus", "numpy",
+                    "scipy", "scipy.ndimage",
                     "skimage", "skimage.restoration"]
 
 for mod_name in install_requires:
