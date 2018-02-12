@@ -11,7 +11,7 @@ microscopy (DHM) (see :cite:`Schuermann2015`).
 import matplotlib.pylab as plt
 import numpy as np
 # The data are stored in a .jpg file (lossy compression).
-# If `PIL` is not foudn, try installing the `pillow` package.
+# If `PIL` is not found, try installing the `pillow` package.
 from PIL import Image
 import qpimage
 
