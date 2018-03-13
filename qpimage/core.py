@@ -265,6 +265,9 @@ class QPImage(object):
         elif which_data == "hologram":
             amp, pha = self._get_amp_pha(holo.get_field(data, **self.holo_kw),
                                          which_data="field")
+        if amp.size == 0 or pha.size == 0:
+            msg = "`data` with shape {} has zero size!".format(amp.shape)
+            raise ValueError(msg)
         # phase unwrapping (take into account nans)
         nanmask = np.isnan(pha)
         if np.sum(nanmask):
