@@ -1,7 +1,7 @@
+.. _index:
+
 qpimage documentation
 =====================
-
-.. _index:
 
 Qpimage is a Python3 library that provides a convenient interface
 to many common functionalities that are used in quantitative
