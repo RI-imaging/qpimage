@@ -66,7 +66,7 @@ phase imaging analysis with varying scopes and motivations.
   encompasses other quantitative phase imaging (QPI) techniques with the
   aim to becoming a standard tool in QPI analysis. Experimental .tif files
   from the shampoo project can be opened with :mod:`qpformat` (see
-  `this example <http://qpformat.readthedocs.io/en/latest/examples.html#hologram-from-tif-file>`_.
+  `this example <http://qpformat.readthedocs.io/en/latest/examples.html#hologram-from-tif-file>`_).
 
 - If you are using electron holography, `HyperSpy
   <http://hyperspy.org/hyperspy-doc/current/user_guide/electron_holography.html>`_
