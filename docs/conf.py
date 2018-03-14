@@ -202,4 +202,5 @@ intersphinx_mapping = {"python": ('https://docs.python.org/', None),
                        "drymass": ('http://drymass.readthedocs.io/en/stable', None),
                        "qpimage": ('http://qpimage.readthedocs.io/en/stable', None),
                        "qpsphere": ('http://qpsphere.readthedocs.io/en/stable', None),
+                       "qpformat": ('http://qpformat.readthedocs.io/en/stable', None),
                        }

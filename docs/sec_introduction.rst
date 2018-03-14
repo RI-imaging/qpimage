@@ -54,9 +54,10 @@ phase imaging analysis with varying scopes and motivations.
   focused on managing quantitative phase data (data conversion and storage as
   well as an extended set of background correction algorithms). However,
   there is a broad set of additional tools in the "qpimage universe", including
-  :mod:`qpformat` for loading experimental data, :mod:`qpsphere` for
+  :ref:`qpformat <qpformat:index>` for loading experimental data,
+  :ref:`qpsphere <qpsphere:index>` for
   scattering calculations and model fitting (focus is on cell-sized objects),
-  and :mod:`drymass` as a user interface to these libraries.
+  and :ref:`DryMass <drymass:index>` as a user interface to these libraries.
 
 - The Python package `shampoo <http://shampoo.readthedocs.io/en/latest/>`_
   focuses on DHM reconstruction and detection and tracking of biological
@@ -65,15 +66,15 @@ phase imaging analysis with varying scopes and motivations.
   shampoo is an optimized library for DHM analysis, the "qpimage universe"
   encompasses other quantitative phase imaging (QPI) techniques with the
   aim to becoming a standard tool in QPI analysis. Experimental .tif files
-  from the shampoo project can be opened with :mod:`qpformat` (see
-  `this example <http://qpformat.readthedocs.io/en/latest/examples.html#hologram-from-tif-file>`_).
+  from the shampoo project can be opened with :ref:`qpformat <qpformat:index>`
+  (see :ref:`qpformat:example_tif_hologram`).
 
 - If you are using electron holography, `HyperSpy
   <http://hyperspy.org/hyperspy-doc/current/user_guide/electron_holography.html>`_
   might be worth looking at. If you are storing your hologram data in the
-  HyperSpy file format, you can still load it with :mod:`qpformat` (see `this example 
-  <http://qpformat.readthedocs.io/en/stable/examples.html#hyperspy-hologram-file-format>`_)
-  and analyze it with qpimage.
+  HyperSpy file format, you can still load it with
+  :ref:`qpformat <qpformat:index>`
+  (see :ref:`qpformat:example_hyperspy_hologram`) and analyze it with qpimage.
 
 
 
