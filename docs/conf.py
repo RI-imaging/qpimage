@@ -199,4 +199,7 @@ intersphinx_mapping = {"python": ('https://docs.python.org/', None),
                        "h5py": ('http://docs.h5py.org/en/stable/', None),
                        "lmfit": ('http://lmfit.github.io/lmfit-py/', None),
                        "nrefocus": ('http://nrefocus.readthedocs.io/en/stable', None),
+                       "drymass": ('http://drymass.readthedocs.io/en/stable', None),
+                       "qpimage": ('http://qpimage.readthedocs.io/en/stable', None),
+                       "qpsphere": ('http://qpsphere.readthedocs.io/en/stable', None),
                        }
