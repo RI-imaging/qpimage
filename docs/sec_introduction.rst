@@ -40,6 +40,41 @@ The main reason for the development of qpimage is our QPI analysis software
 `DryMass <https://drymass.readthedocs.io/en/stable/>`_.
 
 
+What are the alternatives?
+==========================
+There are other open-source Python libraries that address quantitative
+phase imaging analysis with varying scopes and motivations.
+
+- `HoloPy <https://holopy.readthedocs.io>`_ is an established Python library
+   for digital holographic microscopy (DHM) that comes with several additional
+   features such as scattering calculations and model fitting. The overlap
+   between HoloPy and qpimage is the computation of phase and amplitude from
+   raw hologram data. The main difference is that HoloPy
+   is focused on DHM analysis with a rich set of tools while qpimage is only
+   focused on managing quantitative phase data (data conversion and storage as
+   well as an extended set of background correction algorithms). However,
+   there is a broad set of additional tools in the "qpimage universe", including
+   :mod:`qpformat` for loading experimental data, :mod:`qpsphere` for
+   scattering calculations and model fitting (focus is on cell-sized objects),
+   and :mod:`drymass` as a user interface to these libraries.
+
+- The Python package `shampoo <http://shampoo.readthedocs.io/en/latest/>`_
+  focuses on DHM reconstruction and detection and tracking of biological
+  cells. The overlap between shampoo and the "qpimage universe" (see above)
+  is quite large. The difference is mostly the scope of the projects; While
+  shampoo is an optimized library for DHM analysis, the "qpimage universe"
+  encompasses other quantitative phase imaging (QPI) techniques with the
+  intention to becoming a standard tool in QPI analysis.
+
+- If you are using electron holography, `HyperSpy
+  <http://hyperspy.org/hyperspy-doc/current/user_guide/electron_holography.html>`_
+  might be worth looking at. If you are storing your hologram data in the
+  HyperSpy file format, you can still load it with :mod:`qpformat` (see `this example 
+  <http://qpformat.readthedocs.io/en/stable/examples.html#hyperspy-hologram-file-format>`_)
+  and analyze it with qpimage.
+
+
+
 Citing qpimage
 ==============
 If you are using qpimage in a scientific publication, please
