@@ -65,7 +65,7 @@ phase imaging analysis with varying scopes and motivations.
   is quite large. The difference is mostly the scope of the projects; While
   shampoo is an optimized library for DHM analysis, the "qpimage universe"
   encompasses other quantitative phase imaging (QPI) techniques with the
-  aim to becoming a standard tool in QPI analysis. Experimental .tif files
+  aim to becoming a generic tool in QPI analysis. Experimental .tif files
   from the shampoo project can be opened with :ref:`qpformat <qpformat:index>`
   (see :ref:`qpformat:example_tif_hologram`).
 
