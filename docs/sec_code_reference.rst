@@ -19,6 +19,7 @@ Constants
 Methods
 -------
 .. automodule:: qpimage.bg_estimate
+   :exclude-members: VALID_FIT_OFFSETS, VALID_FIT_PROFILES
    :members:
    :undoc-members:
 
