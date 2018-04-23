@@ -6,6 +6,8 @@ Code reference
   :maxdepth: 2
 
 
+.. _bg_estimate:
+
 bg_estimate (background-estimation)
 ===================================
 
@@ -21,6 +23,8 @@ Methods
    :members:
    :undoc-members:
 
+
+.. _core:
 
 core (QPImage)
 ==============
@@ -42,6 +46,8 @@ Methods
 .. autofunction:: qpimage.core.copyh5
 
 
+.. _holo:
+
 holo (hologram analysis)
 ========================
 
@@ -51,6 +57,7 @@ Methods
    :members:
    :undoc-members:
 
+.. _image_data:
 
 image_data (basic image management)
 ===================================
@@ -72,6 +79,8 @@ Classes
    :undoc-members:
 
 
+.. _integrity_check:
+
 integrity_check (check QPImage data)
 ====================================
 
@@ -86,6 +95,8 @@ Methods
    :members:
    :undoc-members:
 
+
+.. _meta:
 
 meta (definitions for QPImage meta data)
 ========================================
@@ -105,6 +116,7 @@ Classes
    :undoc-members:
    :show-inheritance:
 
+.. _series:
 
 series (QPSeries)
 =================
