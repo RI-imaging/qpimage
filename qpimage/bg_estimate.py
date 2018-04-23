@@ -8,7 +8,7 @@ VALID_FIT_OFFSETS = ["fit", "gauss", "mean", "mode"]
 VALID_FIT_PROFILES = ["offset", "poly2o", "tilt"]
 
 
-def estimate(data, fit_offset="average", fit_profile="tilt",
+def estimate(data, fit_offset="mean", fit_profile="tilt",
              border_px=0, from_binary=None, ret_binary=False):
     """Estimate the background value of an image
 

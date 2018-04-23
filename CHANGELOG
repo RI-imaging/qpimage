@@ -1,3 +1,5 @@
+0.1.7
+ - fix: bad default keyword argument in bg_estimate.estimate
 0.1.6
  - implement qpimage refocusing function `QPImage.refocus`
  - API change: renamed "ramp" correction to "tilt" correction
