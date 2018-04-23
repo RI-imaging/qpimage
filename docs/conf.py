@@ -23,6 +23,7 @@
 
 # Get version number from qpimage._version file
 import mock
+import os
 import os.path as op
 import sys
 # include parent directory
@@ -30,6 +31,13 @@ pdir = op.dirname(op.dirname(op.abspath(__file__)))
 sys.path.insert(0, pdir)
 # include extenstions
 sys.path.append(op.abspath('extensions'))
+
+# RTD version
+if "READTHEDOCS_VERSION" in os.environ:
+    rtd_version = os.environ["READTHEDOCS_VERSION"]
+else:
+    rtd_version = "latest"
+
 
 # Mock all dependencies
 install_requires = ["h5py", "lmfit", "nrefocus", "numpy",
@@ -191,6 +199,7 @@ texinfo_documents = [
 ]
 
 
+
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {"python": ('https://docs.python.org/', None),
                        "numpy": ('http://docs.scipy.org/doc/numpy', None),
@@ -198,9 +207,8 @@ intersphinx_mapping = {"python": ('https://docs.python.org/', None),
                        "skimage": ('http://scikit-image.org/docs/stable/', None),
                        "h5py": ('http://docs.h5py.org/en/stable/', None),
                        "lmfit": ('http://lmfit.github.io/lmfit-py/', None),
-                       "nrefocus": ('http://nrefocus.readthedocs.io/en/stable', None),
-                       "drymass": ('http://drymass.readthedocs.io/en/stable', None),
-                       "qpimage": ('http://qpimage.readthedocs.io/en/stable', None),
-                       "qpsphere": ('http://qpsphere.readthedocs.io/en/stable', None),
-                       "qpformat": ('http://qpformat.readthedocs.io/en/stable', None),
+                       "nrefocus": ('http://nrefocus.readthedocs.io/en/'+rtd_version, None),
+                       "drymass": ('http://drymass.readthedocs.io/en/'+rtd_version, None),
+                       "qpsphere": ('http://qpsphere.readthedocs.io/en/'+rtd_version, None),
+                       "qpformat": ('http://qpformat.readthedocs.io/en/'+rtd_version, None),
                        }
