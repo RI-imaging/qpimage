@@ -37,7 +37,8 @@ if "READTHEDOCS_VERSION" in os.environ:
     rtd_version = os.environ["READTHEDOCS_VERSION"]
 else:
     rtd_version = "latest"
-
+# Used for linking to libraries in the qpimage universe
+rtd_link = "stable" if rtd_version != "latest" else "latest"
 
 # Mock all dependencies
 install_requires = ["h5py", "lmfit", "nrefocus", "numpy",
@@ -207,8 +208,8 @@ intersphinx_mapping = {"python": ('https://docs.python.org/', None),
                        "skimage": ('http://scikit-image.org/docs/stable/', None),
                        "h5py": ('http://docs.h5py.org/en/stable/', None),
                        "lmfit": ('http://lmfit.github.io/lmfit-py/', None),
-                       "nrefocus": ('http://nrefocus.readthedocs.io/en/'+rtd_version, None),
-                       "drymass": ('http://drymass.readthedocs.io/en/'+rtd_version, None),
-                       "qpsphere": ('http://qpsphere.readthedocs.io/en/'+rtd_version, None),
-                       "qpformat": ('http://qpformat.readthedocs.io/en/'+rtd_version, None),
+                       "nrefocus": ('http://nrefocus.readthedocs.io/en/'+rtd_link, None),
+                       "drymass": ('http://drymass.readthedocs.io/en/'+rtd_link, None),
+                       "qpsphere": ('http://qpsphere.readthedocs.io/en/'+rtd_link, None),
+                       "qpformat": ('http://qpformat.readthedocs.io/en/'+rtd_link, None),
                        }
