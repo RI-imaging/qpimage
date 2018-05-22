@@ -33,22 +33,25 @@ class MetaDict(dict):
         # check for invalid keys
         for key in self:
             if key not in META_KEYS:
-                raise KeyError("Unknown meta variable: '{}'".format(key))
+                raise KeyError("Unknown meta key: '{}'".format(key))
 
     def __setitem__(self, key, value):
-        """Set a meta data variable
+        """Set a meta data key
 
         The key must be a valid key defined in the
         :const:`qpimage.meta.META_KEYS` variable.
         """
         if key not in META_KEYS:
-            raise KeyError("Unknown meta variable: '{}'".format(key))
+            raise KeyError("Unknown meta key: '{}'".format(key))
         super(MetaDict, self).__setitem__(key, value)
 
     def __getitem__(self, *args, **kwargs):
-        if args[0] not in self:
+        if args[0] not in self and args[0] in META_KEYS:
             msg = "No meta data was defined for '{}'! ".format(args[0]) \
                   + "Please make sure you passed the dictionary `meta_data` " \
                   + "when creating the QPImage instance."
             raise MetaDataMissingError(msg)
+        elif args[0] not in self:
+            msg = "Unknown meta key: '{}'!".format(args[0])
+            raise KeyError(msg)
         return super(MetaDict, self).__getitem__(*args, **kwargs)

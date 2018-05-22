@@ -24,6 +24,20 @@ def test_meta_error():
     else:
         assert False, "invalid key 'peter2' should not work!"
 
+    try:
+        mm["peter"]
+    except KeyError:
+        pass
+    else:
+        assert False, "invalid key 'peter' should raise KeyError!"
+
+    try:
+        mm["medium index"]
+    except qpimage.meta.MetaDataMissingError:
+        pass
+    else:
+        assert False, "valid key undefined should raise MetaDataMissingError"
+
 
 if __name__ == "__main__":
     # Run all tests
