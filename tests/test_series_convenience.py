@@ -49,6 +49,34 @@ def test_getitem():
         assert False, "Negative index exceeds size."
 
 
+def test_getitem_identifier():
+    size = 20
+    pha = np.repeat(np.linspace(0, 10, size), size)
+    pha = pha.reshape(size, size)
+
+    qpi1 = qpimage.QPImage(data=1.1 * pha,
+                           which_data="phase",
+                           meta_data={"identifier": "peter"})
+    qpi2 = qpimage.QPImage(data=1.2 * pha,
+                           which_data="phase",
+                           meta_data={"identifier": "hans"})
+    qpi3 = qpimage.QPImage(data=1.3 * pha,
+                           which_data="phase",
+                           meta_data={"identifier": "doe"})
+
+    series = qpimage.QPSeries(qpimage_list=[qpi1, qpi2, qpi3])
+    assert series["peter"] == qpi1
+    assert series["peter"] != qpi2
+    assert series["hans"] == qpi2
+    assert series["doe"] == qpi3
+    try:
+        series["john"]
+    except KeyError:
+        pass
+    else:
+        assert False, "'john' is not in series"
+
+
 def test_identifier():
     h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"
     qpi = qpimage.QPImage(h5file=h5file, h5mode="r")

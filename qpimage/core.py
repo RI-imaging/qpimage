@@ -20,6 +20,7 @@ VALID_INPUT_DATA = ["field",
 
 
 class QPImage(object):
+    # required to create in-memory hdf5 files with unique fd
     _instances = 0
 
     def __init__(self, data=None, bg_data=None, which_data="phase",

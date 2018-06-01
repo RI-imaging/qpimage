@@ -1,3 +1,5 @@
+0.2.0
+ - feat: `QPSeries.get_qpimage` supports QPImage identifier as index
 0.1.8
  - code cleanup
 0.1.7
