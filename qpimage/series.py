@@ -8,7 +8,7 @@ class QPSeries(object):
     _instances = 0
 
     def __init__(self, qpimage_list=[], meta_data={},
-                 h5file=None, h5mode="a", identifier=None):
+                 h5file=None, h5mode="a", h5dtype="float32", identifier=None):
         """Quantitative phase image series
 
         Parameters
@@ -40,6 +40,12 @@ class QPSeries(object):
             - "w": Create file, truncate if exists
             - "w-" or "x": Create file, fail if exists
             - "a": Read/write if exists, create otherwise (default)
+
+        h5dtype: str
+            The datatype in which to store the image data. The default
+            is "float32" which is sufficient for 2D image analysis and
+            consumes only half the disk space of the numpy default
+            "float64".
         """
         if qpimage_list and not isinstance(qpimage_list, list):
             msg = "`qpimage_list` must be a list!"

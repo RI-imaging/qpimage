@@ -128,12 +128,12 @@ def test_series_hdf5_hardlink_bg():
     bgphase = np.sqrt(np.abs(phase)) + .4
 
     qpi1 = qpimage.QPImage(data=phase, which_data="phase",
-                           bg_data=bgphase)
-    qpi2 = qpimage.QPImage(data=phase, which_data="phase")
+                           bg_data=bgphase, h5dtype="float64")
+    qpi2 = qpimage.QPImage(data=phase, which_data="phase", h5dtype="float64")
 
     tf = tempfile.mktemp(suffix=".h5", prefix="qpimage_test_hardlink_")
     tf = pathlib.Path(tf)
-    with qpimage.QPSeries(h5file=tf, h5mode="w") as qps:
+    with qpimage.QPSeries(h5file=tf, h5mode="w", h5dtype="float64") as qps:
         qps.h5.flush()
         s_init = tf.stat().st_size
 

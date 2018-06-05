@@ -10,7 +10,7 @@ def test_phase_array():
     size = 200
     phase = np.repeat(np.linspace(0, np.pi, size), size)
     phase = phase.reshape(size, size)
-    with qpimage.QPImage(phase, which_data="phase") as qpi:
+    with qpimage.QPImage(phase, which_data="phase", h5dtype="float64") as qpi:
         assert np.all(qpi.pha == phase)
 
 

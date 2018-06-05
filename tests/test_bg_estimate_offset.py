@@ -9,7 +9,7 @@ def test_offset_mean_simple():
     rsobj = np.random.RandomState(47)
     data = rsobj.normal(loc=bg, scale=.1, size=(size, size))
     assert np.allclose(np.mean(data), 2.5003227280152887)
-    qpi = qpimage.QPImage(data=data, which_data="phase")
+    qpi = qpimage.QPImage(data=data, which_data="phase", h5dtype="float64")
     qpi.compute_bg(which_data="phase",
                    fit_offset="mean",
                    fit_profile="offset",
@@ -23,7 +23,7 @@ def test_offset_mode_simple():
     rsobj = np.random.RandomState(47)
     data = rsobj.normal(loc=bg, scale=.1, size=(size, size))
     assert np.allclose(np.mean(data), 2.5003227280152887)
-    qpi = qpimage.QPImage(data=data, which_data="phase")
+    qpi = qpimage.QPImage(data=data, which_data="phase", h5dtype="float64")
     qpi.compute_bg(which_data="phase",
                    fit_offset="mode",
                    fit_profile="offset",
@@ -38,7 +38,7 @@ def test_offset_gauss_simple():
     rsobj = np.random.RandomState(47)
     data = rsobj.normal(loc=bg, scale=.1, size=(size, size))
     assert np.allclose(np.mean(data), 2.5003227280152887)
-    qpi = qpimage.QPImage(data=data, which_data="phase")
+    qpi = qpimage.QPImage(data=data, which_data="phase", h5dtype="float64")
     qpi.compute_bg(which_data="phase",
                    fit_offset="gauss",
                    fit_profile="offset",

@@ -14,7 +14,8 @@ def test_clear_bg():
 
     qpi = qpimage.QPImage(data=(pha, amp),
                           bg_data=(bg_pha, bg_amp),
-                          which_data="phase,amplitude")
+                          which_data="phase,amplitude",
+                          h5dtype="float64")
     # amplitude
     assert np.all(qpi.bg_amp == bg_amp)
     qpi.clear_bg(which_data="amplitude", keys="data")
@@ -190,7 +191,8 @@ def test_properties():
     bg_pha = pha * .5
 
     qpi = qpimage.QPImage((pha, amp), bg_data=(bg_pha, bg_amp),
-                          which_data="phase,amplitude")
+                          which_data="phase,amplitude",
+                          h5dtype="float64")
 
     assert np.all(qpi.bg_amp == bg_amp)
     assert np.all(qpi.bg_pha == bg_pha)

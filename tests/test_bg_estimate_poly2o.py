@@ -23,7 +23,7 @@ def test_poly2o():
         + my * y \
         + mxy * x * y
 
-    qpi = qpimage.QPImage(data=phase, which_data="phase")
+    qpi = qpimage.QPImage(data=phase, which_data="phase", h5dtype="float64")
     qpi.compute_bg(which_data="phase",
                    fit_profile="poly2o",
                    from_binary=np.ones_like(phase, dtype=bool))

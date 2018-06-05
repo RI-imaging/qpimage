@@ -24,7 +24,8 @@ class QPImage(object):
     _instances = 0
 
     def __init__(self, data=None, bg_data=None, which_data="phase",
-                 meta_data={}, holo_kw={}, h5file=None, h5mode="a"
+                 meta_data={}, holo_kw={}, h5file=None, h5mode="a",
+                 h5dtype="float32",
                  ):
         """Quantitative phase image manipulation
 
@@ -72,6 +73,12 @@ class QPImage(object):
             - "w-" or "x": Create file, fail if exists
             - "a": Read/write if exists, create otherwise (default)
 
+        h5dtype: str
+            The datatype in which to store the image data. The default
+            is "float32" which is sufficient for 2D image analysis and
+            consumes only half the disk space of the numpy default
+            "float64".
+
         Notes
         -----
         QPImage is slicable; the following returns a new QPImage with
@@ -116,8 +123,8 @@ class QPImage(object):
         for group in ["amplitude", "phase"]:
             if group not in self.h5:
                 self.h5.create_group(group)
-        self._amp = Amplitude(self.h5["amplitude"])
-        self._pha = Phase(self.h5["phase"])
+        self._amp = Amplitude(self.h5["amplitude"], h5dtype=h5dtype)
+        self._pha = Phase(self.h5["phase"], h5dtype=h5dtype)
         if data is not None:
             # compute phase and amplitude from input data
             amp, pha = self._get_amp_pha(data=data,
@@ -127,6 +134,7 @@ class QPImage(object):
             # set background data
             self.set_bg_data(bg_data=bg_data,
                              which_data=which_data)
+        self.h5dtype = h5dtype
 
     def __enter__(self):
         return self
@@ -491,7 +499,7 @@ class QPImage(object):
             see `QPImage.__init__`
         """
         h5 = copyh5(self.h5, h5file)
-        return QPImage(h5file=h5)
+        return QPImage(h5file=h5, h5dtype=self.h5dtype)
 
     def refocus(self, distance, method="helmholtz", h5file=None, h5mode="a"):
         """Compute a numerically refocused QPImage
@@ -625,7 +633,8 @@ def copyh5(inh5, outh5):
         else:
             dset = write_image_dataset(group=outh5,
                                        key=key,
-                                       data=inh5[key].value)
+                                       data=inh5[key].value,
+                                       h5dtype=inh5[key].dtype)
             dset.attrs.update(inh5[key].attrs)
     outh5.attrs.update(inh5.attrs)
     if return_h5obj:

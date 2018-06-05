@@ -28,13 +28,20 @@ class ImageData(object):
     """
     __metaclass__ = abc.ABCMeta
 
-    def __init__(self, h5):
+    def __init__(self, h5, h5dtype="float32"):
         """
         Parameters
         ----------
         h5: h5py.Group
             HDF5 group where all data is kept
+
+        h5dtype: str
+            The datatype in which to store the image data. The default
+            is "float32" which is sufficient for 2D image analysis and
+            consumes only half the disk space of the numpy default
+            "float64".
         """
+        self.h5dtype = np.dtype(h5dtype)
         self.h5 = h5
         if "bg_data" not in self.h5:
             self.h5.create_group("bg_data")
@@ -48,9 +55,24 @@ class ImageData(object):
         return rep
 
     def __setitem__(self, key, value):
-        write_image_dataset(group=self.h5,
-                            key=key,
-                            data=value)
+        """Image data setter
+
+        If `value` is None, then `key` is removed from `self.h5`.
+        The datatype `self.h5dtype` is used, unless the input
+        array is boolean.
+        """
+        if value is None:
+            if key in self.h5:
+                del self.h5[key]
+        else:
+            if value.dtype == np.dtype("bool"):
+                h5dtype = "bool"
+            else:
+                h5dtype = self.h5dtype
+            write_image_dataset(group=self.h5,
+                                key=key,
+                                data=value,
+                                h5dtype=h5dtype)
 
     @abc.abstractmethod
     def _bg_combine(self, *bgs):
@@ -241,7 +263,8 @@ class ImageData(object):
         if isinstance(bg, (numbers.Real, np.ndarray)):
             dset = write_image_dataset(group=self.h5["bg_data"],
                                        key=key,
-                                       data=bg)
+                                       data=bg,
+                                       h5dtype=self.h5dtype)
             for kw in attrs:
                 dset.attrs[kw] = attrs[kw]
         elif isinstance(bg, h5py.Dataset):
@@ -295,7 +318,7 @@ class Phase(ImageData):
         return raw - bg
 
 
-def write_image_dataset(group, key, data):
+def write_image_dataset(group, key, data, h5dtype=None):
     """Write an image to an hdf5 group as a dataset
 
     This convenience function sets all attributes such that the image
@@ -310,25 +333,27 @@ def write_image_dataset(group, key, data):
         Dataset identifier
     data: np.ndarray of shape (M,N)
         Image data to store
+    h5dtype: str
+        The datatype in which to store the image data. The default
+        is the datatype of `data`.
 
     Returns
     -------
     dataset: h5py.Dataset
         The created HDF5 dataset object
     """
+    if h5dtype is None:
+        h5dtype = data.dtype
     if key in group:
         del group[key]
-    if data is None:
-        dset = None
-    else:
-        dset = group.create_dataset(key,
-                                    data=data,
-                                    fletcher32=True,
-                                    chunks=data.shape,
-                                    **COMPRESSION)
-        # Create and Set image attributes
-        # HDFView recognizes this as a series of images
-        dset.attrs.create('CLASS', b'IMAGE')
-        dset.attrs.create('IMAGE_VERSION', b'1.2')
-        dset.attrs.create('IMAGE_SUBCLASS', b'IMAGE_GRAYSCALE')
+    dset = group.create_dataset(key,
+                                data=data.astype(h5dtype),
+                                fletcher32=True,
+                                chunks=data.shape,
+                                **COMPRESSION)
+    # Create and Set image attributes
+    # HDFView recognizes this as a series of images
+    dset.attrs.create('CLASS', b'IMAGE')
+    dset.attrs.create('IMAGE_VERSION', b'1.2')
+    dset.attrs.create('IMAGE_SUBCLASS', b'IMAGE_GRAYSCALE')
     return dset
