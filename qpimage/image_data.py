@@ -7,8 +7,10 @@ import numpy as np
 
 from . import bg_estimate
 
-#: default hdf5 compression method
-COMPRESSION = "gzip"
+#: default hdf5 compression keyword arguments
+COMPRESSION = {"compression": "gzip",
+               "compression_opts": 9,
+               }
 
 #: valid background data identifiers
 VALID_BG_KEYS = ["data",
@@ -46,18 +48,9 @@ class ImageData(object):
         return rep
 
     def __setitem__(self, key, value):
-        if key in self.h5:
-            del self.h5[key]
-        if value is not None:
-            dset = self.h5.create_dataset(key,
-                                          data=value,
-                                          fletcher32=True,
-                                          compression=COMPRESSION)
-            # Create and Set image attributes
-            # HDFView recognizes this as a series of images
-            dset.attrs.create('CLASS', b'IMAGE')
-            dset.attrs.create('IMAGE_VERSION', b'1.2')
-            dset.attrs.create('IMAGE_SUBCLASS', b'IMAGE_GRAYSCALE')
+        write_image_dataset(group=self.h5,
+                            key=key,
+                            data=value)
 
     @abc.abstractmethod
     def _bg_combine(self, *bgs):
@@ -246,17 +239,11 @@ class ImageData(object):
             del self.h5["bg_data"][key]
         # set background
         if isinstance(bg, (numbers.Real, np.ndarray)):
-            dset = self.h5["bg_data"].create_dataset(key,
-                                                     data=bg,
-                                                     fletcher32=True,
-                                                     compression=COMPRESSION)
-            # Create and Set image attributes
-            # HDFView recognizes this as a series of images
-            dset.attrs.create('CLASS', b'IMAGE')
-            dset.attrs.create('IMAGE_VERSION', b'1.2')
-            dset.attrs.create('IMAGE_SUBCLASS', b'IMAGE_GRAYSCALE')
+            dset = write_image_dataset(group=self.h5["bg_data"],
+                                       key=key,
+                                       data=bg)
             for kw in attrs:
-                self.h5["bg_data"][key].attrs[kw] = attrs[kw]
+                dset.attrs[kw] = attrs[kw]
         elif isinstance(bg, h5py.Dataset):
             # Create a hard link
             # (This functionality was intended for saving memory when storing
@@ -306,3 +293,22 @@ class Phase(ImageData):
     def _bg_correct(self, raw, bg):
         """Remove background from raw phase image"""
         return raw - bg
+
+
+def write_image_dataset(group, key, data):
+    if key in group:
+        del group[key]
+    if data is None:
+        dset = None
+    else:
+        dset = group.create_dataset(key,
+                                    data=data,
+                                    fletcher32=True,
+                                    chunks=data.shape,
+                                    **COMPRESSION)
+        # Create and Set image attributes
+        # HDFView recognizes this as a series of images
+        dset.attrs.create('CLASS', b'IMAGE')
+        dset.attrs.create('IMAGE_VERSION', b'1.2')
+        dset.attrs.create('IMAGE_SUBCLASS', b'IMAGE_GRAYSCALE')
+    return dset

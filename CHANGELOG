@@ -1,5 +1,7 @@
 0.2.0
  - feat: `QPSeries.get_qpimage` supports QPImage identifier as index
+ - fix: set default gzip compression level to 9
+ - ref: unify image data storage, set hdf5 chunks to image size
 0.1.8
  - code cleanup
 0.1.7

@@ -122,9 +122,6 @@ def test_series_h5file():
 
 
 def test_series_hdf5_hardlink_bg():
-    comp = qpimage.core.COMPRESSION
-    qpimage.core.COMPRESSION = None
-
     size = 200
     phase = np.repeat(np.linspace(0, np.pi, size), size)
     phase = phase.reshape(size, size)
@@ -153,8 +150,6 @@ def test_series_hdf5_hardlink_bg():
         s_bg3 = tf.stat().st_size
 
         qpih = qps[1].copy()
-
-    qpimage.core.COMPRESSION = comp
 
     assert s_bg2 - s_bg1 < .51 * (s_bg1 - s_init)
     assert s_bg2 - s_bg1 < .51 * (s_bg3 - s_bg2)

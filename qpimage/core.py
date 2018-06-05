@@ -6,7 +6,7 @@ import numpy as np
 from skimage.restoration import unwrap_phase
 
 from . import holo
-from .image_data import COMPRESSION, Amplitude, Phase
+from .image_data import Amplitude, Phase, write_image_dataset
 from .meta import MetaDict, META_KEYS
 from ._version import version as __version__
 
@@ -623,10 +623,9 @@ def copyh5(inh5, outh5):
             outh5.create_group(key)
             copyh5(inh5[key], outh5[key])
         else:
-            dset = outh5.create_dataset(key,
-                                        data=inh5[key].value,
-                                        fletcher32=True,
-                                        compression=COMPRESSION)
+            dset = write_image_dataset(group=outh5,
+                                       key=key,
+                                       data=inh5[key].value)
             dset.attrs.update(inh5[key].attrs)
     outh5.attrs.update(inh5.attrs)
     if return_h5obj:
