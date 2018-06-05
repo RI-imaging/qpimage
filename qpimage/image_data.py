@@ -296,6 +296,26 @@ class Phase(ImageData):
 
 
 def write_image_dataset(group, key, data):
+    """Write an image to an hdf5 group as a dataset
+
+    This convenience function sets all attributes such that the image
+    can be visualized with HDFView, sets the compression and fletcher32
+    filters, and sets the chunk size to the image shape.
+
+    Parameters
+    ----------
+    group: h5py.Group
+        HDF5 group to store data to
+    key: str
+        Dataset identifier
+    data: np.ndarray of shape (M,N)
+        Image data to store
+
+    Returns
+    -------
+    dataset: h5py.Dataset
+        The created HDF5 dataset object
+    """
     if key in group:
         del group[key]
     if data is None:

@@ -78,6 +78,10 @@ Classes
    :members:
    :undoc-members:
 
+Methods
+-------
+.. autofunction:: qpimage.image_data.write_image_dataset
+
 
 .. _integrity_check:
 
