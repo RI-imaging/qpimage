@@ -133,7 +133,7 @@ def test_series_hdf5_hardlink_bg():
 
     tf = tempfile.mktemp(suffix=".h5", prefix="qpimage_test_hardlink_")
     tf = pathlib.Path(tf)
-    with qpimage.QPSeries(h5file=tf, h5mode="w", h5dtype="float64") as qps:
+    with qpimage.QPSeries(h5file=tf, h5mode="w") as qps:
         qps.h5.flush()
         s_init = tf.stat().st_size
 
