@@ -73,9 +73,38 @@ will be overridden. In the hdf5 file, the following data is stored:
 - all measurement specific meta data, given by the keyword argument
   ``meta_data``
 
+Dealing with measurement series
+-------------------------------
+Qpimage also comes with a :py:class:`QPSeries <qpimage.series.QPSeries>`
+class for handling multiple instances of QPImage in one hdf5 file. 
+For instance, to combine two QPImages in one series file, one could
+use:
+
+.. code-block:: python
+
+   paths = ["file_a.h5", "file_b.h5", "file_c.h5"]
+
+   with qpimage.QPSeries(h5file="/path/to/series_file.h5", h5mode="w") as qps:
+       for ii, pp in enumerate(paths):
+           qpi = qpimage.QPImage(h5file="/path/to/file.h5", h5mode="r")
+           qps.add_qpimage(qpi=qpi, identifier="my_name_{}".frmat(ii))
+
+Note that the function `add_qpimage` accepts the optional keyword argument
+"identifier" (overriding the identifier of the QPImage) which
+can also be used for indexing later:
+
+.. code-block:: python
+
+   with qpimage.QPSeries(h5file="/path/to/series_file.h5", h5mode="r") as qps:
+       # these two are equivalent
+       qpi = qps[0]
+       qpi = qps["my_name_0"]
+
+
 Notes
 -----
-- Even though the hdf5 data is gzip-compressed, using qpimage hdf5 files
+- Even though the hdf5 data is stored as gzip-compressed single precision
+  floating point values, using qpimage hdf5 files
   may result in file sizes that are considerably
   larger compared to when only the output of e.g. ``qpi.pha`` is stored
   using e.g. :py:func:`numpy.save`.

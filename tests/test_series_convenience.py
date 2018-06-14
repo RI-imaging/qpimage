@@ -65,6 +65,8 @@ def test_getitem_identifier():
                            meta_data={"identifier": "doe"})
 
     series = qpimage.QPSeries(qpimage_list=[qpi1, qpi2, qpi3])
+    assert "peter" in series
+    assert "peter_bad" not in series
     assert series["peter"] == qpi1
     assert series["peter"] != qpi2
     assert series["hans"] == qpi2
@@ -75,6 +77,12 @@ def test_getitem_identifier():
         pass
     else:
         assert False, "'john' is not in series"
+    try:
+        series.add_qpimage(qpi1)
+    except ValueError:
+        pass
+    else:
+        assert False, "Adding QPImage with same identifier should not work"
 
 
 def test_identifier():

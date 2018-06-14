@@ -88,6 +88,17 @@ class QPSeries(object):
         if identifier:
             self.h5.attrs["identifier"] = identifier
 
+    def __contains__(self, qpid):
+        """test whether a QPImage with the given identifier exists"""
+        for ii in range(len(self)):
+            qpi = self[ii]
+            if "identifier" in qpi and qpi["identifier"] == qpid:
+                exists = True
+                break
+        else:
+            exists = False
+        return exists
+
     def __enter__(self):
         return self
 
@@ -132,6 +143,11 @@ class QPSeries(object):
         """
         if not isinstance(qpi, QPImage):
             raise ValueError("`qpimage` must be instance of QPImage!")
+        if "identifier" in qpi and qpi["identifier"] in self:
+            msg = "The identifier '{}' already ".format(qpi["identifier"]) \
+                  + "exists! You can either change the identifier of " \
+                  + " '{}' or remove it.".format(qpi)
+            raise ValueError(msg)
         # determine number of qpimages
         num = len(self)
         # indices start at zero; do not add 1
