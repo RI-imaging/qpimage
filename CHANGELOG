@@ -1,4 +1,5 @@
 0.2.0
+ - drop support for Python 3.5
  - docs: add QPSeries example to user API section
  - feat: `QPSeries.get_qpimage` supports QPImage identifier as index
  - feat: allow to set data storage dtype, which now defaults to float32

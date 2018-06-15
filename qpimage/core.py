@@ -25,7 +25,7 @@ class QPImage(object):
 
     def __init__(self, data=None, bg_data=None, which_data="phase",
                  meta_data={}, holo_kw={}, h5file=None, h5mode="a",
-                 h5dtype="float32",
+                 h5dtype="float64",
                  ):
         """Quantitative phase image manipulation
 
