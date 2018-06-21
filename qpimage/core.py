@@ -55,7 +55,7 @@ class QPImage(object):
             arguments.
 
             .. versionadded:: 0.1.6
-        h5file: str, h5py.Group, h5py.File, or None
+        h5file: str, pathlib.Path, h5py.Group, h5py.File, or None
             A path to an hdf5 data file where all data is cached. If
             set to `None` (default), all data will be handled in
             memory using the "core" driver of the :mod:`h5py`'s
@@ -106,7 +106,7 @@ class QPImage(object):
                             "backing_store": False,
                             "mode": "a"}
             else:
-                h5kwargs = {"name": str(h5file),
+                h5kwargs = {"name": h5file,
                             "mode": h5mode}
             self.h5 = h5py.File(**h5kwargs)
             self._do_h5_cleanup = True
@@ -607,7 +607,7 @@ def copyh5(inh5, outh5):
     All data in outh5 are overridden by the inh5 data.
     """
     if not isinstance(inh5, h5py.Group):
-        inh5 = h5py.File(str(inh5), mode="r")
+        inh5 = h5py.File(inh5, mode="r")
     if outh5 is None:
         # create file in memory
         h5kwargs = {"name": "qpimage{}.h5".format(QPImage._instances),
@@ -619,7 +619,7 @@ def copyh5(inh5, outh5):
         QPImage._instances += 1
     elif not isinstance(outh5, h5py.Group):
         # create new file
-        outh5 = h5py.File(str(outh5), mode="w")
+        outh5 = h5py.File(outh5, mode="w")
         return_h5obj = False
     else:
         return_h5obj = True

@@ -23,7 +23,7 @@ setup(
     license="MIT",
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',
-    install_requires=["h5py",
+    install_requires=["h5py>=2.7.0",
                       "lmfit",
                       "nrefocus>=0.2.0",
                       "numpy>=1.9.0",

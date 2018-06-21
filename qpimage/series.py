@@ -57,7 +57,7 @@ class QPSeries(object):
                     "backing_store": False,
                     "mode": "a"}
             else:
-                h5kwargs = {"name": str(h5file),
+                h5kwargs = {"name": h5file,
                             "mode": h5mode}
             self.h5 = h5py.File(**h5kwargs)
             self._do_h5_cleanup = True
