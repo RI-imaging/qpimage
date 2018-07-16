@@ -13,7 +13,7 @@ class QPSeries(object):
 
         Parameters
         ----------
-        qpimage_list: list of QPImage
+        qpimage_list: list
             A list of instances of :class:`qpimage.QPImage`.
         meta_data: dict
             Meta data associated with the input data
@@ -132,7 +132,7 @@ class QPSeries(object):
 
         Parameters
         ----------
-        qpimage: QPImage
+        qpimage: qpimage.QPImage
             The QPImage that is added to the series
         identifier: str
             Identifier key for `qpi`

@@ -364,7 +364,7 @@ class QPImage(object):
             Which type of background data to remove. One of:
 
             - "fit": the background data computed with
-              :py:func:`qpimage.QPImage.compute_bg`
+              :func:`qpimage.QPImage.compute_bg`
             - "data": the experimentally obtained background image
         """
         which_data = QPImage._conv_which_data(which_data)
@@ -530,7 +530,7 @@ class QPImage(object):
 
         Returns
         -------
-        qpi: QPImage
+        qpi: qpimage.QPImage
             Refocused phase and amplitude data
 
         See Also

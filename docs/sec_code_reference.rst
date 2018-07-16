@@ -6,6 +6,25 @@ Code reference
   :maxdepth: 2
 
 
+
+module level aliases
+====================
+For user convenience, the following objects are available
+at the module level.
+
+.. class:: qpimage.QPImage
+    
+    alias of :class:`qpimage.core.QPImage`
+
+.. class:: qpimage.QPSeries
+    
+    alias of :class:`qpimage.series.QPSeries`
+
+.. data:: qpimage.META_KEYS
+
+    alias of :data:`qpimage.meta.META_KEYS`  
+
+
 .. _bg_estimate:
 
 bg_estimate (background-estimation)
