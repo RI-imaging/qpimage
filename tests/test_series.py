@@ -159,7 +159,7 @@ def test_series_hdf5_hardlink_bg():
 
     # cleanup
     try:
-        os.remove(str(tf))
+        tf.unlink()
     except OSError:
         pass
 
