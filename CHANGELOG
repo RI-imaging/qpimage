@@ -1,3 +1,6 @@
+0.4.0
+ - BREAKING CHANGE: replace all occurences of "binary"
+   with "mask" to avoid ambiguities
 0.3.0
  - feat: new meta data key "sim model"
 0.2.1

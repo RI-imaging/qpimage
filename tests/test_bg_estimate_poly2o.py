@@ -26,7 +26,7 @@ def test_poly2o():
     qpi = qpimage.QPImage(data=phase, which_data="phase", h5dtype="float64")
     qpi.compute_bg(which_data="phase",
                    fit_profile="poly2o",
-                   from_binary=np.ones_like(phase, dtype=bool))
+                   from_mask=np.ones_like(phase, dtype=bool))
 
     assert not np.allclose(phase, 0, atol=1e-14, rtol=0)
     assert np.allclose(qpi.pha, 0, atol=1e-14, rtol=0)

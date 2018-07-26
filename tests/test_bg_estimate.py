@@ -32,22 +32,22 @@ def test_bg_estimate_errors():
         assert False, "offset cannot be fitted"
 
 
-def test_binary():
+def test_mask():
     size = 200
     data = np.zeros((size, size), dtype=float)
     data[size // 2:] = 1
-    binary_mask = data == 0
+    mask = data == 0
     qpi = qpimage.QPImage(data=data, which_data="phase")
     qpi.compute_bg(which_data="phase",
                    fit_offset="mean",
                    fit_profile="offset",
-                   from_binary=binary_mask,
+                   from_mask=mask,
                    )
     assert np.allclose(qpi.pha, data)
     qpi.compute_bg(which_data="phase",
                    fit_offset="mean",
                    fit_profile="offset",
-                   from_binary=~binary_mask,
+                   from_mask=~mask,
                    )
     assert np.allclose(qpi.pha, data - 1)
 
@@ -133,29 +133,29 @@ def test_border_perc():
     assert not np.all(qpi.pha == data_px)
 
 
-def test_get_binary():
+def test_get_mask():
     size = 200
     data = np.zeros((size, size), dtype=float)
-    binary_mask = np.zeros_like(data, dtype=bool)
-    binary_mask[::2, ::2] = True
+    mask = np.zeros_like(data, dtype=bool)
+    mask[::2, ::2] = True
     qpi = qpimage.QPImage(data=data, which_data="phase")
-    # only binary
+    # only mask
     bin1 = qpi.compute_bg(which_data="phase",
                           fit_offset="mean",
                           fit_profile="offset",
-                          from_binary=binary_mask,
-                          ret_binary=True)
-    assert np.all(binary_mask == bin1)
-    # binary with border
+                          from_mask=mask,
+                          ret_mask=True)
+    assert np.all(mask == bin1)
+    # mask with border
     bin2 = qpi.compute_bg(which_data="phase",
                           fit_offset="mean",
                           fit_profile="offset",
-                          from_binary=binary_mask,
+                          from_mask=mask,
                           border_px=5,
-                          ret_binary=True)
-    binary_mask2 = binary_mask.copy()
-    binary_mask2[5:-5, 5:-5] = False
-    assert np.all(binary_mask2 == bin2)
+                          ret_mask=True)
+    mask2 = mask.copy()
+    mask2[5:-5, 5:-5] = False
+    assert np.all(mask2 == bin2)
 
 
 def test_tilt():

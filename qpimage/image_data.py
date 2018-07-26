@@ -106,14 +106,19 @@ class ImageData(object):
                     var = "{} background {}".format(name, akey)
                     info.append((var, atr))
         if "fit" in self.h5["bg_data"]:
-            # binary background
-            var_bin = "{} background from binary".format(name)
-            if ("estimate_bg_from_binary" in self.h5 and
-                    self.h5["estimate_bg_from_binary"] is not None):
-                # bg was computed from binary image
-                info.append((var_bin, True))
+            # mask background
+            var_mask = "{} background from mask".format(name)
+            if ("estimate_bg_from_mask" in self.h5
+                    and self.h5["estimate_bg_from_mask"] is not None):
+                # bg was computed from mask image
+                info.append((var_mask, True))
+            elif ("estimate_bg_from_binary" in self.h5
+                    and self.h5["estimate_bg_from_binary"] is not None):
+                # bg was computed from mask image (old notation)
+                warnings.warn("Old file format detected!", DeprecationWarning)
+                info.append((var_mask, True))
             else:
-                info.append((var_bin, False))
+                info.append((var_mask, False))
         return info
 
     @property
@@ -138,7 +143,7 @@ class ImageData(object):
             warnings.warn(msg)
 
     def estimate_bg(self, fit_offset="mean", fit_profile="tilt",
-                    border_px=0, from_binary=None, ret_binary=False):
+                    border_px=0, from_mask=None, ret_mask=False):
         """Estimate image background
 
         Parameters
@@ -159,18 +164,18 @@ class ImageData(object):
         border_px: float
             Assume that a frame of `border_px` pixels around
             the image is background.
-        from_binary: boolean np.ndarray or None
+        from_mask: boolean np.ndarray or None
             Use a boolean array to define the background area.
-            The binary image must have the same shape as the
+            The mask image must have the same shape as the
             input data.`True` elements are used for background
             estimation.
-        ret_binary: bool
-            Return the binary image used to compute the background.
+        ret_mask: bool
+            Return the mask image used to compute the background.
 
         Notes
         -----
-        If both `border_px` and `from_binary` are given, the
-        intersection of the two resulting binary images is used.
+        If both `border_px` and `from_mask` are given, the
+        intersection of the two resulting mask images is used.
 
         The arguments passed to this method are stored in the
         hdf5 file `self.h5` and are used for optional integrity
@@ -183,22 +188,22 @@ class ImageData(object):
         # remove existing bg before accessing imdat.image
         self.set_bg(bg=None, key="fit")
         # compute bg
-        bgimage, binary = bg_estimate.estimate(data=self.image,
-                                               fit_offset=fit_offset,
-                                               fit_profile=fit_profile,
-                                               border_px=border_px,
-                                               from_binary=from_binary,
-                                               ret_binary=True)
+        bgimage, mask = bg_estimate.estimate(data=self.image,
+                                             fit_offset=fit_offset,
+                                             fit_profile=fit_profile,
+                                             border_px=border_px,
+                                             from_mask=from_mask,
+                                             ret_mask=True)
         attrs = {"fit_offset": fit_offset,
                  "fit_profile": fit_profile,
                  "border_px": border_px}
         self.set_bg(bg=bgimage, key="fit", attrs=attrs)
-        # save `from_binary` separately (arrays vs. h5 attributes)
-        # (if `from_binary` is `None`, this will remove the array)
-        self["estimate_bg_from_binary"] = from_binary
-        # return binary image
-        if ret_binary:
-            return binary
+        # save `from_mask` separately (arrays vs. h5 attributes)
+        # (if `from_mask` is `None`, this will remove the array)
+        self["estimate_bg_from_mask"] = from_mask
+        # return mask image
+        if ret_mask:
+            return mask
 
     def get_bg(self, key=None, ret_attrs=False):
         """Get the background data

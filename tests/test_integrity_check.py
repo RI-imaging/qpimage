@@ -33,19 +33,19 @@ def test_attributes():
     qpimage.integrity_check.check(qpi2)
 
 
-def test_background_binary():
+def test_background_mask():
     size = 200
     phase = np.repeat(np.linspace(0, np.pi, size), size)
     phase = phase.reshape(size, size)
     bgphase = np.sqrt(np.abs(phase))
-    binary = np.zeros_like(bgphase, dtype=bool)
-    binary[:10, :] = True
-    binary[:, -20] = True
+    mask = np.zeros_like(bgphase, dtype=bool)
+    mask[:10, :] = True
+    mask[:, -20] = True
     qpi = qpimage.QPImage(phase, bg_data=bgphase, which_data="phase")
     qpi.compute_bg(which_data="phase",
                    fit_offset="fit",
                    fit_profile="tilt",
-                   from_binary=binary)
+                   from_mask=mask)
     qpimage.integrity_check.check(qpi, checks="background")
 
 

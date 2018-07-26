@@ -30,19 +30,19 @@ qpi = qpimage.QPImage(data=data, which_data="phase")
 cpkw = {"which_data": "phase",  # correct the input phase data
         "fit_profile": "offset",  # perform offset correction only
         "border_px": 5,  # use a border of 5px of the input phase
-        "ret_binary": True,  # return the binary image for visualization
+        "ret_mask": True,  # return the mask image for visualization
         }
 
-binary = qpi.compute_bg(fit_offset="mode", **cpkw)
-bg_mode = np.mean(qpi.bg_pha[binary])
+mask = qpi.compute_bg(fit_offset="mode", **cpkw)
+bg_mode = np.mean(qpi.bg_pha[mask])
 
 qpi.compute_bg(fit_offset="mean", **cpkw)
-bg_mean = np.mean(qpi.bg_pha[binary])
+bg_mean = np.mean(qpi.bg_pha[mask])
 
 qpi.compute_bg(fit_offset="gauss", **cpkw)
-bg_gauss = np.mean(qpi.bg_pha[binary])
+bg_gauss = np.mean(qpi.bg_pha[mask])
 
-bg_data = (qpi.pha + qpi.bg_pha)[binary]
+bg_data = (qpi.pha + qpi.bg_pha)[mask]
 # compute histogram
 nbins = int(np.ceil(np.sqrt(bg_data.size)))
 mind, maxd = bg_data.min(), bg_data.max()

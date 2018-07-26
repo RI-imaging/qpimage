@@ -1,4 +1,4 @@
-"""Background image binary mask correction
+"""Masked background image correction
 
 This example illustrates background correction with qpimage using
 a binary mask to exclude regions that do not contain background
@@ -44,7 +44,7 @@ qpi.compute_bg(which_data="phase",
                fit_offset="fit",
                fit_profile="tilt",
                border_px=5,
-               from_binary=mask
+               from_mask=mask
                )
 pha_mask = qpi.pha
 
@@ -62,7 +62,7 @@ map2 = ax2.imshow(pha_nomask, **plot_kw)
 plt.colorbar(map2, ax=ax2, fraction=.044, pad=0.04)
 
 ax3 = plt.subplot(223, title="binary mask")
-map3 = ax3.imshow(mask, cmap="gray_r")
+map3 = ax3.imshow(1.*mask, cmap="gray_r")
 plt.colorbar(map3, ax=ax3, fraction=.044, pad=0.04)
 
 ax4 = plt.subplot(224, title="tilt-corrected (with mask)")

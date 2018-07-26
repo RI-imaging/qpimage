@@ -87,12 +87,12 @@ def check_background(qpi):
             pass
         else:
             kwargs = dict(attrs)
-            # check if we have a user-defined binary image
-            binkey = "estimate_bg_from_binary"
+            # check if we have a user-defined mask image
+            binkey = "estimate_bg_from_mask"
             if binkey in imdat.h5:
-                kwargs["from_binary"] = imdat.h5[binkey].value
+                kwargs["from_mask"] = imdat.h5[binkey].value
             else:
-                kwargs["from_binary"] = None
+                kwargs["from_mask"] = None
             # compute background correction
             with h5py.File("check.h5",
                            driver="core",

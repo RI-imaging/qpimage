@@ -389,7 +389,7 @@ class QPImage(object):
     def compute_bg(self, which_data="phase",
                    fit_offset="mean", fit_profile="tilt",
                    border_m=0, border_perc=0, border_px=0,
-                   from_binary=None, ret_binary=False):
+                   from_mask=None, ret_mask=False):
         """Compute background correction
 
         Parameters
@@ -424,24 +424,24 @@ class QPImage(object):
         border_px: float
             Assume that a frame of `border_px` pixels around
             the image is background.
-        from_binary: boolean np.ndarray or None
+        from_mask: boolean np.ndarray or None
             Use a boolean array to define the background area.
-            The binary image must have the same shape as the
+            The boolean mask must have the same shape as the
             input data. `True` elements are used for background
             estimation.
-        ret_binary: bool
-            Return the binary image used to compute the background.
+        ret_mask: bool
+            Return the boolean mask used to compute the background.
 
         Notes
         -----
         The `border_*` values are translated to pixel values and
-        the largest pixel border is used to generate a binary
+        the largest pixel border is used to generate a mask
         image for background computation.
 
         If any of the `border_*` arguments are non-zero and
-        `from_binary` is given, the intersection of the two
-        is used, i.e. the positions where both, the binary
-        frame and `from_binary`, are `True`.
+        `from_mask` is given, the intersection of the two
+        is used, i.e. the positions where both, the frame
+        mask and `from_mask`, are `True`.
 
         See Also
         --------
@@ -469,10 +469,10 @@ class QPImage(object):
         # get maximum border size
         if border_list:
             border_px = np.int(np.round(np.max(border_list)))
-        elif from_binary is None:
-            raise ValueError("Neither `from_binary` nor `border_*` given!")
-        elif np.all(from_binary == 0):
-            raise ValueError("`from_binary` must not be all-zero!")
+        elif from_mask is None:
+            raise ValueError("Neither `from_mask` nor `border_*` given!")
+        elif np.all(from_mask == 0):
+            raise ValueError("`from_mask` must not be all-zero!")
         # Get affected image data
         imdat_list = []
         if "amplitude" in which_data:
@@ -481,12 +481,12 @@ class QPImage(object):
             imdat_list.append(self._pha)
         # Perform correction
         for imdat in imdat_list:
-            binary = imdat.estimate_bg(fit_offset=fit_offset,
-                                       fit_profile=fit_profile,
-                                       border_px=border_px,
-                                       from_binary=from_binary,
-                                       ret_binary=ret_binary)
-        return binary
+            mask = imdat.estimate_bg(fit_offset=fit_offset,
+                                     fit_profile=fit_profile,
+                                     border_px=border_px,
+                                     from_mask=from_mask,
+                                     ret_mask=ret_mask)
+        return mask
 
     def copy(self, h5file=None):
         """Create a copy of the current instance

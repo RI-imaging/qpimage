@@ -9,7 +9,7 @@ VALID_FIT_PROFILES = ["offset", "poly2o", "tilt"]
 
 
 def estimate(data, fit_offset="mean", fit_profile="tilt",
-             border_px=0, from_binary=None, ret_binary=False):
+             border_px=0, from_mask=None, ret_mask=False):
     """Estimate the background value of an image
 
     Parameters
@@ -32,19 +32,19 @@ def estimate(data, fit_offset="mean", fit_profile="tilt",
     border_px: float
         Assume that a frame of `border_px` pixels around
         the image is background.
-    from_binary: boolean np.ndarray or None
+    from_mask: boolean np.ndarray or None
         Use a boolean array to define the background area.
-        The binary image must have the same shape as the
+        The boolean mask must have the same shape as the
         input data. `True` elements are used for background
         estimation.
-    ret_binary: bool
-        Return the binary image used to compute the background.
+    ret_mask: bool
+        Return the boolean mask used to compute the background.
 
     Notes
     -----
-    If both `border_px` and `from_binary` are given, the
+    If both `border_px` and `from_mask` are given, the
     intersection of the two is used, i.e. the positions
-    where both, the binary frame and `from_binary`, are
+    where both, the frame mask and `from_mask`, are
     `True`.
     """
     if fit_profile not in VALID_FIT_PROFILES:
@@ -57,27 +57,27 @@ def estimate(data, fit_offset="mean", fit_profile="tilt",
             VALID_FIT_OFFSETS,
             fit_offset)
         raise ValueError(msg)
-    # initial binary image
-    if from_binary is not None:
-        assert isinstance(from_binary, np.ndarray)
-        binary = from_binary.copy()
+    # initial mask image
+    if from_mask is not None:
+        assert isinstance(from_mask, np.ndarray)
+        mask = from_mask.copy()
     else:
-        binary = np.ones_like(data, dtype=bool)
-    # multiply with border binary image (intersection)
+        mask = np.ones_like(data, dtype=bool)
+    # multiply with border mask image (intersection)
     if border_px > 0:
         border_px = int(np.round(border_px))
-        binary_px = np.zeros_like(binary)
-        binary_px[:border_px, :] = True
-        binary_px[-border_px:, :] = True
-        binary_px[:, :border_px] = True
-        binary_px[:, -border_px:] = True
+        mask_px = np.zeros_like(mask)
+        mask_px[:border_px, :] = True
+        mask_px[-border_px:, :] = True
+        mask_px[:, :border_px] = True
+        mask_px[:, -border_px:] = True
         # intersection
-        np.logical_and(binary, binary_px, out=binary)
+        np.logical_and(mask, mask_px, out=mask)
     # compute background image
     if fit_profile == "tilt":
-        bgimg = profile_tilt(data, binary)
+        bgimg = profile_tilt(data, mask)
     elif fit_profile == "poly2o":
-        bgimg = profile_poly2o(data, binary)
+        bgimg = profile_poly2o(data, mask)
     else:
         bgimg = np.zeros_like(data, dtype=float)
     # add offsets
@@ -87,14 +87,14 @@ def estimate(data, fit_offset="mean", fit_profile="tilt",
             raise ValueError(msg)
         # nothing else to do here, using offset from fit
     elif fit_offset == "gauss":
-        bgimg += offset_gaussian((data - bgimg)[binary])
+        bgimg += offset_gaussian((data - bgimg)[mask])
     elif fit_offset == "mean":
-        bgimg += np.mean((data - bgimg)[binary])
+        bgimg += np.mean((data - bgimg)[mask])
     elif fit_offset == "mode":
-        bgimg += offset_mode((data - bgimg)[binary])
+        bgimg += offset_mode((data - bgimg)[mask])
 
-    if ret_binary:
-        ret = (bgimg, binary)
+    if ret_mask:
+        ret = (bgimg, mask)
     else:
         ret = bgimg
     return ret
@@ -128,19 +128,19 @@ def offset_mode(data):
     return hx[idmax]
 
 
-def profile_tilt(data, binary):
-    """Fit a 2D tilt to `data[binary]`"""
+def profile_tilt(data, mask):
+    """Fit a 2D tilt to `data[mask]`"""
     params = lmfit.Parameters()
     params.add(name="mx", value=0)
     params.add(name="my", value=0)
-    params.add(name="off", value=np.average(data[binary]))
-    fr = lmfit.minimize(tilt_residual, params, args=(data, binary))
+    params.add(name="off", value=np.average(data[mask]))
+    fr = lmfit.minimize(tilt_residual, params, args=(data, mask))
     bg = tilt_model(fr.params, data.shape)
     return bg
 
 
-def profile_poly2o(data, binary):
-    """Fit a 2D 2nd order polynomial to `data[binary]`"""
+def profile_poly2o(data, mask):
+    """Fit a 2D 2nd order polynomial to `data[mask]`"""
     # lmfit
     params = lmfit.Parameters()
     params.add(name="mx", value=0)
@@ -148,8 +148,8 @@ def profile_poly2o(data, binary):
     params.add(name="mxy", value=0)
     params.add(name="ax", value=0)
     params.add(name="ay", value=0)
-    params.add(name="off", value=np.average(data[binary]))
-    fr = lmfit.minimize(poly2o_residual, params, args=(data, binary))
+    params.add(name="off", value=np.average(data[mask]))
+    fr = lmfit.minimize(poly2o_residual, params, args=(data, mask))
     bg = poly2o_model(fr.params, data.shape)
     return bg
 
@@ -171,10 +171,10 @@ def poly2o_model(params, shape):
     return bg
 
 
-def poly2o_residual(params, data, binary):
+def poly2o_residual(params, data, mask):
     """lmfit 2nd order polynomial residuals"""
     bg = poly2o_model(params, shape=data.shape)
-    res = (data - bg)[binary]
+    res = (data - bg)[mask]
     return res.flatten()
 
 
@@ -192,8 +192,8 @@ def tilt_model(params, shape):
     return bg
 
 
-def tilt_residual(params, data, binary):
+def tilt_residual(params, data, mask):
     """lmfit tilt residuals"""
     bg = tilt_model(params, shape=data.shape)
-    res = (data - bg)[binary]
+    res = (data - bg)[mask]
     return res.flatten()

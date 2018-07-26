@@ -49,23 +49,23 @@ def test_h5file_confusion():
 def test_info():
     size = 50
     data = np.zeros((size, size), dtype=float)
-    binary_mask = np.zeros_like(data, dtype=bool)
-    binary_mask[::2, ::2] = True
+    mask = np.zeros_like(data, dtype=bool)
+    mask[::2, ::2] = True
     qpi = qpimage.QPImage(data=data,
                           which_data="phase",
                           meta_data={"wavelength": 300e-9,
                                      "pixel size": .12e-6,
                                      })
-    # binary with border
+    # mask with border
     qpi.compute_bg(which_data="phase",
                    fit_offset="mean",
                    fit_profile="offset",
-                   from_binary=binary_mask,
+                   from_mask=mask,
                    border_px=5)
 
     info_dict = dict(qpi.info)
-    assert 'phase background from binary' in info_dict
-    assert 'amplitude background from binary' not in info_dict
+    assert 'phase background from mask' in info_dict
+    assert 'amplitude background from mask' not in info_dict
     assert info_dict["phase background fit_offset"] == "mean"
     assert info_dict["phase background border_px"] == 5
 
@@ -74,7 +74,7 @@ def test_info():
                    fit_profile="offset",
                    border_px=5)
     info_dict2 = dict(qpi.info)
-    assert not info_dict2['amplitude background from binary']
+    assert not info_dict2['amplitude background from mask']
 
 
 def test_repr():

@@ -62,7 +62,7 @@ def test_comput_bg_error():
     except ValueError:
         pass
     else:
-        assert False, "computation of bg from undefined binary"
+        assert False, "computation of bg from undefined mask"
     try:
         qpi.compute_bg(which_data="phase", border_m=-1)
     except ValueError:
@@ -83,11 +83,11 @@ def test_comput_bg_error():
         assert False, "negative percent border not allowed"
     try:
         qpi.compute_bg(which_data="phase",
-                       from_binary=np.zeros((size, size), dtype=bool))
+                       from_mask=np.zeros((size, size), dtype=bool))
     except ValueError:
         pass
     else:
-        assert False, "all-zero binary array does not work"
+        assert False, "all-zero mask array does not work"
 
 
 def test_get_amp_pha():
