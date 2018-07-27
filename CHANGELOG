@@ -1,3 +1,6 @@
+0.4.1
+ - docs: add example of mask-based correction with qpsphere
+ - docs: minor cleanup
 0.4.0
  - BREAKING CHANGE: replace all occurences of "binary"
    with "mask" to avoid ambiguities

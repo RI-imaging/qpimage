@@ -1,7 +1,7 @@
 """Masked background image correction
 
 This example illustrates background correction with qpimage using
-a binary mask to exclude regions that do not contain background
+a mask to exclude regions that do not contain background
 information.
 
 The phase image of a microgel bead (top left) has two artifacts; there
@@ -11,7 +11,7 @@ phase tilt background correction using the image values around a frame
 of five pixels (see "background_tilt.py" example) does not yield a flat
 background, because the second bead is fitted into the background which
 leads to a horizontal background phase profile (top right). By defining
-a binary mask (bottom left image), the phase values of the second bead
+a mask (bottom left image), the phase values of the second bead
 can be excluded from the background tilt fit and a flat background
 phase is achieved (bottom right).
 """
@@ -35,7 +35,7 @@ qpi.compute_bg(which_data="phase",
                )
 pha_nomask = qpi.pha
 
-# educated guess for binary mask
+# educated guess for mask
 mask = input_phase < input_phase.max() / 10
 
 # background correction with mask
@@ -61,7 +61,7 @@ ax2 = plt.subplot(222, title="tilt-corrected (no mask)")
 map2 = ax2.imshow(pha_nomask, **plot_kw)
 plt.colorbar(map2, ax=ax2, fraction=.044, pad=0.04)
 
-ax3 = plt.subplot(223, title="binary mask")
+ax3 = plt.subplot(223, title="mask")
 map3 = ax3.imshow(1.*mask, cmap="gray_r")
 plt.colorbar(map3, ax=ax3, fraction=.044, pad=0.04)
 
