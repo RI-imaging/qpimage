@@ -143,8 +143,10 @@ class QPSeries(object):
         """
         if not isinstance(qpi, QPImage):
             raise ValueError("`qpimage` must be instance of QPImage!")
-        if "identifier" in qpi and qpi["identifier"] in self:
-            msg = "The identifier '{}' already ".format(qpi["identifier"]) \
+        if "identifier" in qpi and identifier is None:
+            identifier = qpi["identifier"]
+        if identifier and identifier in self:
+            msg = "The identifier '{}' already ".format(identifier) \
                   + "exists! You can either change the identifier of " \
                   + " '{}' or remove it.".format(qpi)
             raise ValueError(msg)
