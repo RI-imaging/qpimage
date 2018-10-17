@@ -7,7 +7,7 @@ from skimage.restoration import unwrap_phase
 
 from . import holo
 from .image_data import Amplitude, Phase, write_image_dataset
-from .meta import MetaDict, META_KEYS
+from .meta import MetaDict, DATA_KEYS, META_KEYS
 from ._version import version as __version__
 
 #: valid combinations for keyword argument `which_data`
@@ -140,11 +140,14 @@ class QPImage(object):
         return self
 
     def __eq__(self, other):
+        datame = [self.meta[k] for k in self.meta if k in DATA_KEYS]
+        dataot = [other.meta[k] for k in other.meta if k in DATA_KEYS]
+
         if (isinstance(other, QPImage) and
             self.shape == other.shape and
             np.allclose(self.amp, other.amp) and
             np.allclose(self.pha, other.pha) and
-                self.meta == other.meta):
+                datame == dataot):
             return True
         else:
             return False
@@ -181,13 +184,13 @@ class QPImage(object):
 
     def __repr__(self):
         if "identifier" in self:
-            ident = " '{}'".format(self["identifier"])
+            ident = self["identifier"]
         else:
-            ident = ""
-        rep = "QPImage{}, {x}x{y}px".format(ident,
-                                            x=self._amp.raw.shape[0],
-                                            y=self._amp.raw.shape[1],
-                                            )
+            ident = hex(id(self))
+        rep = "QPImage <{}>, {x}x{y}px".format(ident,
+                                               x=self._amp.raw.shape[0],
+                                               y=self._amp.raw.shape[1],
+                                               )
         if "wavelength" in self:
             wl = self["wavelength"]
             if wl < 2000e-9 and wl > 10e-9:

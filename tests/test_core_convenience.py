@@ -34,6 +34,11 @@ def test_equals():
     qpi3.set_bg_data(bg_data=.01 + qpi3.amp, which_data="field")
     assert qpi3 != qpi
 
+    # change identifier (still same data)
+    qpi4 = qpi.copy()
+    qpi4["identifier"] = "test"
+    assert qpi4 == qpi
+
 
 def test_h5file_confusion():
     h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"

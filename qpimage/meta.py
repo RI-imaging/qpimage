@@ -4,8 +4,7 @@ DATA_KEYS = ["medium index",  # refractive index of the medium
              "wavelength",  # imaging wavelength [m]
              ]
 
-OTHER_KEYS = ["dm exclude",  # DryMass: exclude image from  analysis
-              "sim center",  # Simulation: center of object [px]
+OTHER_KEYS = ["sim center",  # Simulation: center of object [px]
               "sim index",  # Simulation: refractive index of object
               "sim model",  # Simulation: model used
               "sim radius",  # Simulation: object radius [m]
