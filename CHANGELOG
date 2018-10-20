@@ -1,3 +1,5 @@
+0.4.4
+ - maintenance release
 0.4.3
  - fix: use memory address in QPImage.__repr__ if identifier not given
  - fix: only use meta.DATA_KEYS in QPImage.__eq__
