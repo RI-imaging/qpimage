@@ -31,9 +31,9 @@ Testing
     python setup.py test
     
 
-.. |PyPI Version| image:: http://img.shields.io/pypi/v/qpimage.svg
+.. |PyPI Version| image:: https://img.shields.io/pypi/v/qpimage.svg
    :target: https://pypi.python.org/pypi/qpimage
-.. |Tests Status| image:: http://img.shields.io/travis/RI-imaging/qpimage.svg?label=tests
+.. |Tests Status| image:: https://img.shields.io/travis/RI-imaging/qpimage.svg?label=tests
    :target: https://travis-ci.org/RI-imaging/qpimage
 .. |Coverage Status| image:: https://img.shields.io/codecov/c/github/RI-imaging/qpimage/master.svg
    :target: https://codecov.io/gh/RI-imaging/qpimage
