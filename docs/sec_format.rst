@@ -48,8 +48,8 @@ These other attributes may be used by e.g. data simulators such as
 .. qpimage_meta_table:: other
 
 
-Data groups
------------
+Groups
+------
 Both groups, *amplitude* and *phase*, do not hold attributes.
 Each of the groups contain a dataset called *raw* (the raw image, by default
 stored as 32bit floating point values) and a group called *bg_data* which
@@ -103,3 +103,4 @@ The following graph visualized the HDF5 file structure of a QPSeries instance
 Note that the name of each QPImage group always starts with "qpi\_" and that the
 enumeration does not contain leading zeros. The root node (/) of a QPSeries
 may have the *identifier* attribute.
+
