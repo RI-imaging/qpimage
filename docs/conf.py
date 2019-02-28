@@ -70,12 +70,15 @@ rst_prolog = """
 # ones.
 extensions = ['sphinx.ext.autodoc',
               'sphinx.ext.autosummary',
+              'sphinx.ext.graphviz',
               'sphinx.ext.intersphinx',
               'sphinx.ext.mathjax',
               'sphinx.ext.viewcode',
               'sphinx.ext.napoleon',
               'sphinxcontrib.bibtex',
               'fancy_include',
+              'github_changelog',
+              'qpimage_defs',
               ]
 
 # Add any paths that contain templates here, relative to this directory.

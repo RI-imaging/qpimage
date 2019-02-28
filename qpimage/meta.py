@@ -1,16 +1,20 @@
-DATA_KEYS = ["medium index",  # refractive index of the medium
-             "pixel size",  # detector pixel size [m]
-             "time",  # acquisition time of the image (float)
-             "wavelength",  # imaging wavelength [m]
-             ]
+DATA_DEF = {"medium index": "refractive index of the medium",
+            "pixel size": "detector pixel size [m]",
+            "time": "acquisition time of the image [s]",
+            "wavelength": "imaging wavelength [m]",
+            }
 
-OTHER_KEYS = ["sim center",  # Simulation: center of object [px]
-              "sim index",  # Simulation: refractive index of object
-              "sim model",  # Simulation: model used
-              "sim radius",  # Simulation: object radius [m]
-              "identifier",  # image identifier
-              "qpimage version",  # software version used
-              ]
+OTHER_DEF = {"identifier": "image identifier",
+             "qpimage version": "software version used",
+             "sim center": "Simulation: center of object [px]",
+             "sim index": "Simulation: refractive index of object",
+             "sim model": "Simulation: model used",
+             "sim radius": "Simulation: object radius [m]",
+             }
+
+DATA_KEYS = sorted(DATA_DEF.keys())
+
+OTHER_KEYS = sorted(OTHER_DEF.keys())
 
 #: valid :class:`qpimage.core.QPImage` meta data keys
 META_KEYS = DATA_KEYS + OTHER_KEYS
