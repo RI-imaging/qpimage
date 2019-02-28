@@ -1,6 +1,6 @@
 =========
 Changelog
 =========
-List of changes in-between ODTbrain releases.
+List of changes in-between qpimage releases.
 
 .. include_changelog:: ../CHANGELOG
