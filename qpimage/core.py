@@ -163,15 +163,14 @@ class QPImage(object):
     def __getitem__(self, given):
         """Slice QPImage `pha` and `amp` and return a new QPImage
 
-        The QPImage returned by this method is background-
-        corrected, i.e. it is not possible to reproduce the
-        background correction of the original QPImage.
+        The background data of the returned QPImage is merged into
+        the "data" background array, i.e. there will be no "fit"
+        background array.
         """
         if isinstance(given, (slice, tuple)):
             # return new QPImage
-            pha = self.pha.__getitem__(given)
-            amp = self.amp.__getitem__(given)
-            qpi = QPImage(data=(pha, amp),
+            qpi = QPImage(data=(self.raw_pha[given], self.raw_amp[given]),
+                          bg_data=(self.bg_pha[given], self.bg_amp[given]),
                           which_data=("phase", "amplitude"),
                           meta_data=self.meta)
             return qpi
@@ -310,6 +309,11 @@ class QPImage(object):
     def amp(self):
         """background-corrected amplitude image"""
         return self._amp.image
+
+    @property
+    def dtype(self):
+        """dtype of the phase data array"""
+        return self._pha.raw.dtype
 
     @property
     def field(self):
