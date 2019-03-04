@@ -259,6 +259,9 @@ def test_slice():
     # check bg_correction
     assert np.allclose(qpic.pha, (pha - bg_pha)[x:x + x_size, y:y + y_size])
     assert np.allclose(qpic.amp, (amp / bg_amp)[x:x + x_size, y:y + y_size])
+    # check bg data preservation (new in 0.5.0)
+    assert np.allclose(qpic.bg_pha, bg_pha[x:x + x_size, y:y + y_size])
+    assert np.allclose(qpic.bg_amp, bg_amp[x:x + x_size, y:y + y_size])
 
     # slice along x
     qpic2 = qpi[x:x + x_size]
