@@ -1,3 +1,6 @@
+0.5.1
+ - ref: allow to subclass meta.MetaDict
+ - docs: fixed several minor typos 
 0.5.0
  - feat: slicing of QPImage objects preserves background data, but
    background is merged from existing background data
