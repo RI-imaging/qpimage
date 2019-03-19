@@ -28,8 +28,7 @@ class MetaDataMissingError(BaseException):
 class MetaDict(dict):
     """Management of meta data variables
 
-    Valid key names can be defined with the `valid_keys`
-    argument and default to :const:`qpimage.meta.META_KEYS`.
+    Valid key names are defined in :const:`qpimage.meta.META_KEYS`.
     """
     valid_keys = META_KEYS
 
@@ -51,7 +50,7 @@ class MetaDict(dict):
         super(MetaDict, self).__setitem__(key, value)
 
     def __getitem__(self, *args, **kwargs):
-        if args[0] not in self and args[0] in META_KEYS:
+        if args[0] not in self and args[0] in self.valid_keys:
             msg = "No meta data was defined for '{}'!".format(args[0]) \
                   + "Please make sure you passed the dictionary `meta_data` " \
                   + "when you loaded your data."
