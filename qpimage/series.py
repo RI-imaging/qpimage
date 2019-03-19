@@ -17,7 +17,7 @@ class QPSeries(object):
             A list of instances of :class:`qpimage.QPImage`.
         meta_data: dict
             Meta data associated with the input data
-            (see :class:`qpimage.META_KEYS`). This overrides
+            (see :const:`qpimage.META_KEYS`). This overrides
             the meta data of the QPImages in `qpimage_list` and, if
             `h5file` is given and `h5mode` is not "r", overrides
             the meta data in `h5file`.
@@ -132,7 +132,7 @@ class QPSeries(object):
 
         Parameters
         ----------
-        qpimage: qpimage.QPImage
+        qpi: qpimage.QPImage
             The QPImage that is added to the series
         identifier: str
             Identifier key for `qpi`
@@ -142,7 +142,7 @@ class QPSeries(object):
             (Saves memory if e.g. all qpimages is corrected with the same data)
         """
         if not isinstance(qpi, QPImage):
-            raise ValueError("`qpimage` must be instance of QPImage!")
+            raise ValueError("`fli` must be instance of QPImage!")
         if "identifier" in qpi and identifier is None:
             identifier = qpi["identifier"]
         if identifier and identifier in self:
