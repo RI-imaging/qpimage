@@ -47,7 +47,7 @@ class QPImage(object):
             indexable object with the phase data as first element.
         meta_data: dict
             Meta data associated with the input data.
-            see :class:`qpimage.meta.META_KEYS`
+            see :data:`qpimage.meta.META_KEYS`
         holo_kw: dict
             Special keyword arguments for phase retrieval from
             hologram data (`which_data="hologram"`).
