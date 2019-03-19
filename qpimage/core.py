@@ -119,11 +119,10 @@ class QPImage(object):
         if "qpimage version" not in self.h5.attrs:
             self.h5.attrs["qpimage version"] = __version__
         # set data
-        for group in ["amplitude", "phase"]:
-            if group not in self.h5:
-                self.h5.create_group(group)
-        self._amp = Amplitude(self.h5["amplitude"], h5dtype=h5dtype)
-        self._pha = Phase(self.h5["phase"], h5dtype=h5dtype)
+        self._amp = Amplitude(self.h5.require_group("amplitude"),
+                              h5dtype=h5dtype)
+        self._pha = Phase(self.h5.require_group("phase"),
+                          h5dtype=h5dtype)
         if data is not None:
             # compute phase and amplitude from input data
             amp, pha = self._get_amp_pha(data=data,
