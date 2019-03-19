@@ -82,8 +82,7 @@ class QPImage(object):
         Notes
         -----
         QPImage is slicable; the following returns a new QPImage with
-        the same meta data, but with all background corrections merged
-        into the raw data:
+        the same meta data, but with all background corrections merged.
 
         .. code-block:: python
 
