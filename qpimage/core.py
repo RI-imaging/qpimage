@@ -597,6 +597,8 @@ class QPImage(object):
 def copyh5(inh5, outh5):
     """Recursively copy all hdf5 data from one group to another
 
+    Data from links is copied.
+
     Parameters
     ----------
     inh5: str, h5py.File, or h5py.Group
