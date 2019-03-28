@@ -1,3 +1,5 @@
+0.5.2
+ - enh: do not compress image data when HDF5 "core" driver is used
 0.5.1
  - ref: allow to subclass meta.MetaDict
  - docs: fixed several minor typos 

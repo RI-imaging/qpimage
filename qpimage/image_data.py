@@ -351,11 +351,16 @@ def write_image_dataset(group, key, data, h5dtype=None):
         h5dtype = data.dtype
     if key in group:
         del group[key]
+    if group.file.driver == "core":
+        kwargs = {}
+    else:
+        kwargs = {"fletcher32": True,
+                  "chunks": data.shape}
+        kwargs.update(COMPRESSION)
+
     dset = group.create_dataset(key,
                                 data=data.astype(h5dtype),
-                                fletcher32=True,
-                                chunks=data.shape,
-                                **COMPRESSION)
+                                **kwargs)
     # Create and Set image attributes
     # HDFView recognizes this as a series of images
     dset.attrs.create('CLASS', b'IMAGE')
