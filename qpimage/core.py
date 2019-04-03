@@ -50,7 +50,7 @@ class QPImage(object):
             see :data:`qpimage.meta.META_KEYS`
         holo_kw: dict
             Special keyword arguments for phase retrieval from
-            hologram data (`which_data="hologram"`). 
+            hologram data (`which_data="hologram"`).
             See :func:`qpimage.holo.get_field` for valid keyword
             arguments.
 
