@@ -90,7 +90,7 @@ def check_background(qpi):
             # check if we have a user-defined mask image
             binkey = "estimate_bg_from_mask"
             if binkey in imdat.h5:
-                kwargs["from_mask"] = imdat.h5[binkey].value
+                kwargs["from_mask"] = imdat.h5[binkey][:]
             else:
                 kwargs["from_mask"] = None
             # compute background correction

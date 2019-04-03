@@ -640,7 +640,7 @@ def copyh5(inh5, outh5):
         else:
             dset = write_image_dataset(group=outh5,
                                        key=key,
-                                       data=inh5[key].value,
+                                       data=inh5[key][:],
                                        h5dtype=inh5[key].dtype)
             dset.attrs.update(inh5[key].attrs)
     outh5.attrs.update(inh5.attrs)

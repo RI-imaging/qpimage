@@ -124,7 +124,7 @@ class ImageData(object):
     @property
     def raw(self):
         """raw (uncorrected) image data"""
-        return self.h5["raw"].value
+        return self.h5["raw"][:]
 
     def del_bg(self, key):
         """Remove the background image data
@@ -227,7 +227,7 @@ class ImageData(object):
             if key not in VALID_BG_KEYS:
                 raise ValueError("Invalid bg key: {}".format(key))
             if key in self.h5["bg_data"]:
-                data = self.h5["bg_data"][key].value
+                data = self.h5["bg_data"][key][:]
                 if ret_attrs:
                     attrs = dict(self.h5["bg_data"][key].attrs)
                     # remove keys for image visualization in hdf5 files
@@ -293,9 +293,9 @@ class Amplitude(ImageData):
     def _bg_combine(self, bgs):
         """Combine several background amplitude images"""
         out = np.ones(self.h5["raw"].shape, dtype=float)
-        # Use indexing ([:]), because bg is an h5py.DataSet
+        # bg is an h5py.DataSet
         for bg in bgs:
-            out *= bg.value
+            out *= bg[:]
         return out
 
     def _bg_correct(self, raw, bg):
@@ -314,8 +314,8 @@ class Phase(ImageData):
         """Combine several background phase images"""
         out = np.zeros(self.h5["raw"].shape, dtype=float)
         for bg in bgs:
-            # Use .value attribute, because bg is an h5py.DataSet
-            out += bg.value
+            # bg is an h5py.DataSet
+            out += bg[:]
         return out
 
     def _bg_correct(self, raw, bg):
