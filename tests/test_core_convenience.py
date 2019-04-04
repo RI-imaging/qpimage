@@ -44,7 +44,7 @@ def test_h5file_confusion():
     h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"
     try:
         # h5file should be specified with its corresponding parameter
-        qpimage.QPImage(h5file)
+        qpimage.QPImage(h5file, h5mode="r")
     except ValueError:
         pass
     else:

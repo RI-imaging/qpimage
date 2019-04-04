@@ -11,7 +11,7 @@ import qpimage.core
 
 def test_qpimage_copy_to_mem():
     h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"
-    qpi = qpimage.QPImage(h5file=h5file)
+    qpi = qpimage.QPImage(h5file=h5file, h5mode="r")
     # create an in-memory copy
     qpi2 = qpi.copy()
     assert np.allclose(qpi.pha, qpi2.pha)
@@ -20,7 +20,7 @@ def test_qpimage_copy_to_mem():
 
 def test_qpimage_copy_to_file():
     h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"
-    qpi = qpimage.QPImage(h5file=h5file)
+    qpi = qpimage.QPImage(h5file=h5file, h5mode="r")
 
     tf = tempfile.mktemp(suffix=".h5", prefix="qpimage_test_")
     with qpi.copy(h5file=tf) as qpi2:
