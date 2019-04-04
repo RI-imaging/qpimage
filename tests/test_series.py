@@ -173,6 +173,8 @@ def test_series_meta():
     except OSError:
         # no write intent on file
         pass
+    else:
+        assert False, "should not be able to write"
 
     qpi0 = qpimage.QPImage(h5file=h5file, h5mode="r")
 
