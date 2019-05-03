@@ -70,7 +70,7 @@ data when requesting the ``QPImage.amp`` or ``QPImage.pha`` properties.
 QPSeries
 ========
 The following graph visualized the HDF5 file structure of a QPSeries instance
-(with a total of 47 QPImages):
+(with a total of 48 QPImages):
 
 .. graphviz::
 
