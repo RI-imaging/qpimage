@@ -43,7 +43,7 @@ These attributes of the root group (/) describe physical parameters of the data:
 
 
 These other attributes may be used by e.g. data simulators such as
-:ref:`qpsphere <qpsphere:index>`:
+:ref:`qpsphere <qpsphere:index>` or :ref:`cellsino <cellsino:index>`:
 
 .. qpimage_meta_table:: other
 
