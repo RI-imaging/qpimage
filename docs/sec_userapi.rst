@@ -1,3 +1,5 @@
+.. _userapi:
+
 ========
 User API
 ========
@@ -87,7 +89,7 @@ use:
    with qpimage.QPSeries(h5file="/path/to/series_file.h5", h5mode="w") as qps:
        for ii, pp in enumerate(paths):
            qpi = qpimage.QPImage(h5file="/path/to/file.h5", h5mode="r")
-           qps.add_qpimage(qpi=qpi, identifier="my_name_{}".frmat(ii))
+           qps.add_qpimage(qpi=qpi, identifier="my_name_{}".format(ii))
 
 Note that the function `add_qpimage` accepts the optional keyword argument
 "identifier" (overriding the identifier of the QPImage) which
