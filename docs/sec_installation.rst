@@ -1,7 +1,7 @@
 Installing qpimage
 ==================
 
-Qpimage is written in pure Python and supports Python version 3.5
+Qpimage is written in pure Python and supports Python version 3.6
 and higher. Qpimage depends on several other scientific Python packages,
 including:
 
