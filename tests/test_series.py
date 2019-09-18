@@ -122,6 +122,11 @@ def test_series_h5file():
 
 
 def test_series_hdf5_hardlink_bg():
+    # save compression
+    compr = qpimage.image_data.COMPRESSION.copy()
+    # disable compression
+    qpimage.image_data.COMPRESSION = {}
+    # start test
     size = 200
     phase = np.repeat(np.linspace(0, np.pi, size), size)
     phase = phase.reshape(size, size)
@@ -153,10 +158,11 @@ def test_series_hdf5_hardlink_bg():
 
     assert s_bg2 - s_bg1 < .51 * (s_bg1 - s_init)
     assert s_bg2 - s_bg1 < .51 * (s_bg3 - s_bg2)
-
     assert np.allclose(qpih.pha, qpi1.pha)
     assert not np.allclose(qpih.pha, qpi2.pha)
 
+    # restore compression
+    qpimage.image_data.COMPRESSION = compr
     # cleanup
     try:
         tf.unlink()
