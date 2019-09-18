@@ -1,3 +1,10 @@
+0.6.0
+ - feat: automatically remove 2PI phase offsets when instantiating
+   a QPImage (The phase offset is estimated from a 1px-wide border
+   around the image)
+ - feat: allow to disable the processing of phase data (unwrapping
+   and correcting for phase offset) using ``proc_phase=False``
+   when instantiating a QPImage
 0.5.4
  - docs: minor improvements
 0.5.3

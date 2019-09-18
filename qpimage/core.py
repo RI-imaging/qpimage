@@ -24,9 +24,8 @@ class QPImage(object):
     _instances = 0
 
     def __init__(self, data=None, bg_data=None, which_data="phase",
-                 meta_data={}, holo_kw={}, h5file=None, h5mode="a",
-                 h5dtype="float32",
-                 ):
+                 meta_data={}, holo_kw={}, proc_phase=True,
+                 h5file=None, h5mode="a", h5dtype="float32"):
         """Quantitative phase image manipulation
 
         This class implements various tasks for quantitative phase
@@ -55,6 +54,15 @@ class QPImage(object):
             arguments.
 
             .. versionadded:: 0.1.6
+        proc_phase: bool
+            Process the phase data. This includes phase unwrapping
+            using :func:`skimage.restoration.unwrap_phase` and
+            correcting for 2PI phase offsets (The offset is estimated
+            from a 1px-wide border around the image).
+
+            .. versionadded:: 0.6.0
+                Previous versions always performed phase unwrapping
+                and did so without offset correction
         h5file: str, pathlib.Path, h5py.Group, h5py.File, or None
             A path to an hdf5 data file where all data is cached. If
             set to `None` (default), all data will be handled in
@@ -126,7 +134,8 @@ class QPImage(object):
         if data is not None:
             # compute phase and amplitude from input data
             amp, pha = self._get_amp_pha(data=data,
-                                         which_data=which_data)
+                                         which_data=which_data,
+                                         proc_phase=proc_phase)
             self._amp["raw"] = amp
             self._pha["raw"] = pha
             # set background data
@@ -170,7 +179,8 @@ class QPImage(object):
             qpi = QPImage(data=(self.raw_pha[given], self.raw_amp[given]),
                           bg_data=(self.bg_pha[given], self.bg_amp[given]),
                           which_data=("phase", "amplitude"),
-                          meta_data=self.meta)
+                          meta_data=self.meta,
+                          proc_phase=False)
             return qpi
         elif isinstance(given, str):
             # return meta data
@@ -236,7 +246,7 @@ class QPImage(object):
             msg = "unknown type for `which_data`: {}".format(which_data)
             raise ValueError(msg)
 
-    def _get_amp_pha(self, data, which_data):
+    def _get_amp_pha(self, data, which_data, proc_phase=True):
         """Convert input data to phase and amplitude
 
         Parameters
@@ -249,6 +259,15 @@ class QPImage(object):
             "field", "phase", "hologram", "phase,amplitude", or
             "phase,intensity", where the latter two require an
             indexable object with the phase data as first element.
+        proc_phase: bool
+            Process the phase data. This includes phase unwrapping
+            using :func:`skimage.restoration.unwrap_phase` and
+            correcting for 2PI phase offsets (The offset is estimated
+            from a 1px-wide border around the image).
+
+            .. versionadded:: 0.6.0
+                Previous versions always performed phase unwrapping
+                and did so without offset correction
 
         Returns
         -------
@@ -277,19 +296,29 @@ class QPImage(object):
         if amp.size == 0 or pha.size == 0:
             msg = "`data` with shape {} has zero size!".format(amp.shape)
             raise ValueError(msg)
-        # phase unwrapping (take into account nans)
-        nanmask = np.isnan(pha)
-        if np.sum(nanmask):
-            # create masked array
-            # skimage.restoration.unwrap_phase cannot handle nan data
-            # (even if masked)
-            pham = pha.copy()
-            pham[nanmask] = 0
-            pham = np.ma.masked_array(pham, mask=nanmask)
-            pha = unwrap_phase(pham, seed=47)
-            pha[nanmask] = np.nan
-        else:
-            pha = unwrap_phase(pha, seed=47)
+        if proc_phase:
+            # phase unwrapping (take into account nans)
+            nanmask = np.isnan(pha)
+            if np.sum(nanmask):
+                # create masked array
+                # skimage.restoration.unwrap_phase cannot handle nan data
+                # (even if masked)
+                pham = pha.copy()
+                pham[nanmask] = 0
+                pham = np.ma.masked_array(pham, mask=nanmask)
+                pha = unwrap_phase(pham, seed=47)
+                pha[nanmask] = np.nan
+            else:
+                pha = unwrap_phase(pha, seed=47)
+            # remove 2PI offsets that might be present in the border phase
+            border = np.concatenate((pha[0, :],
+                                     pha[-1, :],
+                                     pha[:, 0],
+                                     pha[:, -1]))
+            twopi = 2*np.pi
+            minimum = divmod_neg(np.nanmin(border), twopi)[0]
+            offset = minimum * twopi
+            pha -= offset
 
         return amp, pha
 
@@ -563,7 +592,7 @@ class QPImage(object):
                        h5mode=h5mode)
         return qpi2
 
-    def set_bg_data(self, bg_data, which_data=None):
+    def set_bg_data(self, bg_data, which_data=None, proc_phase=True):
         """Set background amplitude and phase data
 
         Parameters
@@ -588,7 +617,9 @@ class QPImage(object):
             amp, pha = None, None
         else:
             # Compute phase and amplitude from data and which_data
-            amp, pha = self._get_amp_pha(bg_data, which_data)
+            amp, pha = self._get_amp_pha(data=bg_data,
+                                         which_data=which_data,
+                                         proc_phase=proc_phase)
         # Set background data
         self._amp.set_bg(amp, key="data")
         self._pha.set_bg(pha, key="data")
@@ -653,3 +684,14 @@ def copyh5(inh5, outh5):
         outh5.flush()
         outh5.close()
         return fn
+
+
+def divmod_neg(a, b):
+    """Return divmod with closest result to zero"""
+    q, r = divmod(a, b)
+    # make sure r is close to zero
+    sr = np.sign(r)
+    if np.abs(r) > b/2:
+        q += sr
+        r -= b * sr
+    return q, r

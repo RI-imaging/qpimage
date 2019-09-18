@@ -143,7 +143,6 @@ def test_get_amp_pha_holo():
 
 
 def test_get_amp_pha_nan():
-    # make sure no errors when printing repr
     size = 50
     pha = np.repeat(np.linspace(0, 10, size), size)
     pha = pha.reshape(size, size)
@@ -154,7 +153,6 @@ def test_get_amp_pha_nan():
 
 
 def test_get_amp_pha_raw():
-    # make sure no errors when printing repr
     size = 50
     pha = np.repeat(np.linspace(0, 10, size), size)
     pha = pha.reshape(size, size)
@@ -170,15 +168,25 @@ def test_get_amp_pha_raw():
 
 
 def test_get_amp_pha_unrwap():
-    # make sure no errors when printing repr
     size = 50
     pha = np.repeat(np.linspace(0, 10, size), size)
     pha = pha.reshape(size, size)
     phastep = pha.copy()
     phastep[5:] += 2 * np.pi
-
-    qpi = qpimage.QPImage(pha, which_data="phase")
+    # phastep will be unrwapped
+    qpi = qpimage.QPImage(phastep, which_data="phase")
     assert np.allclose(qpi.pha, pha)
+
+
+def test_get_amp_pha_unrwap_disabled():
+    size = 50
+    pha = np.repeat(np.linspace(0, 10, size), size)
+    pha = pha.reshape(size, size)
+    phastep = pha.copy()
+    phastep[5:] += 2 * np.pi
+    # phastep will not be unrwapped
+    qpi = qpimage.QPImage(phastep, which_data="phase", proc_phase=False)
+    assert np.allclose(qpi.pha, phastep)
 
 
 def test_properties():
