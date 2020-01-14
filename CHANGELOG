@@ -1,3 +1,5 @@
+0.6.1
+ - maintenance release
 0.6.0
  - feat: automatically remove 2PI phase offsets when instantiating
    a QPImage (The phase offset is estimated from a 1px-wide border
