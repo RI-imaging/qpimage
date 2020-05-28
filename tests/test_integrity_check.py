@@ -61,7 +61,7 @@ def test_background_fit():
                        fit_profile="tilt",
                        border_px=5)
 
-    with h5py.File(tf) as h5:
+    with h5py.File(tf, "a") as h5:
         h5["phase"]["bg_data"]["fit"][:10] = 9
 
     try:

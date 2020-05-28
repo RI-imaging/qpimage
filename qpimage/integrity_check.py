@@ -95,6 +95,7 @@ def check_background(qpi):
                 kwargs["from_mask"] = None
             # compute background correction
             with h5py.File("check.h5",
+                           mode="w",
                            driver="core",
                            backing_store=False) as h5:
                 # imdat.__class__ is "Amplitude" or "Phase"
