@@ -4,6 +4,7 @@ import tempfile
 
 import h5py
 import numpy as np
+import pytest
 
 import qpimage
 
@@ -172,15 +173,10 @@ def test_series_hdf5_hardlink_bg():
 
 def test_series_meta():
     h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"
-    try:
+    with pytest.raises((OSError, RuntimeError)):
         qpimage.QPImage(h5file=h5file,
                         meta_data={"wavelength": 333e-9},
                         h5mode="r")
-    except OSError:
-        # no write intent on file
-        pass
-    else:
-        assert False, "should not be able to write"
 
     qpi0 = qpimage.QPImage(h5file=h5file, h5mode="r")
 
@@ -206,7 +202,7 @@ def test_series_meta():
 
 if __name__ == "__main__":
     # Run all tests
-    loc = locals()
-    for key in list(loc.keys()):
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()
+    _loc = locals()
+    for _key in list(_loc.keys()):
+        if _key.startswith("test_") and hasattr(_loc[_key], "__call__"):
+            _loc[_key]()

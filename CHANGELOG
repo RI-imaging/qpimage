@@ -1,8 +1,9 @@
 0.6.3
+ - docs: fix sphinx build
+ - tests: fix tests due to newer h5py version
+ - ref: fix numpy 1.20.0 deprecation warnings
  - ci: migrate to GitHub Actions
  - setup: setup.py test is deprecated
- - docs: fix sphinx build
- - ref: fix numpy 1.20.0 deprecation warnings
 0.6.2
  - maintenance release
 0.6.1
