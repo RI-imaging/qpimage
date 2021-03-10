@@ -71,7 +71,7 @@ def fourier2dpad(data, zero_pad=True):
     if zero_pad:
         # zero padding size is next order of 2
         (N, M) = data.shape
-        order = np.int(max(64., 2**np.ceil(np.log(2 * max(N, M)) / np.log(2))))
+        order = int(max(64., 2**np.ceil(np.log(2 * max(N, M)) / np.log(2))))
 
         # this is faster than np.pad
         datapad = np.zeros((order, order), dtype=float)
@@ -143,14 +143,14 @@ def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1 / 3,
     for data that contain jumps in the phase image.
     """
     if copy:
-        hologram = hologram.astype(dtype=np.float, copy=True)
+        hologram = hologram.astype(dtype=float, copy=True)
 
     if subtract_mean:
         # remove contributions of the central band
         # (this affects more than one pixel in the FFT
         # because of zero-padding)
         if issubclass(hologram.dtype.type, np.integer):
-            hologram = hologram.astype(np.float)
+            hologram = hologram.astype(float)
         hologram -= hologram.mean()
 
     # Fourier transform
@@ -200,7 +200,7 @@ def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1 / 3,
         afilter /= afilter.max()
     elif filter_name == "tukey":
         alpha = 0.1
-        rsize = np.int(min(fx.size, fy.size)*fsize) * 2
+        rsize = int(min(fx.size, fy.size)*fsize) * 2
         tukey_window_x = signal.tukey(rsize, alpha=alpha).reshape(-1, 1)
         tukey_window_y = signal.tukey(rsize, alpha=alpha).reshape(1, -1)
         tukey = tukey_window_x * tukey_window_y

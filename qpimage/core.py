@@ -502,7 +502,7 @@ class QPImage(object):
             border_list.append(border_px)
         # get maximum border size
         if border_list:
-            border_px = np.int(np.round(np.max(border_list)))
+            border_px = int(np.round(np.max(border_list)))
         elif from_mask is None:
             raise ValueError("Neither `from_mask` nor `border_*` given!")
         elif np.all(from_mask == 0):

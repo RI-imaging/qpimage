@@ -1,7 +1,8 @@
 0.6.3
  - ci: migrate to GitHub Actions
  - setup: setup.py test is deprecated
- - docs: fix sphinx buils
+ - docs: fix sphinx build
+ - ref: fix numpy 1.20.0 deprecation warnings
 0.6.2
  - maintenance release
 0.6.1
