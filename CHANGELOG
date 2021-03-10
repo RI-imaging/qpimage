@@ -1,6 +1,7 @@
 0.6.3
  - ci: migrate to GitHub Actions
  - setup: setup.py test is deprecated
+ - docs: fix sphinx buils
 0.6.2
  - maintenance release
 0.6.1
