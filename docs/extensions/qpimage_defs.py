@@ -9,7 +9,7 @@ Table output of qpimage.meta.DATA_DEF
    .. qpimage_meta_table:: data
 
 Table output of qpimage.meta.OTHER_DEF
-   
+
    .. qpimage_meta_table:: other
 """
 from docutils.statemachine import ViewList
@@ -44,7 +44,7 @@ class MetaTable(Base):
 
     def generate_rst(self):
         which = self.arguments[0]
-        if which== "data":
+        if which == "data":
             ddict = meta.DATA_DEF
         elif which == "other":
             ddict = meta.OTHER_DEF
