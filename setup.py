@@ -25,7 +25,7 @@ setup(
     long_description=open('README.rst').read() if exists('README.rst') else '',
     install_requires=["h5py>=2.7.0",
                       "lmfit",
-                      "nrefocus>=0.2.0",
+                      "nrefocus>=0.2.1",
                       "numpy>=1.9.0",
                       "scikit-image>=0.11.0",
                       "scipy>=0.18.0",

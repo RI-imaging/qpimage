@@ -1,3 +1,5 @@
+0.6.4
+ - setup: bump nrefocus from 0.2.0 to 0.2.1
 0.6.3
  - docs: fix sphinx build
  - tests: fix tests due to newer h5py version
