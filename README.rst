@@ -27,14 +27,15 @@ Testing
 
 ::
 
+    pip install pytest
     pip install -e .
-    python setup.py test
-    
+    pytest tests
+
 
 .. |PyPI Version| image:: https://img.shields.io/pypi/v/qpimage.svg
    :target: https://pypi.python.org/pypi/qpimage
-.. |Tests Status| image:: https://img.shields.io/travis/RI-imaging/qpimage.svg?label=tests
-   :target: https://travis-ci.com/RI-imaging/qpimage
+.. |Tests Status| image:: https://img.shields.io/github/workflow/status/RI-Imaging/qpimage/Checks
+   :target: https://github.com/RI-Imaging/qpimage/actions?query=workflow%3AChecks
 .. |Coverage Status| image:: https://img.shields.io/codecov/c/github/RI-imaging/qpimage/master.svg
    :target: https://codecov.io/gh/RI-imaging/qpimage
 .. |Docs Status| image:: https://readthedocs.org/projects/qpimage/badge/?version=latest

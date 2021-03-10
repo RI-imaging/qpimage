@@ -19,5 +19,4 @@ To install qpimage, use one of the following methods
 * from `PyPI <https://pypi.python.org/pypi/qpimage>`_:
     ``pip install qpimage``
 * from `sources <https://github.com/RI-imaging/qpimage>`_:
-    ``pip install .`` or 
-    ``python setup.py install``
+    ``pip install -e .`` or

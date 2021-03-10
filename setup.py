@@ -30,8 +30,6 @@ setup(
                       "scikit-image>=0.11.0",
                       "scipy>=0.18.0",
                       ],
-    setup_requires=['pytest-runner'],
-    tests_require=["pytest"],
     python_requires='>=3.6, <4',
     keywords=["digital holographic microscopy",
               "optics",
