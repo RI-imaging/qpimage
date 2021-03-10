@@ -9,8 +9,8 @@ description = 'library for manipulating quantitative phase images'
 name = 'qpimage'
 year = "2017"
 
-sys.path.insert(0, realpath(dirname(__file__))+"/"+name)
-from _version import version
+sys.path.insert(0, realpath(dirname(__file__)) + "/" + name)
+from _version import version  # noqa: E402
 
 setup(
     name=name,
@@ -37,7 +37,7 @@ setup(
               "refractive index",
               "scattering",
               ],
-    classifiers= [
+    classifiers=[
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 3',
         'Intended Audience :: Science/Research'
