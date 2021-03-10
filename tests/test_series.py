@@ -164,11 +164,6 @@ def test_series_hdf5_hardlink_bg():
 
     # restore compression
     qpimage.image_data.COMPRESSION = compr
-    # cleanup
-    try:
-        tf.unlink()
-    except OSError:
-        pass
 
 
 def test_series_meta():
@@ -192,12 +187,6 @@ def test_series_meta():
     qps = qpimage.QPSeries(qpimage_list=[qpi1], meta_data={
                            "wavelength": 400e-9})
     assert qps.get_qpimage(0).meta["wavelength"] == 400e-9
-
-    # cleanup
-    try:
-        tf.unlink()
-    except OSError:
-        pass
 
 
 if __name__ == "__main__":

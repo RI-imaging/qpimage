@@ -171,8 +171,7 @@ def test_tilt():
 
 if __name__ == "__main__":
     # Run all tests
-    loc = locals()
-    keys = sorted(loc.keys())
-    for key in keys:
-        if key.startswith("test_") and hasattr(loc[key], "__call__"):
-            loc[key]()
+    _loc = locals()
+    for _key in list(_loc.keys()):
+        if _key.startswith("test_") and hasattr(_loc[_key], "__call__"):
+            _loc[_key]()
