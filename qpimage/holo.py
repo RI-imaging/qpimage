@@ -55,7 +55,7 @@ def find_sideband(ft_data, which=+1, copy=True):
     fx = np.fft.fftshift(np.fft.fftfreq(ft_data.shape[0]))[ix]
     fy = np.fft.fftshift(np.fft.fftfreq(ft_data.shape[1]))[iy]
 
-    return (fx, fy)
+    return fx, fy
 
 
 def fourier2dpad(data, zero_pad=True):
@@ -84,8 +84,9 @@ def fourier2dpad(data, zero_pad=True):
     return fft
 
 
-def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1 / 3,
-              subtract_mean=True, zero_pad=True, copy=True):
+def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1/3,
+              filter_size_interpretation="sideband distance",
+              subtract_mean=True, zero_pad=True, copy=True, ret_mask=False):
     """Compute the complex field from a hologram using Fourier analysis
 
     Parameters
@@ -114,9 +115,15 @@ def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1 / 3,
         - "tukey": a square tukey window of width `2*filter_size` and
           `alpha=0.1`
     filter_size: float
-        Size of the filter in Fourier space in fractions of the
-        distance between central band and sideband.
-        See `filter_shape` for interpretation of `filter_size`.
+        Size of the filter in Fourier space. The interpretation
+        of this value depends on `filter_size_interpretation`.
+        See `filter_shape` for how it is used in filtering.
+    filter_size_interpretation: str
+        If set to "sideband distance", the filter size is interpreted
+        as the relative distance between central band and sideband
+        (this is the default). If set to "frequency index", the filter
+        size is interpreted as a Fourier frequency index ("pixel size")
+        and must be between 0 and `max(hologram.shape)/2`.
     subtract_mean: bool
         If True, remove the mean of the hologram before performing
         the Fourier transform. This setting is recommended as it
@@ -129,14 +136,14 @@ def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1 / 3,
         and amplitude data or dark borders in the amplitude data.
     copy: bool
         If set to True, input `data` is not edited.
-
-    x0 and y0 are center of the filter
-    R is factor for "radius" of filter (sqrt(x0² + y0²)/np.pi)
-
-    filter_type can be "disk" or "gauss"
+    ret_mask: bool
+        If set to True, return the filter mask used.
 
     Notes
     -----
+    The input image is zero-padded as a square image to the next
+    order of :math:`2^n`.
+
     Even though the size of the "gauss" filter approximately matches
     the frequencies of the "disk" filter, it takes into account
     higher frequencies as well and thus suppresses ringing artifacts
@@ -161,26 +168,41 @@ def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1 / 3,
     else:
         fsx, fsy = sideband
 
-    # shift fft to sideband location
+    # roll fft such that sideband is located at the image center
     shifted = np.roll(np.roll(fft, -int(fsx * fft.shape[0]), axis=0),
                       -int(fsy * fft.shape[1]), axis=1)
 
     # coordinates in Fourier space
+    assert fft.shape[0] == fft.shape[1]  # square-shaped Fourier domain
     fx = np.fft.fftshift(np.fft.fftfreq(fft.shape[0])).reshape(-1, 1)
-    fy = np.fft.fftshift(np.fft.fftfreq(fft.shape[1])).reshape(1, -1)
+    fy = fx.reshape(1, -1)
 
-    # filter size based on central band - sideband - distance
-    if filter_size >= 1:
-        raise ValueError("`filter_size` must be < 1!")
-    fsize = np.sqrt(fsx**2 + fsy**2) * filter_size
+    if filter_size_interpretation == "sideband distance":
+        # filter size based on distance b/w central band and sideband
+        if filter_size <= 0 or filter_size >= 1:
+            raise ValueError("For sideband distance interpretation, "
+                             "`filter_size` must be between 0 and 1; "
+                             f"got '{filter_size}'!")
+        fsize = np.sqrt(fsx**2 + fsy**2) * filter_size
+    elif filter_size_interpretation == "frequency index":
+        # filter size given in Fourier index (number of Fourier pixels)
+        if filter_size <= 0 or filter_size >= max(hologram.shape)/2:
+            raise ValueError("For frequency index interpretation, "
+                             "`filter_size` must be between 0 and "
+                             f"max(hologram.shape)/2; got '{filter_size}'!")
+        # convert to frequencies (compatible with fx and fy)
+        fsize = filter_size / fft.shape[0]
+    else:
+        raise ValueError("Invalid value for `filter_size_interpretation`: "
+                         + f"'{filter_size_interpretation}'")
 
     if filter_name == "disk":
-        afilter = (fx**2 + fy**2) < fsize**2
+        afilter = (fx**2 + fy**2) <= fsize**2
     elif filter_name == "smooth disk":
         sigma = fsize / 5
         tau = 2 * sigma**2
         radsq = fx**2 + fy**2
-        disk = radsq < fsize**2
+        disk = radsq <= fsize**2
         gauss = np.exp(-radsq / tau)
         afilter = signal.convolve(gauss, disk, mode="same")
         afilter /= afilter.max()
@@ -190,7 +212,7 @@ def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1 / 3,
         afilter = np.exp(-(fx**2 + fy**2) / tau)
         afilter /= afilter.max()
     elif filter_name == "square":
-        afilter = (np.abs(fx) < fsize) * (np.abs(fy) < fsize)
+        afilter = (np.abs(fx) <= fsize) * (np.abs(fy) <= fsize)
     elif filter_name == "smooth square":
         blur = fsize / 5
         tau = 2 * blur**2
@@ -216,4 +238,14 @@ def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1 / 3,
 
     # inverse Fourier transform
     field = np.fft.ifft2(np.fft.ifftshift(fft_filt))
-    return field[:hologram.shape[0], :hologram.shape[1]]
+    # crop to original image shape
+    cropped = field[:hologram.shape[0], :hologram.shape[1]]
+
+    if ret_mask:
+        # shift mask center to sideband location
+        shifted_mask = np.roll(
+            np.roll(afilter, int(fsx * fft.shape[0]), axis=0),
+            int(fsy * fft.shape[1]), axis=1)
+        return cropped, shifted_mask
+    else:
+        return cropped

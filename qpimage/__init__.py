@@ -1,4 +1,6 @@
-from ._version import version as __version__  # noqa: F401
-from .core import QPImage  # noqa: F401
-from .meta import META_KEYS  # noqa: F401
-from .series import QPSeries  # noqa: F401
+# flake8: # noqa: F401
+from ._version import version as __version__
+from .core import QPImage
+from . import holo
+from .meta import META_KEYS
+from .series import QPSeries

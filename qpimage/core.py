@@ -24,7 +24,7 @@ class QPImage(object):
     _instances = 0
 
     def __init__(self, data=None, bg_data=None, which_data="phase",
-                 meta_data={}, holo_kw={}, proc_phase=True,
+                 meta_data=None, holo_kw=None, proc_phase=True,
                  h5file=None, h5mode="a", h5dtype="float32"):
         """Quantitative phase image manipulation
 
@@ -38,7 +38,7 @@ class QPImage(object):
             The experimental data (see `which_data`)
         bg_data: 2d ndarray (float or complex), list, or `None`
             The background data (must be same type as `data`)
-        which_data: str
+        which_data: str or tuple
             String or comma-separated list of strings indicating
             the order and type of input data. Valid values are
             "hologram", "field", "phase", "phase,amplitude",
@@ -97,6 +97,10 @@ class QPImage(object):
             qpi = QPImage(data=...)
             qpi_scliced = qpi[10:20, 40:30]
         """
+        if holo_kw is None:
+            holo_kw = {}
+        if meta_data is None:
+            meta_data = {}
         if (data is not None and
                 not isinstance(data, (np.ndarray, list, tuple))):
             msg = "`data` must be numpy.ndarray!"
@@ -200,7 +204,7 @@ class QPImage(object):
                                                )
         if "wavelength" in self:
             wl = self["wavelength"]
-            if wl < 2000e-9 and wl > 10e-9:
+            if 2000e-9 > wl > 10e-9:
                 # convenience for light microscopy
                 rep += ", λ={:.1f}nm".format(wl * 1e9)
             else:
@@ -274,9 +278,6 @@ class QPImage(object):
         amp, pha: tuple of (:class:`Amplitdue`, :class:`Phase`)
         """
         which_data = QPImage._conv_which_data(which_data)
-        if which_data not in VALID_INPUT_DATA:
-            msg = "`which_data` must be one of {}!".format(VALID_INPUT_DATA)
-            raise ValueError(msg)
 
         if which_data == "field":
             amp = np.abs(data)
@@ -293,6 +294,10 @@ class QPImage(object):
         elif which_data == "hologram":
             amp, pha = self._get_amp_pha(holo.get_field(data, **self.holo_kw),
                                          which_data="field")
+        else:
+            raise ValueError(
+                f"`which_data` must be one of {VALID_INPUT_DATA}!")
+
         if amp.size == 0 or pha.size == 0:
             msg = "`data` with shape {} has zero size!".format(amp.shape)
             raise ValueError(msg)

@@ -1,5 +1,5 @@
 import numpy as np
-
+import pytest
 import qpimage
 
 
@@ -61,15 +61,30 @@ def test_fourier2dpad():
     assert fft2.shape == data.shape
 
 
-def test_get_field_error():
+def test_get_field_error_bad_filter_size():
     holo = hologram()
 
-    try:
+    with pytest.raises(ValueError, match="must be between 0 and 1"):
         qpimage.holo.get_field(hologram=holo, filter_size=2)
-    except ValueError:
-        pass
-    else:
-        assert False, "filter_size<1 is distance b/w sideband and center"
+
+
+def test_get_field_error_bad_filter_size_interpretation_frequency_index():
+    holo = hologram(size=64)
+
+    with pytest.raises(ValueError,
+                       match=r"must be between 0 and max\(hologram.shape\)/2"):
+        qpimage.holo.get_field(hologram=holo,
+                               filter_size_interpretation="frequency index",
+                               filter_size=64)
+
+
+def test_get_field_error_invalid_interpretation():
+    holo = hologram()
+
+    with pytest.raises(ValueError,
+                       match="Invalid value for `filter_size_interpretation`"):
+        qpimage.holo.get_field(hologram=holo,
+                               filter_size_interpretation="blequency")
 
 
 def test_get_field_filter_names():
@@ -111,6 +126,106 @@ def test_get_field_filter_names():
         pass
     else:
         assert False, "unknown filter accepted"
+
+
+@pytest.mark.parametrize("size", [62, 63, 64])
+def test_get_field_interpretation_fourier_index(size):
+    """Filter size in Fourier space using Fourier index new in 0.7.0"""
+    holo = hologram(size=size)
+
+    ft_data = qpimage.holo.fourier2dpad(data=holo, zero_pad=True)
+    fsx, fsy = qpimage.holo.find_sideband(ft_data, which=+1, copy=True)
+
+    kwargs1 = dict(hologram=holo,
+                   sideband=+1,
+                   filter_name="disk",
+                   filter_size=1/3,
+                   filter_size_interpretation="sideband distance",
+                   subtract_mean=True,
+                   zero_pad=True)
+    res1 = qpimage.holo.get_field(**kwargs1)
+
+    filter_size_fi = np.sqrt(fsx**2 + fsy**2) / 3 * ft_data.shape[0]
+    kwargs2 = dict(hologram=holo,
+                   sideband=+1,
+                   filter_name="disk",
+                   filter_size=filter_size_fi,
+                   filter_size_interpretation="frequency index",
+                   subtract_mean=True,
+                   zero_pad=True)
+    res2 = qpimage.holo.get_field(**kwargs2)
+    assert np.all(res1 == res2)
+
+
+@pytest.mark.parametrize("size", [62, 63, 64])
+def test_get_field_interpretation_fourier_index_control(size):
+    """Filter size in Fourier space using Fourier index new in 0.7.0"""
+    holo = hologram(size=size)
+
+    ft_data = qpimage.holo.fourier2dpad(data=holo, zero_pad=True)
+    fsx, fsy = qpimage.holo.find_sideband(ft_data, which=+1, copy=True)
+
+    evil_factor = 1.1
+
+    kwargs1 = dict(hologram=holo,
+                   sideband=+1,
+                   filter_name="disk",
+                   filter_size=1/3 * evil_factor,
+                   filter_size_interpretation="sideband distance",
+                   subtract_mean=True,
+                   zero_pad=True)
+    res1 = qpimage.holo.get_field(**kwargs1)
+
+    filter_size_fi = np.sqrt(fsx**2 + fsy**2) / 3 * ft_data.shape[0]
+    kwargs2 = dict(hologram=holo,
+                   sideband=+1,
+                   filter_name="disk",
+                   filter_size=filter_size_fi,
+                   filter_size_interpretation="frequency index",
+                   subtract_mean=True,
+                   zero_pad=True)
+    res2 = qpimage.holo.get_field(**kwargs2)
+    assert not np.all(res1 == res2)
+
+
+@pytest.mark.parametrize("size", [62, 63, 64, 134, 135])
+@pytest.mark.parametrize("filter_size", [17, 17.01])
+def test_get_field_interpretation_fourier_index_mask_1(size, filter_size):
+    """Make sure filter size in Fourier space pixels is correct"""
+    holo = hologram(size=size)
+
+    kwargs2 = dict(hologram=holo,
+                   sideband=+1,
+                   filter_name="disk",
+                   filter_size=filter_size,
+                   filter_size_interpretation="frequency index",
+                   subtract_mean=True,
+                   zero_pad=True)
+    res, mask = qpimage.holo.get_field(ret_mask=True, **kwargs2)
+
+    # We get 17*2+1, because we measure from the center of Fourier
+    # space and a pixel is included if its center is withing the
+    # perimeter of the disk.
+    assert np.sum(np.sum(mask, axis=0) != 0) == 17*2 + 1
+
+
+@pytest.mark.parametrize("size", [62, 63, 64, 134, 135])
+def test_get_field_interpretation_fourier_index_mask_2(size):
+    """Filter size in Fourier space using Fourier index new in 0.7.0"""
+    holo = hologram(size=size)
+
+    kwargs2 = dict(hologram=holo,
+                   sideband=+1,
+                   filter_name="disk",
+                   filter_size=16.99,
+                   filter_size_interpretation="frequency index",
+                   subtract_mean=True,
+                   zero_pad=True)
+    res, mask = qpimage.holo.get_field(ret_mask=True, **kwargs2)
+
+    # We get two points less than in the previous test, because we
+    # loose on on each side of the spectrum.
+    assert np.sum(np.sum(mask, axis=0) != 0) == 17*2 - 1
 
 
 def test_get_field_int_copy():

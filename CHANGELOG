@@ -1,3 +1,11 @@
+0.7.0
+ - feat: allow to set hologram filter size in Fourier indices
+   (Fourier space pixels) instead of relative to the distance
+   between central band and side band by setting the argument
+   "filter_size_interpretation" to "frequency index"
+ - fix: Fourier filter size for holograms is now inclusive,
+   i.e. points *on* the perimeter of the filter are included
+ - ref: code cleanup
 0.6.4
  - setup: bump nrefocus from 0.2.0 to 0.2.1
 0.6.3
