@@ -1,4 +1,4 @@
-# flake8: # noqa: F401
+# flake8: noqa: F401
 from ._version import version as __version__
 from .core import QPImage
 from . import holo
