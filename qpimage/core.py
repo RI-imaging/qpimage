@@ -1,4 +1,5 @@
 import pathlib
+import warnings
 
 import h5py
 import nrefocus
@@ -122,7 +123,7 @@ class QPImage(object):
             self.h5 = h5py.File(**h5kwargs)
             self._do_h5_cleanup = True
         QPImage._instances += 1
-        # set holo data
+        #: hologram processing keyword arguments
         self.holo_kw = holo_kw
         # set meta data
         meta = MetaDict(meta_data)
@@ -146,6 +147,8 @@ class QPImage(object):
             self.set_bg_data(bg_data=bg_data,
                              which_data=which_data)
         self.h5dtype = h5dtype
+        # :mod:`nrefocus` interface class
+        self._refocuser = None
 
     def __enter__(self):
         return self
@@ -540,14 +543,15 @@ class QPImage(object):
         h5 = copyh5(self.h5, h5file)
         return QPImage(h5file=h5, h5dtype=self.h5dtype)
 
-    def refocus(self, distance, method="helmholtz", h5file=None, h5mode="a"):
+    def refocus(self, distance, kernel="helmholtz", h5file=None, h5mode="a",
+                ret_refocus_iface=False, method=None):
         """Compute a numerically refocused QPImage
 
         Parameters
         ----------
         distance: float
             Focusing distance [m]
-        method: str
+        kernel: str
             Refocusing method, one of ["helmholtz","fresnel"]
         h5file: str, h5py.Group, h5py.File, or None
             A path to an hdf5 data file where the QPImage is cached.
@@ -566,6 +570,13 @@ class QPImage(object):
             - "w": Create file, truncate if exists
             - "w-" or "x": Create file, fail if exists
             - "a": Read/write if exists, create otherwise (default)
+        ret_refocus_iface: bool
+            Whether or not to also return the `nrefocus.Refocus*` class
+            used for refocusing; this might be useful if you wish to
+            do quick manual refocusing or have to create a refocusing
+            series.
+        method: str
+            deprecated, use `kernel` instead
 
         Returns
         -------
@@ -574,28 +585,48 @@ class QPImage(object):
 
         See Also
         --------
-        :mod:`nrefocus`: library used for numerical focusing
+        - :mod:`nrefocus`: library used for numerical focusing
+        - :ref:`nrefocus:sec_refocus_interface`: refocusing interface
         """
-        field2 = nrefocus.refocus(field=self.field,
-                                  d=distance/self["pixel size"],
-                                  nm=self["medium index"],
-                                  res=self["wavelength"]/self["pixel size"],
-                                  method=method
-                                  )
+        if method is not None:
+            warnings.warn("`method` is deprecated, use `kernel` instead!",
+                          DeprecationWarning)
+            if kernel is not None:
+                kernel = method
+        # `self.field` this is always computed anew, so we don't have to worry
+        # about comparing against the same object.
+        field = self.field
+        if (self._refocuser is None
+            or not np.all(self._refocuser.origin == field)
+                or self._refocuser.kernel != kernel):
+            # We have a new field, so we have to create a new Refocus
+            self._refocuser = nrefocus.RefocusNumpy(
+                field=field,
+                wavelength=self["wavelength"],
+                pixel_size=self["pixel size"],
+                medium_index=self["medium index"],
+                distance=0,
+                kernel=kernel,
+                padding=True
+            )
+        field2 = self._refocuser.propagate(distance)
+
         if "identifier" in self:
             ident = self["identifier"]
         else:
             ident = ""
         meta_data = self.meta
-        meta_data["identifier"] = "{}@{}{:.5e}m".format(ident,
-                                                        method[0],
-                                                        distance)
+        meta_data["identifier"] = f"{ident}@{kernel[0]}{distance:.5e}m"
+
         qpi2 = QPImage(data=field2,
                        which_data="field",
                        meta_data=meta_data,
                        h5file=h5file,
                        h5mode=h5mode)
-        return qpi2
+        if ret_refocus_iface:
+            return qpi2, self._refocuser
+        else:
+            return qpi2
 
     def set_bg_data(self, bg_data, which_data=None, proc_phase=True):
         """Set background amplitude and phase data
