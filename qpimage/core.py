@@ -543,8 +543,9 @@ class QPImage(object):
         h5 = copyh5(self.h5, h5file)
         return QPImage(h5file=h5, h5dtype=self.h5dtype)
 
-    def refocus(self, distance, kernel="helmholtz", h5file=None, h5mode="a",
-                ret_refocus_iface=False, method=None):
+    def refocus(self, distance, kernel="helmholtz", padding=True,
+                h5file=None, h5mode="a", ret_refocus_iface=False,
+                method=None):
         """Compute a numerically refocused QPImage
 
         Parameters
@@ -553,6 +554,12 @@ class QPImage(object):
             Focusing distance [m]
         kernel: str
             Refocusing method, one of ["helmholtz","fresnel"]
+        padding: bool
+            Whether or not to perform padding during refocusing.
+            You may disable padding if your input image does not
+            have any discontinuities at the border (i.e. you can
+            tile your input image and it would look good), otherwise
+            you will experience ringing artifacts.
         h5file: str, h5py.Group, h5py.File, or None
             A path to an hdf5 data file where the QPImage is cached.
             If set to `None` (default), all data will be handled in
@@ -598,16 +605,18 @@ class QPImage(object):
         field = self.field
         if (self._refocuser is None
             or not np.all(self._refocuser.origin == field)
-                or self._refocuser.kernel != kernel):
+            or self._refocuser.kernel != kernel
+                or self._refocuser.padding != padding):
             # We have a new field, so we have to create a new Refocus
-            self._refocuser = nrefocus.RefocusNumpy(
+            refocus_iface = nrefocus.get_best_interface()
+            self._refocuser = refocus_iface(
                 field=field,
                 wavelength=self["wavelength"],
                 pixel_size=self["pixel size"],
                 medium_index=self["medium index"],
                 distance=0,
                 kernel=kernel,
-                padding=True
+                padding=padding
             )
         field2 = self._refocuser.propagate(distance)
 
