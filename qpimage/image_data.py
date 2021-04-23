@@ -361,9 +361,4 @@ def write_image_dataset(group, key, data, h5dtype=None):
     dset = group.create_dataset(key,
                                 data=data.astype(h5dtype),
                                 **kwargs)
-    # Create and Set image attributes
-    # HDFView recognizes this as a series of images
-    dset.attrs.create('CLASS', b'IMAGE')
-    dset.attrs.create('IMAGE_VERSION', b'1.2')
-    dset.attrs.create('IMAGE_SUBCLASS', b'IMAGE_GRAYSCALE')
     return dset

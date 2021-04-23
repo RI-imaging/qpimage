@@ -6,6 +6,8 @@
  - fix: Fourier filter size for holograms is now inclusive,
    i.e. points *on* the perimeter of the filter are included
  - setup: bumpy nrefocus from 0.2.1 to 0.4.0 (use new interface)
+ - ref: remove IMAGE_* attributes from HDF5 datasets, because they
+   anyway only work with uin8 data, and not with float data
  - ref: code cleanup
 0.6.4
  - setup: bump nrefocus from 0.2.0 to 0.2.1
