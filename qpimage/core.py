@@ -116,7 +116,7 @@ class QPImage(object):
                 h5kwargs = {"name": "qpimage{}.h5".format(QPImage._instances),
                             "driver": "core",
                             "backing_store": False,
-                            "mode": "a"}
+                            "mode": "w"}
             else:
                 h5kwargs = {"name": h5file,
                             "mode": h5mode}
@@ -696,7 +696,7 @@ def copyh5(inh5, outh5):
         h5kwargs = {"name": "qpimage{}.h5".format(QPImage._instances),
                     "driver": "core",
                     "backing_store": False,
-                    "mode": "a"}
+                    "mode": "w"}
         outh5 = h5py.File(**h5kwargs)
         return_h5obj = True
         QPImage._instances += 1

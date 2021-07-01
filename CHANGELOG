@@ -1,3 +1,5 @@
+0.7.1
+ - fix: easy fix for regression in h5py with backing_store=False
 0.7.0
  - feat: allow to set hologram filter size in Fourier indices
    (Fourier space pixels) instead of relative to the distance

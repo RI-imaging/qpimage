@@ -55,7 +55,7 @@ class QPSeries(object):
                     QPSeries._instances),
                     "driver": "core",
                     "backing_store": False,
-                    "mode": "a"}
+                    "mode": "w"}
             else:
                 h5kwargs = {"name": h5file,
                             "mode": h5mode}
