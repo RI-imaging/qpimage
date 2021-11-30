@@ -1,3 +1,7 @@
+0.7.2
+ - fix: subclass MetaDict from collections.UserDict instead of dict
+   (TypeError super() argument 1 must be type, not dict)
+ - docs: fix rtd build
 0.7.1
  - fix: easy fix for regression in h5py with backing_store=False
 0.7.0

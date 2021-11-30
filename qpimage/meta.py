@@ -1,3 +1,6 @@
+import collections
+
+
 DATA_DEF = {"medium index": "refractive index of the medium",
             "pixel size": "detector pixel size [m]",
             "time": "acquisition time of the image [s]",
@@ -25,7 +28,7 @@ class MetaDataMissingError(BaseException):
     pass
 
 
-class MetaDict(dict):
+class MetaDict(collections.UserDict):
     """Management of meta data variables
 
     Valid key names are defined in :const:`qpimage.meta.META_KEYS`.
