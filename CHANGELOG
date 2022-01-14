@@ -1,3 +1,5 @@
+0.7.3
+ - fix: strip third axis from input hologram images
 0.7.2
  - fix: subclass MetaDict from collections.UserDict instead of dict
    (TypeError super() argument 1 must be type, not dict)

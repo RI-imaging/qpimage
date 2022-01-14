@@ -266,6 +266,21 @@ def test_get_field_sideband():
     assert np.all(res1 == res2)
 
 
+def test_get_field_three_axes():
+    holo1 = hologram()
+    # create a copy with empty entry in third axis
+    holo2 = np.zeros((holo1.shape[0], holo1.shape[1], 2))
+    holo2[:, :, 0] = holo1
+
+    kwargs = dict(filter_name="disk",
+                  filter_size=1 / 3,
+                  subtract_mean=True,
+                  zero_pad=True)
+    res1 = qpimage.holo.get_field(hologram=holo1, **kwargs)
+    res2 = qpimage.holo.get_field(hologram=holo2, **kwargs)
+    assert np.all(res1 == res2)
+
+
 def test_qpimage_holo():
     # create fake hologram
     size = 200

@@ -92,7 +92,8 @@ def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1/3,
     Parameters
     ----------
     hologram: real-valued 2d ndarray
-        hologram data
+        hologram data (if this is a 3d array, then the first slice
+        defined by the first two axes is used)
     sideband: +1, -1, or tuple of (float, float)
         specifies the location of the sideband:
 
@@ -141,6 +142,10 @@ def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1/3,
 
     Notes
     -----
+    If the input image has three axes, then only the first image
+    (defined by the first two axes) is taken (ignore alpha or
+    RGB channels).
+
     The input image is zero-padded as a square image to the next
     order of :math:`2^n`.
 
@@ -149,6 +154,10 @@ def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1/3,
     higher frequencies as well and thus suppresses ringing artifacts
     for data that contain jumps in the phase image.
     """
+    if len(hologram.shape) == 3:
+        # take the first slice (we have alpha or RGB information)
+        hologram = hologram[:, :, 0]
+
     if copy:
         hologram = hologram.astype(dtype=float, copy=True)
 
