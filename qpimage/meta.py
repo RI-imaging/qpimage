@@ -1,19 +1,23 @@
 import collections
 
+#: QPImage attributes required for each dataset
+DATA_DEF = {
+    "medium index": "refractive index of the medium",
+    "pixel size": "detector pixel size [m]",
+    "time": "acquisition time of the image [s]",
+    "wavelength": "imaging wavelength [m]",
+    }
 
-DATA_DEF = {"medium index": "refractive index of the medium",
-            "pixel size": "detector pixel size [m]",
-            "time": "acquisition time of the image [s]",
-            "wavelength": "imaging wavelength [m]",
-            }
-
-OTHER_DEF = {"identifier": "image identifier",
-             "qpimage version": "qpimage software version used",
-             "sim center": "Simulation: center of object [px]",
-             "sim index": "Simulation: refractive index of object",
-             "sim model": "Simulation: model used",
-             "sim radius": "Simulation: object radius [m]",
-             }
+#: Optional QPImage attributes
+OTHER_DEF = {
+    "angle": "tomographic acquisition angle [rad]",
+    "identifier": "image identifier",
+    "qpimage version": "qpimage software version used",
+    "sim center": "simulation: center of object [px]",
+    "sim index": "simulation: refractive index of object",
+    "sim model": "simulation: model used",
+    "sim radius": "simulation: object radius [m]",
+    }
 
 DATA_KEYS = sorted(DATA_DEF.keys())
 
