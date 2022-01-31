@@ -1,5 +1,6 @@
 0.7.4
  - enh: add QPImage meta data key "angle"
+ - enh: add metadata keywords "device" and "software"
 0.7.3
  - fix: strip third axis from input hologram images
 0.7.2
