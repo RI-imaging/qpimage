@@ -12,6 +12,7 @@ DATA_DEF = {
 OTHER_DEF = {
     "angle": "tomographic acquisition angle [rad]",
     "device": "imaging device used",
+    "focus": "focus position [m]",
     "identifier": "image identifier",
     "qpimage version": "qpimage software version used",
     "sim center": "simulation: center of object [px]",
