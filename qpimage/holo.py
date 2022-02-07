@@ -12,7 +12,7 @@ def find_sideband(ft_data, which=+1, copy=True):
     Parameters
     ----------
     ft_data: 2d ndarray
-        Fourier transform of the hologram image
+        FFt-shifted Fourier transform of the hologram image
     which: +1 or -1
         which sideband to search for:
 
@@ -59,7 +59,7 @@ def find_sideband(ft_data, which=+1, copy=True):
 
 
 def fourier2dpad(data, zero_pad=True):
-    """Compute the 2D Fourier transform with zero padding
+    """Compute the FFT-shifted 2D Fourier transform with zero padding
 
     Parameters
     ----------
