@@ -32,13 +32,9 @@ qpi = qpimage.QPImage(data=edata["data"],
                                # between interference from the central
                                # band and image resolution.
                                "filter_name": "smooth disk",
-                               # As can be seen in the hologram image,
-                               # the sidebands are not positioned at
-                               # an angle of 45° from the central band.
-                               # If the filter size is 1/3 (default),
-                               # the central band introduces line-
-                               # artifacts to the reconstructed image.
-                               "filter_size": 1/4
+                               # Set the filter size to half the distance
+                               # between the central band and the sideband.
+                               "filter_size": 1/2
                                }
                       )
 
