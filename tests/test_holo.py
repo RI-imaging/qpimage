@@ -224,7 +224,7 @@ def test_get_field_interpretation_fourier_index_mask_2(size):
     res, mask = qpimage.holo.get_field(ret_mask=True, **kwargs2)
 
     # We get two points less than in the previous test, because we
-    # loose on on each side of the spectrum.
+    # loose on each side of the spectrum.
     assert np.sum(np.sum(mask, axis=0) != 0) == 17*2 - 1
 
 
