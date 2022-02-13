@@ -118,7 +118,7 @@ def get_field(hologram, sideband=+1, filter_name="disk", filter_size=1/3,
     filter_size: float
         Size of the filter in Fourier space. The interpretation
         of this value depends on `filter_size_interpretation`.
-        See `filter_shape` for how it is used in filtering.
+        See `filter_name` for how it is used in filtering.
     filter_size_interpretation: str
         If set to "sideband distance", the filter size is interpreted
         as the relative distance between central band and sideband
