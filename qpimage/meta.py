@@ -24,7 +24,6 @@ OTHER_DEF = {
     "sim model": "simulation: model used",
     "sim radius": "simulation: object radius [m]",
     "software": "imaging software used",
-    "time": "acquisition time 'HH:MM:SS[.S]'",
     }
 
 DATA_KEYS = sorted(DATA_DEF.keys())
