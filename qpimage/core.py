@@ -13,7 +13,9 @@ from ._version import version as __version__
 
 #: valid combinations for keyword argument `which_data`
 VALID_INPUT_DATA = ["field",
-                    "hologram",
+                    "hologram",  # deprecated
+                    "raw-oah",  # off-axis holography
+                    "raw-qlsi",  # quadri-wave lateral shearing interferometry
                     "phase",
                     ("phase", "amplitude"),
                     ("phase", "intensity"),
@@ -42,15 +44,15 @@ class QPImage(object):
         which_data: str or tuple
             String or comma-separated list of strings indicating
             the order and type of input data. Valid values are
-            "hologram", "field", "phase", "phase,amplitude",
-            or "phase,intensity", where the latter two require an
-            indexable object with the phase data as first element.
+            defined in :const:`VALID_INPUT_DATA`, where phase and
+            amplitude/intensity data require an indexable object
+            with the phase data as first element.
         meta_data: dict or qpimage.MetaDict
             Metadata associated with the input data.
             see :data:`qpimage.meta.META_KEYS`
         holo_kw: dict
             Special keyword arguments for phase retrieval from
-            hologram data (`which_data="hologram"`).
+            hologram data (`which_data="raw-oah"`).
             See :func:`qpimage.holo.get_field` for valid keyword
             arguments.
 
@@ -263,9 +265,9 @@ class QPImage(object):
         which_data: str
             String or comma-separated list of strings indicating
             the order and type of input data. Valid values are
-            "field", "phase", "hologram", "phase,amplitude", or
-            "phase,intensity", where the latter two require an
-            indexable object with the phase data as first element.
+            defined in :const:`VALID_INPUT_DATA`, where phase and
+            amplitude/intensity data require an indexable object
+            with the phase data as first element.
         proc_phase: bool
             Process the phase data. This includes phase unwrapping
             using :func:`skimage.restoration.unwrap_phase` and
@@ -294,7 +296,11 @@ class QPImage(object):
         elif which_data == ("phase", "intensity"):
             amp = np.sqrt(data[1])
             pha = data[0]
-        elif which_data == "hologram":
+        elif which_data in ["hologram", "raw-oah"]:
+            if which_data == "hologram":
+                warnings.warn("The 'hologram' data type is deprecated, "
+                              + "please use 'raw-oah' instead!",
+                              DeprecationWarning)
             amp, pha = self._get_amp_pha(holo.get_field(data, **self.holo_kw),
                                          which_data="field")
         else:

@@ -134,7 +134,7 @@ def test_get_amp_pha_holo():
     kx = -.6
     ky = -.4
     image = np.sin(kx * x + ky * y)
-    qpi = qpimage.QPImage(image, which_data="hologram")
+    qpi = qpimage.QPImage(image, which_data="raw-oah")
     qpi.compute_bg(which_data="phase",
                    fit_offset="fit",
                    fit_profile="tilt",

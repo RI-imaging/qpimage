@@ -27,7 +27,7 @@ edata = np.array(Image.open("./data/hologram_cell_curved_bg.jpg"))
 
 # create QPImage instance
 qpi = qpimage.QPImage(data=edata,
-                      which_data="hologram",
+                      which_data="raw-oah",
                       meta_data={"medium index": 1.335,
                                  "wavelength": 550e-9,
                                  "pixel size": 0.107e-6})

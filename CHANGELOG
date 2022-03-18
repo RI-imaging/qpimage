@@ -1,3 +1,5 @@
+0.7.6
+ - ref: deprecate "hologram" input type in favor of "raw-oah"
 0.7.5
  - enh: write HDF5 image metadata so that HDFView 3.1.1 can
    visualize the phase data

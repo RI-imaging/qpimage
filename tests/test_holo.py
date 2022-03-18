@@ -293,7 +293,7 @@ def test_qpimage_holo():
     data = disk_max * ((x - size / 2)**2 + (y - size / 2)**2 < 30**2)
     image = np.sin(kx * x + ky * y + data)
     qpi = qpimage.QPImage(image,
-                          which_data="hologram",
+                          which_data="raw-oah",
                           holo_kw={"filter_name": "gauss"})
     qpi.compute_bg(which_data="phase",
                    fit_offset="fit",

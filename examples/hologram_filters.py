@@ -24,7 +24,7 @@ To correctly interpret the data shown, please note that:
   quality. Contributions from the central band can lead to strong
   artifacts. A balance between high resolution (large filter size)
   and small contributions from the central band (small filter size)
-  usually has be found.
+  usually has to be found.
 - It is not trivial to compare a gaussian filter with a disk filter
   in terms of filter size (sigma vs. radius).
   The gaussian filter takes into account larger frequencies and
@@ -61,7 +61,7 @@ qpis = []
 
 for filter_name in filters:
     qpi = qpimage.QPImage(data=hologram,
-                          which_data="hologram",
+                          which_data="raw-oah",
                           holo_kw={"filter_size": .5,
                                    "filter_name": filter_name})
     qpis.append(qpi)

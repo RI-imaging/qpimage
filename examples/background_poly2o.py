@@ -18,7 +18,7 @@ import qpimage
 edata = np.array(Image.open("./data/hologram_cell_curved_bg.jpg"))
 
 # create QPImage instance
-qpi = qpimage.QPImage(data=edata, which_data="hologram")
+qpi = qpimage.QPImage(data=edata, which_data="raw-oah")
 pha0 = qpi.pha
 
 # background correction using tilt only

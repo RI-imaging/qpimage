@@ -22,8 +22,8 @@ edata = np.load("./data/hologram_cell.npz")
 # create QPImage instance
 qpi = qpimage.QPImage(data=edata["data"],
                       bg_data=edata["bg_data"],
-                      which_data="hologram",
-                      # This parameter allows to pass arguments to the
+                      which_data="raw-oah",
+                      # This parameter allows passing arguments to the
                       # hologram-analysis algorithm of qpimage.
                       # (see qpimage.holo.get_field)
                       holo_kw={
