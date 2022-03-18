@@ -65,10 +65,11 @@ class MetaDict(collections.UserDict):
 
     def __getitem__(self, *args, **kwargs):
         if args[0] not in self and args[0] in self.valid_keys:
-            msg = "No meta data was defined for '{}'!".format(args[0]) \
-                  + "Please make sure you passed the dictionary `meta_data` " \
-                  + "when you loaded your data."
-            raise MetaDataMissingError(msg)
+            raise MetaDataMissingError(
+                f"No meta data was defined for '{args[0]}'! "
+                + "Please make sure you passed the dictionary `meta_data` "
+                + "when you loaded your data."
+                )
         elif args[0] not in self:
             msg = "Unknown meta key: '{}'!".format(args[0])
             raise KeyError(msg)

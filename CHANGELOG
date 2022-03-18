@@ -1,6 +1,7 @@
 0.7.7
  - enh: add QPImage meta data keys "date", ""numerical aperture",
    "pos x", "pos y", and "time"
+ - ref: minor cleanup
 0.7.6
  - ref: deprecate "hologram" input type in favor of "raw-oah"
 0.7.5
