@@ -11,15 +11,20 @@ DATA_DEF = {
 #: Optional QPImage attributes
 OTHER_DEF = {
     "angle": "tomographic acquisition angle [rad]",
+    "date": "acquisition date 'YYYY-MM-DD'",
     "device": "imaging device used",
     "focus": "focus position [m]",
     "identifier": "image identifier",
+    "numerical aperture": "numerical aperture",
+    "pos x": "x position [m]",
+    "pos y": "y position [m]",
     "qpimage version": "qpimage software version used",
     "sim center": "simulation: center of object [px]",
     "sim index": "simulation: refractive index of object",
     "sim model": "simulation: model used",
     "sim radius": "simulation: object radius [m]",
     "software": "imaging software used",
+    "time": "acquisition time 'HH:MM:SS[.S]'",
     }
 
 DATA_KEYS = sorted(DATA_DEF.keys())
