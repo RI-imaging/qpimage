@@ -96,7 +96,7 @@ class QPImage(object):
         Notes
         -----
         QPImage is slicable; the following returns a new QPImage with
-        the same meta data, but with all background corrections merged.
+        the same metadata, but with all background corrections merged.
 
         .. code-block:: python
 
@@ -115,7 +115,7 @@ class QPImage(object):
                     if holo_kw[key] in [-1, 1]:
                         qpretrieve_kw["invert_phase"] = holo_kw[key] == -1
                     else:
-                        qpretrieve_kw["sideband_freq"] = holo_kw[key]
+                        qpretrieve_kw["sideband_freq"] = tuple(holo_kw[key])
                         qpretrieve_kw["invert_phase"] = False
                 elif key == "zero_pad":
                     qpretrieve_kw["padding"] = holo_kw["zero_pad"]
