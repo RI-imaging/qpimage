@@ -1,3 +1,5 @@
+0.8.3
+ - fix: inverted phase when deprecated holo_kw were used
 0.8.2
  - fix: correctly parse invert_phase in deprecated holo_kw dictionary
 0.8.1
