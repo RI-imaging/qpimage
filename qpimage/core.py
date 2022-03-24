@@ -4,9 +4,9 @@ import warnings
 import h5py
 import nrefocus
 import numpy as np
+import qpretrieve
 from skimage.restoration import unwrap_phase
 
-from . import holo
 from .image_data import Amplitude, Phase, write_image_dataset
 from .meta import MetaDict, DATA_KEYS, META_KEYS
 from ._version import version as __version__
@@ -27,8 +27,8 @@ class QPImage(object):
     _instances = 0
 
     def __init__(self, data=None, bg_data=None, which_data="phase",
-                 meta_data=None, holo_kw=None, proc_phase=True,
-                 h5file=None, h5mode="a", h5dtype="float32"):
+                 meta_data=None, qpretrieve_kw=None, holo_kw=None,
+                 proc_phase=True, h5file=None, h5mode="a", h5dtype="float32"):
         """Quantitative phase image manipulation
 
         This class implements various tasks for quantitative phase
@@ -50,11 +50,13 @@ class QPImage(object):
         meta_data: dict or qpimage.MetaDict
             Metadata associated with the input data.
             see :data:`qpimage.meta.META_KEYS`
+        qpretrieve_kw: dict
+            Keyword arguments passed to :ref:`qpretrieve:index` for
+            phase retrieval from interferometric data.
         holo_kw: dict
+            This is deprecated, please use `qpretrieve_kw` instead.
             Special keyword arguments for phase retrieval from
             hologram data (`which_data="raw-oah"`).
-            See :func:`qpimage.holo.get_field` for valid keyword
-            arguments.
 
             .. versionadded:: 0.1.6
         proc_phase: bool
@@ -100,8 +102,26 @@ class QPImage(object):
             qpi = QPImage(data=...)
             qpi_scliced = qpi[10:20, 40:30]
         """
-        if holo_kw is None:
-            holo_kw = {}
+        if qpretrieve_kw is None:
+            qpretrieve_kw = {}
+        if holo_kw is not None:
+            warnings.warn(
+                "`holo_kw` is deprecated! Please use `qpretrieve_kw` instead",
+                DeprecationWarning)
+            # map deprecated parameters to `qpretrieve_kw`
+            for key in holo_kw:
+                if key == "sideband":
+                    if key in [-1, 1]:
+                        qpretrieve_kw["sideband_freq"] = None
+                        qpretrieve_kw["negate_phase"] = holo_kw[key] == 1
+                    else:
+                        qpretrieve_kw["sideband_freq"] = holo_kw[key]
+                        qpretrieve_kw["negate_phase"] = False
+                if key == "zero_pad":
+                    qpretrieve_kw["padding"] = holo_kw["zero_pad"]
+                else:
+                    qpretrieve_kw[key] = holo_kw[key]
+
         if meta_data is None:
             meta_data = {}
         if (data is not None and
@@ -126,7 +146,7 @@ class QPImage(object):
             self._do_h5_cleanup = True
         QPImage._instances += 1
         #: hologram processing keyword arguments
-        self.holo_kw = holo_kw
+        self.qpretrieve_kw = qpretrieve_kw
         # set meta data
         meta = MetaDict(meta_data)
         for key in meta:
@@ -301,7 +321,8 @@ class QPImage(object):
                 warnings.warn("The 'hologram' data type is deprecated, "
                               + "please use 'raw-oah' instead!",
                               DeprecationWarning)
-            amp, pha = self._get_amp_pha(holo.get_field(data, **self.holo_kw),
+            oah = qpretrieve.OffAxisHologram(data, **self.qpretrieve_kw)
+            amp, pha = self._get_amp_pha(oah.run_pipeline(),
                                          which_data="field")
         else:
             raise ValueError(
