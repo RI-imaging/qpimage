@@ -1,3 +1,5 @@
+0.8.4
+ - setup: bump qpretrieve from 0.2.0 to 0.2.1
 0.8.3
  - fix: inverted phase when deprecated holo_kw were used
 0.8.2
