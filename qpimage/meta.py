@@ -35,7 +35,7 @@ META_KEYS = DATA_KEYS + OTHER_KEYS
 
 
 class MetaDataMissingError(BaseException):
-    """Raised when meta data is missing"""
+    """Raised when metadata is missing"""
     pass
 
 

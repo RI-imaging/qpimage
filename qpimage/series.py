@@ -16,13 +16,13 @@ class QPSeries(object):
         qpimage_list: list
             A list of instances of :class:`qpimage.QPImage`.
         meta_data: dict
-            Meta data associated with the input data
+            Metadata associated with the input data
             (see :const:`qpimage.META_KEYS`). This overrides
-            the meta data of the QPImages in `qpimage_list` and, if
+            the metadata of the QPImages in `qpimage_list` and, if
             `h5file` is given and `h5mode` is not "r", overrides
-            the meta data in `h5file`.
+            the metadata in `h5file`.
         h5file: str, h5py.Group, h5py.File, or None
-            A path to an hdf5 data file where all data is cached. If
+            A path to an HDF5 data file where all data is cached. If
             set to `None` (default), all data will be handled in
             memory using the "core" driver of the :mod:`h5py`'s
             :class:`h5py:File` class. If the file does not exist,
@@ -138,7 +138,7 @@ class QPSeries(object):
             Identifier key for `qpi`
         bg_from_idx: int or None
             Use the background data from the data stored in this index,
-            creating hard links within the hdf5 file.
+            creating hard links within the HDF5 file.
             (Saves memory if e.g. all qpimages is corrected with the same data)
         """
         if not isinstance(qpi, QPImage):
@@ -178,7 +178,7 @@ class QPSeries(object):
         Notes
         -----
         Instead of ``qps.get_qpimage(index)``, it is possible
-        to use the short-hand ``qps[index]``.
+        to use the shorthand ``qps[index]``.
         """
         if isinstance(index, str):
             # search for the identifier

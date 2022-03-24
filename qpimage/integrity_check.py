@@ -10,13 +10,13 @@ class IntegrityCheckError(BaseException):
     pass
 
 
-def check(qpi_or_h5file, checks=["attributes", "background"]):
+def check(qpi_or_h5file, checks=None):
     """Checks various properties of a :class:`qpimage.core.QPImage` instance
 
     Parameters
     ----------
     qpi_or_h5file: qpimage.core.QPImage or str
-        A QPImage object or a path to an hdf5 file
+        A QPImage object or a path to an HDF5 file
     checks: list of str
         Which checks to perform ("attributes" and/or "background")
 
@@ -25,7 +25,9 @@ def check(qpi_or_h5file, checks=["attributes", "background"]):
     IntegrityCheckError
         if the checks fail
     """
-    if isinstance(checks, str):
+    if checks is None:
+        checks = ["attributes", "background"]
+    elif isinstance(checks, str):
         checks = [checks]
     for ch in checks:
         if ch not in ["attributes", "background"]:

@@ -7,7 +7,7 @@ import numpy as np
 
 from . import bg_estimate
 
-#: default hdf5 compression keyword arguments
+#: default HDF5 compression keyword arguments
 COMPRESSION = {"compression": "gzip",
                "compression_opts": 9,
                }
@@ -178,7 +178,7 @@ class ImageData(object):
         intersection of the two resulting mask images is used.
 
         The arguments passed to this method are stored in the
-        hdf5 file `self.h5` and are used for optional integrity
+        HDF5 file `self.h5` and are used for optional integrity
         checking using `qpimage.integrity_check.check`.
 
         See Also
@@ -241,14 +241,14 @@ class ImageData(object):
                 raise KeyError("No background data for {}!".format(key))
             return ret
 
-    def set_bg(self, bg, key="data", attrs={}):
+    def set_bg(self, bg, key="data", attrs=None):
         """Set the background data
 
         Parameters
         ----------
         bg: numbers.Real, 2d ndarray, ImageData, or h5py.Dataset
             The background data. If `bg` is an `h5py.Dataset` object,
-            it must exist in the same hdf5 file (a hard link is created).
+            it must exist in the same HDF5 file (a hard link is created).
             If set to `None`, the data will be removed.
         key: str
             One of :const:`VALID_BG_KEYS`)
@@ -259,6 +259,8 @@ class ImageData(object):
         --------
         del_bg: removing background data
         """
+        if attrs is None:
+            attrs = {}
         if key not in VALID_BG_KEYS:
             raise ValueError("Invalid bg key: {}".format(key))
         # remove previous background key
@@ -324,7 +326,7 @@ class Phase(ImageData):
 
 
 def write_image_dataset(group, key, data, h5dtype=None):
-    """Write an image to an hdf5 group as a dataset
+    """Write an image to an HDF5 group as a dataset
 
     This convenience function sets all attributes such that the image
     can be visualized with HDFView, sets the compression and fletcher32
@@ -338,7 +340,7 @@ def write_image_dataset(group, key, data, h5dtype=None):
         Dataset identifier
     data: np.ndarray of shape (M,N)
         Image data to store
-    h5dtype: str
+    h5dtype: str or dtype
         The datatype in which to store the image data. The default
         is the datatype of `data`.
 

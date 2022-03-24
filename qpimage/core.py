@@ -23,7 +23,7 @@ VALID_INPUT_DATA = ["field",
 
 
 class QPImage(object):
-    # required to create in-memory hdf5 files with unique fd
+    # required to create in-memory HDF5 files with unique fd
     _instances = 0
 
     def __init__(self, data=None, bg_data=None, which_data="phase",
@@ -70,7 +70,7 @@ class QPImage(object):
                 Previous versions always performed phase unwrapping
                 and did so without offset correction
         h5file: str, pathlib.Path, h5py.Group, h5py.File, or None
-            A path to an hdf5 data file where all data is cached. If
+            A path to an HDF5 data file where all data is cached. If
             set to `None` (default), all data will be handled in
             memory using the "core" driver of the :mod:`h5py`'s
             :class:`h5py:File` class. If the file does not exist,
@@ -385,7 +385,7 @@ class QPImage(object):
 
     @property
     def info(self):
-        """list of tuples with QPImage meta data"""
+        """list of tuples with QPImage metadata"""
         info = []
         # meta data
         meta = self.meta
@@ -561,7 +561,7 @@ class QPImage(object):
     def copy(self, h5file=None):
         """Create a copy of the current instance
 
-        This is done by recursively copying the underlying hdf5 data.
+        This is done by recursively copying the underlying HDF5 data.
 
         Parameters
         ----------
@@ -583,13 +583,13 @@ class QPImage(object):
         kernel: str
             Refocusing method, one of ["helmholtz","fresnel"]
         padding: bool
-            Whether or not to perform padding during refocusing.
+            Whether to perform padding during refocusing.
             You may disable padding if your input image does not
             have any discontinuities at the border (i.e. you can
-            tile your input image and it would look good), otherwise
+            tile your input image, and it would look good), otherwise
             you will experience ringing artifacts.
         h5file: str, h5py.Group, h5py.File, or None
-            A path to an hdf5 data file where the QPImage is cached.
+            A path to an HDF5 data file where the QPImage is cached.
             If set to `None` (default), all data will be handled in
             memory using the "core" driver of the :mod:`h5py`'s
             :class:`h5py:File` class. If the file does not exist,
@@ -704,18 +704,18 @@ class QPImage(object):
 
 
 def copyh5(inh5, outh5):
-    """Recursively copy all hdf5 data from one group to another
+    """Recursively copy all HDF5 data from one group to another
 
     Data from links is copied.
 
     Parameters
     ----------
     inh5: str, h5py.File, or h5py.Group
-        The input hdf5 data. This can be either a file name or
-        an hdf5 object.
+        The input HDF5 data. This can be either a file name or
+        an HDF5 object.
     outh5: str, h5py.File, h5py.Group, or None
-        The output hdf5 data. This can be either a file name or
-        an hdf5 object. If set to `None`, a new hdf5 object is
+        The output HDF5 data. This can be either a file name or
+        an HDF5 object. If set to `None`, a new HDF5 object is
         created in memory.
 
     Notes
@@ -765,7 +765,7 @@ def copyh5(inh5, outh5):
 
 
 def divmod_neg(a, b):
-    """Return divmod with closest result to zero"""
+    """Return divmod with the closest result to zero"""
     q, r = divmod(a, b)
     # make sure r is close to zero
     sr = np.sign(r)
