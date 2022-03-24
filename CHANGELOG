@@ -1,3 +1,5 @@
+0.8.1
+ - fix: correctly parse sideband in deprecated holo_kw dictionary
 0.8.0
  - ref: migrate hologram analysis to qpretrieve
  - ref: deprecate "holo_kw" keyword argument in favor of

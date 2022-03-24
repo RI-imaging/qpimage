@@ -112,7 +112,7 @@ class QPImage(object):
             # map deprecated parameters to `qpretrieve_kw`
             for key in holo_kw:
                 if key == "sideband":
-                    if key in [-1, 1]:
+                    if holo_kw[key] in [-1, 1]:
                         qpretrieve_kw["sideband_freq"] = None
                         qpretrieve_kw["negate_phase"] = holo_kw[key] == 1
                     else:
