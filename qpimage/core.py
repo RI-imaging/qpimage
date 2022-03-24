@@ -51,7 +51,8 @@ class QPImage(object):
             Metadata associated with the input data.
             see :data:`qpimage.meta.META_KEYS`
         qpretrieve_kw: dict
-            Keyword arguments passed to :ref:`qpretrieve:index` for
+            Keyword arguments passed to
+            :ref:`qpretrieve <qpretrieve:index>` for
             phase retrieval from interferometric data.
         holo_kw: dict
             This is deprecated, please use `qpretrieve_kw` instead.
@@ -678,6 +679,11 @@ class QPImage(object):
             "field", "phase", "phase,amplitude", or "phase,intensity",
             where the latter two require an indexable object for
             `bg_data` with the phase data as first element.
+        proc_phase: bool
+            Process the phase data. This includes phase unwrapping
+            using :func:`skimage.restoration.unwrap_phase` and
+            correcting for 2PI phase offsets (The offset is estimated
+            from a 1px-wide border around the image).
         """
         if isinstance(bg_data, QPImage):
             if which_data is not None:

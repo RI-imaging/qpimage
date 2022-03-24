@@ -67,17 +67,6 @@ Methods
 .. autofunction:: qpimage.core.copyh5
 
 
-.. _holo:
-
-holo (hologram analysis)
-========================
-
-Methods
--------
-.. automodule:: qpimage.holo
-   :members:
-   :undoc-members:
-
 .. _image_data:
 
 image_data (basic image management)

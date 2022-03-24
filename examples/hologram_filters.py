@@ -1,10 +1,11 @@
-"""Hologram filter choice
+"""Filter choices for interferometric imaging
 
 There are several parameters that influence the quality of
-phase and amplitude data retrieved from holograms. This example
-demonstrates the advantages and disadvantages of a three
-hologram filters in qpimage. For more information, please have
-a look at :func:`qpimage.holo.get_field`.
+phase and amplitude data retrieved from data recorded via
+interferometric techniques. This example demonstrates the
+advantages and disadvantages of three filtering strageies
+in qpimage. For more information, please have a look at
+the :ref:`qpretrieve <qpretrieve:index>` library.
 
 Several observations can be made:
 
@@ -45,9 +46,9 @@ import qpimage
 from skimage import color, data
 
 # image of a galaxy recorded with the Hubble telescope
-img1 = color.rgb2grey(data.hubble_deep_field())[354:504, 70:220]
+img1 = color.rgb2gray(data.hubble_deep_field())[354:504, 70:220]
 # image of a coin
-img2 = color.rgb2grey(data.coins())[150:300, 70:220]
+img2 = data.coins()[150:300, 70:220]
 
 pha = img1/img1.max() * 2 * np.pi
 amp = img2/img2.mean()
@@ -62,8 +63,8 @@ qpis = []
 for filter_name in filters:
     qpi = qpimage.QPImage(data=hologram,
                           which_data="raw-oah",
-                          holo_kw={"filter_size": .5,
-                                   "filter_name": filter_name})
+                          qpretrieve_kw={"filter_size": .5,
+                                         "filter_name": filter_name})
     qpis.append(qpi)
 
 fig = plt.figure(figsize=(8, 16))

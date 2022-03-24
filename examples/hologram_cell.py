@@ -1,4 +1,4 @@
-"""Digital hologram of a single cell
+"""Off-axis hologram of a single cell
 
 This example illustrates how qpimage can be used to analyze
 digital holograms. The hologram of a single myeloid leukemia
@@ -24,18 +24,17 @@ qpi = qpimage.QPImage(data=edata["data"],
                       bg_data=edata["bg_data"],
                       which_data="raw-oah",
                       # This parameter allows passing arguments to the
-                      # hologram-analysis algorithm of qpimage.
-                      # (see qpimage.holo.get_field)
-                      holo_kw={
-                               # For this hologram, the "smooth disk"
-                               # filter yields the best trade-off
-                               # between interference from the central
-                               # band and image resolution.
-                               "filter_name": "smooth disk",
-                               # Set the filter size to half the distance
-                               # between the central band and the sideband.
-                               "filter_size": 1/2
-                               }
+                      # hologram-analysis algorithm in qpretrieve.
+                      qpretrieve_kw={
+                          # For this hologram, the "smooth disk"
+                          # filter yields the best trade-off
+                          # between interference from the central
+                          # band and image resolution.
+                          "filter_name": "smooth disk",
+                          # Set the filter size to half the distance
+                          # between the central band and the sideband.
+                          "filter_size": 1/2
+                          }
                       )
 
 amp0 = qpi.amp
