@@ -3,7 +3,7 @@
 There are several parameters that influence the quality of
 phase and amplitude data retrieved from data recorded via
 interferometric techniques. This example demonstrates the
-advantages and disadvantages of three filtering strageies
+advantages and disadvantages of three filtering stragies
 in qpimage. For more information, please have a look at
 the :ref:`qpretrieve <qpretrieve:index>` library.
 
