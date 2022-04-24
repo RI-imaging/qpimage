@@ -23,14 +23,15 @@ setup(
     license="MIT",
     description=description,
     long_description=open('README.rst').read() if exists('README.rst') else '',
-    install_requires=["h5py>=2.7.0",
-                      "lmfit",
-                      "nrefocus[FFTW]>=0.4.3",  # Refocus class
-                      "numpy>=1.9.0",
-                      "qpretrieve[FFTW]>=0.2.2",
-                      "scikit-image>=0.11.0",
-                      "scipy>=0.18.0",
-                      ],
+    install_requires=[
+        "h5py>=2.7.0",
+        "lmfit",
+        "nrefocus[FFTW]>=0.4.3",  # Refocus class
+        "numpy>=1.9.0",
+        "qpretrieve[FFTW]>=0.2.6",
+        "scikit-image>=0.11.0",
+        "scipy>=0.18.0",
+        ],
     python_requires='>=3.6, <4',
     keywords=["digital holographic microscopy",
               "optics",

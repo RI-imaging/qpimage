@@ -167,11 +167,3 @@ def test_tilt():
                               fit_profile="tilt",
                               border_px=1)
     assert np.allclose(data, bg)
-
-
-if __name__ == "__main__":
-    # Run all tests
-    _loc = locals()
-    for _key in list(_loc.keys()):
-        if _key.startswith("test_") and hasattr(_loc[_key], "__call__"):
-            _loc[_key]()

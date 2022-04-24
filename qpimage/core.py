@@ -159,15 +159,22 @@ class QPImage(object):
         self._pha = Phase(self.h5.require_group("phase"),
                           h5dtype=h5dtype)
         if data is not None:
-            # compute phase and amplitude from input data
-            amp, pha = self._get_amp_pha(data=data,
-                                         which_data=which_data,
-                                         proc_phase=proc_phase)
+            # Compute phase and amplitude from input data.
+            # Note that for QLSI data, the background correction step
+            # takes place in the gradient during wavefront computation.
+            # Here we allow this to happen and only set the background
+            # data if there are any.
+            amp, pha, bg_amp, bg_pha = self._get_amp_pha(
+                data=data,
+                bg_data=bg_data,
+                which_data=which_data,
+                proc_phase=proc_phase)
             self._amp["raw"] = amp
             self._pha["raw"] = pha
             # set background data
-            self.set_bg_data(bg_data=bg_data,
-                             which_data=which_data)
+            if bg_pha is not None:
+                self.set_bg_data(bg_data=(bg_pha, bg_amp),
+                                 which_data="phase,amplitude")
         self.h5dtype = h5dtype
         # :mod:`nrefocus` interface class
         self._refocuser = None
@@ -275,7 +282,7 @@ class QPImage(object):
             msg = "unknown type for `which_data`: {}".format(which_data)
             raise ValueError(msg)
 
-    def _get_amp_pha(self, data, which_data, proc_phase=True):
+    def _get_amp_pha(self, data, which_data, bg_data=None, proc_phase=True):
         """Convert input data to phase and amplitude
 
         Parameters
@@ -300,7 +307,11 @@ class QPImage(object):
 
         Returns
         -------
-        amp, pha: tuple of (:class:`Amplitdue`, :class:`Phase`)
+        amp, pha: .Amplitdue, .Phase
+            amplitude and phase retrieved from the input data
+        bg_amp, bg_pha: .Amplitdue, .Phase or None, None
+            background amplitude and phase retrieved from the input
+            data (if applicable)
         """
         which_data = QPImage._conv_which_data(which_data)
 
@@ -308,8 +319,8 @@ class QPImage(object):
             amp = np.abs(data)
             pha = np.angle(data)
         elif which_data == "phase":
-            pha = data
             amp = np.ones_like(data)
+            pha = data
         elif which_data == ("phase", "amplitude"):
             amp = data[1]
             pha = data[0]
@@ -321,9 +332,19 @@ class QPImage(object):
                 warnings.warn("The 'hologram' data type is deprecated, "
                               + "please use 'raw-oah' instead!",
                               DeprecationWarning)
-            oah = qpretrieve.OffAxisHologram(data, **self.qpretrieve_kw)
-            amp, pha = self._get_amp_pha(oah.run_pipeline(),
-                                         which_data="field")
+            oah = qpretrieve.OffAxisHologram(data=data, **self.qpretrieve_kw)
+            amp, pha, _, _ = self._get_amp_pha(oah.run_pipeline(),
+                                               which_data="field")
+        elif which_data == "raw-qlsi":
+            qlsi = qpretrieve.QLSInterferogram(
+                data=data,
+                reference=bg_data,
+                **self.qpretrieve_kw)
+            qlsi.run_pipeline()
+            amp = qlsi.amplitude
+            pha = qlsi.phase
+            # Set bg_data to None so that we will not process it separately
+            bg_data = None
         else:
             raise ValueError(
                 f"`which_data` must be one of {VALID_INPUT_DATA}!")
@@ -355,7 +376,16 @@ class QPImage(object):
             offset = minimum * twopi
             pha -= offset
 
-        return amp, pha
+        if bg_data is not None:
+            bg_amp, bg_pha, _, _ = self._get_amp_pha(
+                data=bg_data,
+                which_data=which_data,
+                bg_data=None,
+                proc_phase=proc_phase)
+        else:
+            bg_amp = bg_pha = None
+
+        return amp, pha, bg_amp, bg_pha
 
     @property
     def bg_amp(self):
@@ -549,12 +579,14 @@ class QPImage(object):
         if "phase" in which_data:
             imdat_list.append(self._pha)
         # Perform correction
+        mask = None
         for imdat in imdat_list:
             mask = imdat.estimate_bg(fit_offset=fit_offset,
                                      fit_profile=fit_profile,
                                      border_px=border_px,
                                      from_mask=from_mask,
                                      ret_mask=ret_mask)
+        # return phase mask (if possible) for user-convenience/testing
         return mask
 
     def copy(self, h5file=None):
@@ -676,8 +708,8 @@ class QPImage(object):
             String or comma-separated list of strings indicating
             the order and type of input data. Valid values are
             "field", "phase", "phase,amplitude", or "phase,intensity",
-            where the latter two require an indexable object for
-            `bg_data` with the phase data as first element.
+            where the latter two require an indexable object for `bg_data`
+            with the phase data as first element.
         proc_phase: bool
             Process the phase data. This includes phase unwrapping
             using :func:`skimage.restoration.unwrap_phase` and
@@ -694,9 +726,9 @@ class QPImage(object):
             amp, pha = None, None
         else:
             # Compute phase and amplitude from data and which_data
-            amp, pha = self._get_amp_pha(data=bg_data,
-                                         which_data=which_data,
-                                         proc_phase=proc_phase)
+            amp, pha, _, _ = self._get_amp_pha(data=bg_data,
+                                               which_data=which_data,
+                                               proc_phase=proc_phase)
         # Set background data
         self._amp.set_bg(amp, key="data")
         self._pha.set_bg(pha, key="data")

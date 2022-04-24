@@ -1,3 +1,8 @@
+0.9.0
+ - feat: support QLSI data via qpretrieve
+ - ref: background data is handled differntly internally to
+   support gradient-based background subtraction in QLSI
+ - setup: bump qpretrieve from 0.2.2 to 0.2.6
 0.8.5
  - setup: bump qpretrieve from 0.2.1 to 0.2.2 (multiprocessing)
 0.8.4
