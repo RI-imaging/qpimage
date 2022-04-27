@@ -28,7 +28,7 @@ setup(
         "lmfit",
         "nrefocus[FFTW]>=0.4.3",  # Refocus class
         "numpy>=1.9.0",
-        "qpretrieve[FFTW]>=0.2.6",
+        "qpretrieve[FFTW]>=0.2.8",
         "scikit-image>=0.11.0",
         "scipy>=0.18.0",
         ],
