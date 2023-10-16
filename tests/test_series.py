@@ -168,6 +168,8 @@ def test_series_hdf5_hardlink_bg():
 
 def test_series_meta():
     h5file = pathlib.Path(__file__).parent / "data" / "bg_tilt.h5"
+    # We have no write intent on the file, so we cannot modify
+    # the metadata.
     with pytest.raises((OSError, RuntimeError, KeyError)):
         qpimage.QPImage(h5file=h5file,
                         meta_data={"wavelength": 333e-9},
