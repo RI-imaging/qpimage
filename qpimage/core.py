@@ -362,10 +362,10 @@ class QPImage(object):
                 pham = pha.copy()
                 pham[nanmask] = 0
                 pham = np.ma.masked_array(pham, mask=nanmask)
-                pha = unwrap_phase(pham, seed=47)
+                pha = unwrap_phase(pham, rng=47)
                 pha[nanmask] = np.nan
             else:
-                pha = unwrap_phase(pha, seed=47)
+                pha = unwrap_phase(pha, rng=47)
             # remove 2PI offsets that might be present in the border phase
             border = np.concatenate((pha[0, :],
                                      pha[-1, :],

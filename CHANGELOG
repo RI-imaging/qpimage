@@ -1,3 +1,6 @@
+0.9.2
+ - ci: python build version changed to latest minor version
+ - ref: update unwrap arg name from seed to rng
 0.9.1
  - setup: bump qpretrieve from 0.2.6 to 0.2.8
 0.9.0
