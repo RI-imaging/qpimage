@@ -106,3 +106,4 @@ _version_save.py
 .pytest_cache
 
 .idea
+_version.py
