@@ -365,7 +365,7 @@ def write_image_dataset(group, key, data, h5dtype=None):
                                 **kwargs)
     if group.file.driver != "core":
         # HDFView 3.1.1 supports visualizing float-arrays as grayscale image
-        dset.attrs.create('CLASS', np.string_('IMAGE'))
-        dset.attrs.create('IMAGE_VERSION', np.string_('1.2'))
-        dset.attrs.create('IMAGE_SUBCLASS', np.string_('IMAGE_GRAYSCALE'))
+        dset.attrs.create('CLASS', np.bytes_('IMAGE'))
+        dset.attrs.create('IMAGE_VERSION', np.bytes_('1.2'))
+        dset.attrs.create('IMAGE_SUBCLASS', np.bytes_('IMAGE_GRAYSCALE'))
     return dset

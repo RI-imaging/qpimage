@@ -1,0 +1,38 @@
+[build-system]
+requires = ["setuptools", "wheel", "setuptools_scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "qpimage"
+description = "library for manipulating quantitative phase images"
+readme = "README.rst"
+license = { file = "LICENSE" }
+authors = [{ name = "Paul Müller", email = "dev@craban.de" }]
+requires-python = ">=3.8, <4"
+dependencies = [
+    "h5py>=2.7.0",
+    "lmfit",
+    "nrefocus[FFTW]>=0.4.3",
+    "numpy>=2.0",
+    "qpretrieve[FFTW]>=0.2.8",
+    "scikit-image>=0.21.0",
+    "scipy>=0.18.0"
+]
+classifiers = [
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Science/Research"
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/RI-imaging/qpimage"
+
+[tool.setuptools_scm]
+write_to = "qpimage/_version.py"
+version_scheme = "post-release"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["qpimage"]
+
